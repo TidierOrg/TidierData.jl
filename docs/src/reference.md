@@ -1,22 +1,22 @@
 ```@meta
 DocTestSetup= quote
-using Tidier
+using TidierData
 end
 ```
 ## Index
 ```@index
-Modules = [Tidier]
+Modules = [TidierData]
 Private = false
 ```
 
 ## Reference - Exported functions
 ```@autodocs
-Modules = [Tidier]
+Modules = [TidierData]
 Private = false
 ```
 
 ## Reference - Internal functions
 ```@autodocs
-Modules = [Tidier]
+Modules = [TidierData]
 Public = false
 ```

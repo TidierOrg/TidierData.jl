@@ -6,7 +6,7 @@
 
 # Let's start with a "long" DataFrame and make it wide. Why would we want to make it wide? Well, if we wanted to calculate a correlation between `A` and `B` for rows with corresponding `id` numbers, we may need to first make sure that `A` and `B` are represented in adjacent columns.
 
-using Tidier
+using TidierData
 
 df_long = DataFrame(id = [1, 1, 2, 2],
                     variable = ["A", "B", "A", "B"],

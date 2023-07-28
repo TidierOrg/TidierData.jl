@@ -1,6 +1,6 @@
 # Renaming columns follows the same syntax as in R's `tidyverse`, where the "tidy expression" is `new_name = old_name`. While the main function to rename columns is `@rename()`, you can also use `@select()` if you additionally plan to select only the renamed columns.
 
-using Tidier
+using TidierData
 using RDatasets
 
 movies = dataset("ggplot2", "movies");

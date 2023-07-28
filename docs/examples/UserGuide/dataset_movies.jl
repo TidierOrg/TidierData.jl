@@ -1,6 +1,6 @@
 # To get started, we will load the `movies` dataset from the `RDatasets.jl` package.
 
-using Tidier
+using TidierData
 using RDatasets
 
 movies = dataset("ggplot2", "movies");

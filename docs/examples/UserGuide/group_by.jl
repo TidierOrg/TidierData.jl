@@ -4,7 +4,7 @@
 
 # When using `@chain`, note that you can write either `@ungroup` or `@ungroup()`. Both are considered valid.
 
-using Tidier
+using TidierData
 using RDatasets
 
 movies = dataset("ggplot2", "movies");

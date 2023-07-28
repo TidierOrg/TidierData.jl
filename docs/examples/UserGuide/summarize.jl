@@ -1,13 +1,13 @@
 # Summarizing a dataset involves aggregating multiple rows down to (usually) a single row of data. This can be performed across the entire dataset, or if the dataset is grouped, then for each row in the dataset. This is implemented similarly to R's tidyverse using `@summarize()`. Out of admiration for Hadley Wickham, and to be consistent with the R `tidyverse`, both `@summarize()` and `@summarise()` are supported.
 
-# Note that summarization is different from other verbs in the `Tidier.jl` in 2 respects:
+# Note that summarization is different from other verbs in the `TidierData.jl` in 2 respects:
 
 # 1. No auto-vectorization is performed when using `@summarize()`
 # 2. One layer of grouping is removed after each `@summarize()` function.
 
 # If you require further changes to grouping beyond the defaults, you can either `@ungroup()` or call `@group_by()` to regroup by a different set of variables.
 
-using Tidier
+using TidierData
 using RDatasets
 
 movies = dataset("ggplot2", "movies");

@@ -1,8 +1,8 @@
-# Slicing rows is similar to filtering rows, except that slicing is performed based on row numbers rather tha filter criteria. In `Tidier.jl`, slicing works similarly to R's `tidyverse` in that both positive (which rows to keep) and negative (which rows to remove) slicing is supported. For `@slice()`, any valid `UnitRange` of integers is considered valid; this is not the case for `@select()` or `across()`.
+# Slicing rows is similar to filtering rows, except that slicing is performed based on row numbers rather tha filter criteria. In `TidierData.jl`, slicing works similarly to R's `tidyverse` in that both positive (which rows to keep) and negative (which rows to remove) slicing is supported. For `@slice()`, any valid `UnitRange` of integers is considered valid; this is not the case for `@select()` or `across()`.
 
-# Remember: Just like every other `Tidier.jl` top-level macro, `@slice()` respects group. This means that in a grouped data frame, `@slice(1:2)` will select the first 2 rows *from each group*.
+# Remember: Just like every other `TidierData.jl` top-level macro, `@slice()` respects group. This means that in a grouped data frame, `@slice(1:2)` will select the first 2 rows *from each group*.
 
-using Tidier
+using TidierData
 
 df = DataFrame(row_num = 1:10,
                a = string.(repeat('a':'e', inner = 2)),

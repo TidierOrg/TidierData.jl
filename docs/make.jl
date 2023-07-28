@@ -1,19 +1,19 @@
 using Documenter, DocumenterMarkdown
-using Tidier, DataFrames, RDatasets
+using TidierData, DataFrames, RDatasets
 
 DocTestMeta = quote
-    using Tidier, DataFrames, Chain, Statistics
+    using TidierData, DataFrames, Chain, Statistics
 end
-DocMeta.setdocmeta!(Tidier,
+DocMeta.setdocmeta!(TidierData,
     :DocTestSetup,
     DocTestMeta;
     recursive=true)
 makedocs(
-    modules=[Tidier],
+    modules=[TidierData],
     clean=true,
     doctest=true,
     #format   = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true"),
-    sitename="Tidier.jl",
+    sitename="TidierData.jl",
     authors="Karandeep Singh et al.",
     strict=[
         :doctest,
@@ -27,7 +27,7 @@ makedocs(
     build=joinpath(@__DIR__, "docs")
 )
 
-deploydocs(; repo="https://github.com/TidierOrg/Tidier.jl", push_preview=true,
+deploydocs(; repo="https://github.com/TidierOrg/TidierData.jl", push_preview=true,
     deps=Deps.pip("mkdocs", "pygments", "python-markdown-math", "mkdocs-material",
         "pymdown-extensions", "mkdocstrings", "mknotebooks",
         "pytkdocs_tweaks", "mkdocs_include_exclude_files", "jinja2", "mkdocs-video"),

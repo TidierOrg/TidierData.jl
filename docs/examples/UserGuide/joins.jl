@@ -1,8 +1,8 @@
-# One really nice thing about the R `tidyverse` implementation of joins is that they support natural joins. If you don't specify which columns to join on, these column names are inferred from the overlapping columns. While you can override this behavior by specifying which columns to join on, it's convenient that this is not strictly required. We have adopted a similar approach to joins in `Tidier.jl`.
+# One really nice thing about the R `tidyverse` implementation of joins is that they support natural joins. If you don't specify which columns to join on, these column names are inferred from the overlapping columns. While you can override this behavior by specifying which columns to join on, it's convenient that this is not strictly required. We have adopted a similar approach to joins in `TidierData.jl`.
 
-# Here, we will *only* show examples of natural joins. For additional ways to join, take a look at the examples in the [Reference](https://TidierOrg.github.io/Tidier.jl/dev/reference/).
+# Here, we will *only* show examples of natural joins. For additional ways to join, take a look at the examples in the [Reference](https://TidierOrg.github.io/TidierData.jl/latest/reference/).
 
-using Tidier
+using TidierData
 
 # Let's generate two data frames to join on. Here's the first one.
 

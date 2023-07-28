@@ -1,6 +1,6 @@
-# The `@select()` macro in `Tidier.jl` supports many of the nuances of the R `tidyverse` implementation, including indexing columns individually by name or number, indexing by ranges of columns using the `:` operator between column names or numbers, and negative selection using negated column names or numbers. Selection helpers such as `starts_with()`, `ends_with()`, `matches()`, and `contains()` are also supported.
+# The `@select()` macro in `TidierData.jl` supports many of the nuances of the R `tidyverse` implementation, including indexing columns individually by name or number, indexing by ranges of columns using the `:` operator between column names or numbers, and negative selection using negated column names or numbers. Selection helpers such as `starts_with()`, `ends_with()`, `matches()`, and `contains()` are also supported.
 
-using Tidier
+using TidierData
 using RDatasets
 
 movies = dataset("ggplot2", "movies");

@@ -388,11 +388,11 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String}; summari
           return :(nrow())
         else
           found_n = true
-          return :Tidier_n
+          return :TidierData_n
         end
       elseif fn == :row_number
         found_row_number = true
-        return :Tidier_row_number
+        return :TidierData_row_number
       else
         return :($fn())
       end

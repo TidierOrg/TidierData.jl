@@ -1,11 +1,11 @@
-module TestTidier
+module TestTidierData
 
-using Tidier
+using TidierData
 using Test
 using Documenter
 
-DocMeta.setdocmeta!(Tidier, :DocTestSetup, :(using Tidier); recursive=true)
+DocMeta.setdocmeta!(TidierData, :DocTestSetup, :(using TidierData); recursive=true)
 
-doctest(Tidier)
+doctest(TidierData)
 
 end

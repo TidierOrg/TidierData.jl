@@ -1,12 +1,12 @@
 # Conditional functions are a useful tool to update or create new columns conditional on the values of a column of data. When continuous variables are converted to categories, this is sometimes referred to as "recoding" a column.
 
-# Tidier.jl provides two functions to recode data: `if_else()` and `case_when()`.
+# TidierData.jl provides two functions to recode data: `if_else()` and `case_when()`.
 
 # ## `if_else()`
 
-# Why do we need another `if_else()` function if base Julia already comes with an `ifelse()` function. Similar to R, the base Julia implementation of `if_else()` does not include a way to designate what value to return if the enclosed vector contains a missing value. Additionally, the base Julia implementation of `ifelse()` produces an error if presented with a `missing` value in the condition. The Tidier.jl `if_else()` can handle missing values and includes an optional 4th argument that is used to designate what to return in the event of a `missing`` value for the condition. Let's take a look at some examples.
+# Why do we need another `if_else()` function if base Julia already comes with an `ifelse()` function. Similar to R, the base Julia implementation of `if_else()` does not include a way to designate what value to return if the enclosed vector contains a missing value. Additionally, the base Julia implementation of `ifelse()` produces an error if presented with a `missing` value in the condition. The TidierData.jl `if_else()` can handle missing values and includes an optional 4th argument that is used to designate what to return in the event of a `missing`` value for the condition. Let's take a look at some examples.
 
-using Tidier
+using TidierData
 
 df = DataFrame(a = [1, 2, missing, 4, 5])
 
@@ -41,7 +41,7 @@ end
                         true    =>  a))
 end
 
-# What is going on here? `case_when()` uses a `condition => return_value` syntax, which are encoded as pairs in Julia. You can provide a single pair, or multiple pairs separated by commas. Because the pairs operator (`=>`) might be confused with a greater than or equal to sign (`>=`), we have padded two spaces on either side of the `=>` to make sure that the pair remains visually distinct. We do not use a `~` operator in `case_when()` (as is used in R) because the `~` operator is used to denote de-vectorized functions in Tidier.jl.
+# What is going on here? `case_when()` uses a `condition => return_value` syntax, which are encoded as pairs in Julia. You can provide a single pair, or multiple pairs separated by commas. Because the pairs operator (`=>`) might be confused with a greater than or equal to sign (`>=`), we have padded two spaces on either side of the `=>` to make sure that the pair remains visually distinct. We do not use a `~` operator in `case_when()` (as is used in R) because the `~` operator is used to denote de-vectorized functions in TidierData.jl.
 
 # There are 2 other things to note above. First, the `true` condition evaluates to `true` for all remaining values of `a`. The only reason that the `b` contains a `missing` value here is that the `true` condition was met, leading to the value of `a` (in this case, `missing`) to be assigned to `b`. Second, we were able to return a single value (3) in the first condition, and a vector (column) of data (`a`) in the second condition.
 
@@ -70,6 +70,6 @@ end
                         true   =>  "unknown"))
 end
 
-# ## Do these functions work outside of Tidier.jl?
+# ## Do these functions work outside of TidierData.jl?
 
-# Yes, both `if_else()` and `case_when()` work outside of Tidier.jl. However, you'll need to remember that if working with vectors, both the functions and conditions will need to be vectorized, and in the case of `case_when()`, the `=>` will need to be written as `.=>`. The reason this is not needed when using these functions inside of Tidier.jl is because they are auto-vectorized.
+# Yes, both `if_else()` and `case_when()` work outside of TidierData.jl. However, you'll need to remember that if working with vectors, both the functions and conditions will need to be vectorized, and in the case of `case_when()`, the `=>` will need to be written as `.=>`. The reason this is not needed when using these functions inside of TidierData.jl is because they are auto-vectorized.

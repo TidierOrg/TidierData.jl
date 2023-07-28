@@ -1,4 +1,4 @@
-module Tidier
+module TidierData
 
 using DataFrames
 using MacroTools
@@ -14,7 +14,7 @@ using Reexport
 @reexport using Statistics
 @reexport using ShiftedArrays: lag, lead
 
-export Tidier_set, across, desc, n, row_number, starts_with, ends_with, matches, if_else, case_when, ntile, 
+export TidierData_set, across, desc, n, row_number, starts_with, ends_with, matches, if_else, case_when, ntile, 
       as_float, as_integer, as_string, @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
       @group_by, @ungroup, @slice, @arrange, @distinct, @pull, @left_join, @right_join, @inner_join, @full_join,
       @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_na, @glimpse
@@ -39,9 +39,9 @@ include("type_conversions.jl")
 
 # Function to set global variables
 """
-$docstring_Tidier_set
+$docstring_TidierData_set
 """
-function Tidier_set(option::AbstractString, value::Bool)
+function TidierData_set(option::AbstractString, value::Bool)
   if option == "code"
     code[] = value
   elseif option == "log"
@@ -67,39 +67,39 @@ macro select(df, exprs...)
       @chain $(esc(df)) begin
         @chain _ begin
           if $any_found_n
-            transform(_, nrow => :Tidier_n; ungroup = false)
+            transform(_, nrow => :TidierData_n; ungroup = false)
           else
             _
           end
         end
         @chain _ begin
           if $any_found_row_number
-            transform(_, eachindex => :Tidier_row_number; ungroup = false)
+            transform(_, eachindex => :TidierData_row_number; ungroup = false)
           else
             _
           end    
         end
         select($(tidy_exprs...); ungroup = false)
-        select(Cols(Not(r"^(Tidier_n|Tidier_row_number)$")); ungroup = false)
+        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
       end
     else
       @chain $(esc(df)) begin
         @chain _ begin
           if $any_found_n
-            transform(_, nrow => :Tidier_n)
+            transform(_, nrow => :TidierData_n)
           else
             _
           end
         end
         @chain _ begin
           if $any_found_row_number
-            transform(_, eachindex => :Tidier_row_number)
+            transform(_, eachindex => :TidierData_row_number)
           else
             _
           end
         end
         select($(tidy_exprs...))
-        select(Cols(Not(r"^(Tidier_n|Tidier_row_number)$")))
+        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
       end
     end
   end
@@ -125,39 +125,39 @@ macro transmute(df, exprs...)
       @chain $(esc(df)) begin
         @chain _ begin
           if $any_found_n
-            transform(_, nrow => :Tidier_n; ungroup = false)
+            transform(_, nrow => :TidierData_n; ungroup = false)
           else
             _
           end
         end
         @chain _ begin
           if $any_found_row_number
-            transform(_, eachindex => :Tidier_row_number; ungroup = false)
+            transform(_, eachindex => :TidierData_row_number; ungroup = false)
           else
             _
           end    
         end
         select($(tidy_exprs...); ungroup = false)
-        select(Cols(Not(r"^(Tidier_n|Tidier_row_number)$")); ungroup = false)
+        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
       end
     else
       @chain $(esc(df)) begin
         @chain _ begin
           if $any_found_n
-            transform(_, nrow => :Tidier_n)
+            transform(_, nrow => :TidierData_n)
           else
             _
           end
         end
         @chain _ begin
           if $any_found_row_number
-            transform(_, eachindex => :Tidier_row_number)
+            transform(_, eachindex => :TidierData_row_number)
           else
             _
           end
         end
         select($(tidy_exprs...))
-        select(Cols(Not(r"^(Tidier_n|Tidier_row_number)$")))
+        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
       end
     end
   end
@@ -183,39 +183,39 @@ macro rename(df, exprs...)
       @chain $(esc(df)) begin
         @chain _ begin
           if $any_found_n
-            transform(_, nrow => :Tidier_n; ungroup = false)
+            transform(_, nrow => :TidierData_n; ungroup = false)
           else
             _
           end
         end
         @chain _ begin
           if $any_found_row_number
-            transform(_, eachindex => :Tidier_row_number; ungroup = false)
+            transform(_, eachindex => :TidierData_row_number; ungroup = false)
           else
             _
           end    
         end
         rename($(tidy_exprs...); ungroup = false)
-        select(Cols(Not(r"^(Tidier_n|Tidier_row_number)$")); ungroup = false)
+        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
       end
     else
       @chain $(esc(df)) begin
         @chain _ begin
           if $any_found_n
-            transform(_, nrow => :Tidier_n)
+            transform(_, nrow => :TidierData_n)
           else
             _
           end
         end
         @chain _ begin
           if $any_found_row_number
-            transform(_, eachindex => :Tidier_row_number)
+            transform(_, eachindex => :TidierData_row_number)
           else
             _
           end
         end
         rename($(tidy_exprs...))
-        select(Cols(Not(r"^(Tidier_n|Tidier_row_number)$")))
+        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
       end
     end
   end
@@ -241,39 +241,39 @@ macro mutate(df, exprs...)
       @chain $(esc(df)) begin
         @chain _ begin
           if $any_found_n
-            transform(_, nrow => :Tidier_n; ungroup = false)
+            transform(_, nrow => :TidierData_n; ungroup = false)
           else
             _
           end
         end
         @chain _ begin
           if $any_found_row_number
-            transform(_, eachindex => :Tidier_row_number; ungroup = false)
+            transform(_, eachindex => :TidierData_row_number; ungroup = false)
           else
             _
           end    
         end
         transform($(tidy_exprs...); ungroup = false)
-        select(Cols(Not(r"^(Tidier_n|Tidier_row_number)$")); ungroup = false)
+        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
       end
     else
       @chain $(esc(df)) begin
         @chain _ begin
           if $any_found_n
-            transform(_, nrow => :Tidier_n)
+            transform(_, nrow => :TidierData_n)
           else
             _
           end
         end
         @chain _ begin
           if $any_found_row_number
-            transform(_, eachindex => :Tidier_row_number)
+            transform(_, eachindex => :TidierData_row_number)
           else
             _
           end
         end
         transform($(tidy_exprs...))
-        select(Cols(Not(r"^(Tidier_n|Tidier_row_number)$")))
+        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
       end
     end
   end
@@ -300,14 +300,14 @@ macro summarize(df, exprs...)
       @chain $(esc(df)) begin
         @chain _ begin
           if $any_found_n
-            transform(_, nrow => :Tidier_n; ungroup = false)
+            transform(_, nrow => :TidierData_n; ungroup = false)
           else
             _
           end  
         end
         @chain _ begin
           if $any_found_row_number
-            transform(_, eachindex => :Tidier_row_number; ungroup = false)
+            transform(_, eachindex => :TidierData_row_number; ungroup = false)
           else
             _
           end  
@@ -316,12 +316,12 @@ macro summarize(df, exprs...)
           if length(col_names) == 1
             @chain _ begin
               combine(_, $(tidy_exprs...); ungroup = true)
-              select(_, Cols(Not(r"^(Tidier_n|Tidier_row_number)$")))
+              select(_, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
             end
           else
             @chain _ begin
               combine(_, $(tidy_exprs...); ungroup = true)
-              select(_, Cols(Not(r"^(Tidier_n|Tidier_row_number)$")))
+              select(_, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
               groupby(_, col_names[1:end-1]; sort = true)
             end
           end
@@ -331,20 +331,20 @@ macro summarize(df, exprs...)
       @chain $(esc(df)) begin
         @chain _ begin
           if $any_found_n
-            transform(_, nrow => :Tidier_n; ungroup = false)
+            transform(_, nrow => :TidierData_n; ungroup = false)
           else
             _
           end  
         end
         @chain _ begin
           if $any_found_row_number
-            transform(_, eachindex => :Tidier_row_number; ungroup = false)
+            transform(_, eachindex => :TidierData_row_number; ungroup = false)
           else
             _
           end  
         end
         combine($(tidy_exprs...))
-        select(Cols(Not(r"^(Tidier_n|Tidier_row_number)$")))
+        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
       end
     end
   end
@@ -377,39 +377,39 @@ macro filter(df, exprs...)
       @chain $(esc(df)) begin
         @chain _ begin
           if $any_found_n
-            transform(_, nrow => :Tidier_n; ungroup = false)
+            transform(_, nrow => :TidierData_n; ungroup = false)
           else
             _
           end
         end
         @chain _ begin
           if $any_found_row_number
-            transform(_, eachindex => :Tidier_row_number; ungroup = false)
+            transform(_, eachindex => :TidierData_row_number; ungroup = false)
           else
             _
           end    
         end
         subset($(tidy_exprs...); skipmissing = true, ungroup = false)
-        select(Cols(Not(r"^(Tidier_n|Tidier_row_number)$")); ungroup = false)
+        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
       end
     else
       @chain $(esc(df)) begin
         @chain _ begin
           if $any_found_n
-            transform(_, nrow => :Tidier_n)
+            transform(_, nrow => :TidierData_n)
           else
             _
           end
         end
         @chain _ begin
           if $any_found_row_number
-            transform(_, eachindex => :Tidier_row_number)
+            transform(_, eachindex => :TidierData_row_number)
           else
             _
           end
         end
         subset($(tidy_exprs...); skipmissing = true)
-        select(Cols(Not(r"^(Tidier_n|Tidier_row_number)$")))
+        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
       end
     end
   end
@@ -436,20 +436,20 @@ macro group_by(df, exprs...)
     @chain $(esc(df)) begin
       @chain _ begin
         if $any_found_n
-          transform(_, nrow => :Tidier_n)
+          transform(_, nrow => :TidierData_n)
         else
           _
         end
       end
       @chain _ begin
         if $any_found_row_number
-          transform(_, eachindex => :Tidier_row_number)
+          transform(_, eachindex => :TidierData_row_number)
         else
           _
         end
       end
       transform($(tidy_exprs...))
-      select(Cols(Not(r"^(Tidier_n|Tidier_row_number)$")))
+      select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
       groupby(Cols($(grouping_exprs...)); sort = true)
     end
   end
@@ -555,14 +555,14 @@ macro distinct(df, exprs...)
         DataFrame # remove grouping because `unique()` does not work on GroupDataFrames
         @chain _ begin
           if $any_found_n
-            transform(_, nrow => :Tidier_n)
+            transform(_, nrow => :TidierData_n)
           else
             _
           end
         end
         @chain _ begin
           if $any_found_row_number
-            transform(_, eachindex => :Tidier_row_number)
+            transform(_, eachindex => :TidierData_row_number)
           else
             _
           end    
@@ -574,21 +574,21 @@ macro distinct(df, exprs...)
             unique(_, Cols($(tidy_exprs...)))
           end
         end
-        select(Cols(Not(r"^(Tidier_n|Tidier_row_number)$")))
+        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
         groupby(col_names; sort = true) # regroup
       end
     else
       @chain $(esc(df)) begin
         @chain _ begin
           if $any_found_n
-            transform(_, nrow => :Tidier_n)
+            transform(_, nrow => :TidierData_n)
           else
             _
           end
         end
         @chain _ begin
           if $any_found_row_number
-            transform(_, eachindex => :Tidier_row_number)
+            transform(_, eachindex => :TidierData_row_number)
           else
             _
           end
@@ -600,7 +600,7 @@ macro distinct(df, exprs...)
             unique(_, Cols($(tidy_exprs...)))
           end
         end
-        select(Cols(Not(r"^(Tidier_n|Tidier_row_number)$")))
+        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
       end
     end
   end

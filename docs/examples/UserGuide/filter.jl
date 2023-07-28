@@ -1,6 +1,6 @@
 # Filtering is a mechanism to indicate which rows you want to keep in a dataset based on criteria. This is also referred to as subsetting. Filtering rows is normally a bit tricky in `DataFrames.jl` because comparison operators like `>=` actually need to be vectorized as `.>=`, which can catch new Julia users by surprise. `@filter()` mimics R's `tidyverse` behavior by auto-vectorizing the code and then only selecting those rows that evaluate to `true`. Similar to `dplyr`, rows that evaluate to `missing` are skipped.
 
-using Tidier
+using TidierData
 using RDatasets
 
 movies = dataset("ggplot2", "movies");
@@ -14,7 +14,7 @@ movies = dataset("ggplot2", "movies");
   @slice(1:5)
 end
 
-# ## Let's search for movies that have at least 200 votes and a rating of greater than or equal to 8. There are 3 ways you can specify an "and" condition inside of `Tidier.jl`.
+# ## Let's search for movies that have at least 200 votes and a rating of greater than or equal to 8. There are 3 ways you can specify an "and" condition inside of `TidierData.jl`.
 
 # ### The first option is to use the short-circuiting `&&` operator as shown below. This is the preferred approach because the second expression is only evaluated (per element) if the first one is true.
 

@@ -1,4 +1,7 @@
-# Tidier.jl updates
+# TidierData.jl updates
+
+## v1.0.0 - 2023-07-28
+- `Tidier.jl` cloned and changed to `TidierData.jl`
 
 ## v0.7.7 - 2023-07-15
 - Added documentation on how to interpolate variables inside of `for` loops. Note: `!!` interpolation doesn't work inside of `for` loops because macros are expanded during parsing and not at runtime.

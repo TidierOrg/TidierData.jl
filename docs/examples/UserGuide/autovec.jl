@@ -1,8 +1,8 @@
-# In general, Tidier.jl uses a lookup table to decide which functions *not* to vectorize. For example, `mean()` is listed as a function that should never be vectorized. Also, any function used inside of `@summarize()` is also never automatically vectorized. Any function that is not included in this list *and* is used in a context other than `@summarize()` is automatically vectorized.
+# In general, TidierData.jl uses a lookup table to decide which functions *not* to vectorize. For example, `mean()` is listed as a function that should never be vectorized. Also, any function used inside of `@summarize()` is also never automatically vectorized. Any function that is not included in this list *and* is used in a context other than `@summarize()` is automatically vectorized.
 
-# This "auto-vectorization" makes working with Tidier.jl more R-like and convenient. However, if you ever define your own function and try to use it, Tidier.jl may unintentionally vectorize it for you. To prevent auto-vectorization, you can prefix your function with a `~`.
+# This "auto-vectorization" makes working with TidierData.jl more R-like and convenient. However, if you ever define your own function and try to use it, TidierData.jl may unintentionally vectorize it for you. To prevent auto-vectorization, you can prefix your function with a `~`.
 
-using Tidier
+using TidierData
 using RDatasets
 
 df = DataFrame(a = repeat('a':'e', inner = 2), b = [1,1,1,2,2,2,3,3,3,4], c = 11:20)
@@ -35,7 +35,7 @@ end
     @mutate(d = c - ~mean(c))
 end
 
-# If for some crazy reason, you *did* want to vectorize `mean()`, you are always allowed to vectorize it, and Tidier.jl won't un-vectorize it.
+# If for some crazy reason, you *did* want to vectorize `mean()`, you are always allowed to vectorize it, and TidierData.jl won't un-vectorize it.
 
 @chain df begin
     @mutate(d = c - mean.(c))
