@@ -9,7 +9,7 @@ using Reexport
 
 # Exporting `Cols` because `summarize(!!vars, funs))` with multiple interpolated
 # columns requires `Cols()` to be nested within `Cols()`, so `Cols` needs to be exported.
-@reexport using DataFrames: DataFrame, Cols, describe, nrow, proprow
+@reexport using DataFrames: DataFrame, Cols, describe, nrow, proprow, Not, Between
 @reexport using Chain
 @reexport using Statistics
 @reexport using ShiftedArrays: lag, lead
@@ -17,7 +17,8 @@ using Reexport
 export TidierData_set, across, desc, n, row_number, starts_with, ends_with, matches, if_else, case_when, ntile, 
       as_float, as_integer, as_string, @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
       @group_by, @ungroup, @slice, @arrange, @distinct, @pull, @left_join, @right_join, @inner_join, @full_join,
-      @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_na, @glimpse
+      @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_na, @glimpse, @separate,
+      @unite
 
 # Package global variables
 const code = Ref{Bool}(false) # output DataFrames.jl code?
@@ -36,6 +37,7 @@ include("pseudofunctions.jl")
 include("helperfunctions.jl")
 include("ntile.jl")
 include("type_conversions.jl")
+include("separate_unite.jl")
 
 # Function to set global variables
 """

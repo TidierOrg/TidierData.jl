@@ -1989,3 +1989,68 @@ julia> as_string(missing)
 missing
 ```
 """
+
+const docstring_separate = 
+"""
+   @separate
+
+Separate a string column into mulitiple new columns based on a specified delimter 
+
+# Arguments
+- 'df': A DataFrame
+- `From`: Column that will be split
+- `Into`: New column names, supports [] or ()
+- `Separator`: the string or chacater on which to split
+
+# Examples
+```jldoctest
+julia> df = DataFrame(a = ["1-1", "2-2", "3-3-3"]);
+
+julia @separate(df, a, [b, c, d], "-")
+3×3 DataFrame
+ Row │ b          c          d          
+     │ SubStrin…  SubStrin…  SubStrin…? 
+─────┼──────────────────────────────────
+   1 │ 1          1          missing    
+   2 │ 2          2          missing    
+   3 │ 3          3          3
+
+julia> @chain df begin
+       @separate(a, (b, c, d), "-")
+       end
+3×3 DataFrame
+ Row │ b          c          d          
+     │ SubStrin…  SubStrin…  SubStrin…? 
+─────┼──────────────────────────────────
+   1 │ 1          1          missing    
+   2 │ 2          2          missing    
+   3 │ 3          3          3
+```
+"""
+
+const docstring_unite = 
+"""
+      @unite
+
+Separate a multiple columns into one new columns using a specific delimter
+
+# Arguments
+- 'df': A DataFrame
+- `new_col`: New column that will recieve the combination
+- `from_cols`: Column names that it will combine, supports [] or ()
+- `sep`: the string or character that will seprate the values in the new column
+
+# Examples
+```jldoctest
+julia> df = DataFrame( b = ["1", "2", "3"], c = ["1", "2", "3"], d = [missing, missing, "3"]);
+
+julia> @unite(df, new_col, (b, c, d), "-")
+3×4 DataFrame
+ Row │ b          c          d           new_col 
+     │ SubStrin…  SubStrin…  SubStrin…?  String  
+─────┼───────────────────────────────────────────
+   1 │ 1          1          missing     1-1
+   2 │ 2          2          missing     2-2
+   3 │ 3          3          3           3-3-3
+```
+"""
