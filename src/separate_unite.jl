@@ -24,9 +24,6 @@ function separate(df::DataFrame, col::Symbol, into::Vector{Symbol}, sep::String)
     return new_df
 end
 
-df = DataFrame(a = ["1-1", "2-2", "3-3-3"])
-df2 = separate(df, :a, [:b, :c, :d], "-")
-df = DataFrames
 """
 $docstring_separate
 """
