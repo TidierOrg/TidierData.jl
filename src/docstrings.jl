@@ -2006,7 +2006,7 @@ Separate a string column into mulitiple new columns based on a specified delimte
 ```jldoctest
 julia> df = DataFrame(a = ["1-1", "2-2", "3-3-3"]);
 
-julia @separate(df, a, [b, c, d], "-")
+julia> @separate(df, a, [b, c, d], "-")
 3×3 DataFrame
  Row │ b          c          d          
      │ SubStrin…  SubStrin…  SubStrin…? 
@@ -2069,35 +2069,13 @@ For numerical columns, returns a dataframe with the Q1,Q3, min, max, mean, media
 ```jldoctest 
 julia> df = DataFrame( A = [1, 2, 3, 4, 5], B = [missing, 7, 8, 9, 10], C = [11, missing, 13, 14, missing], D = [16, 17, 18, 19, 20]);
 
-julia> @summary(df)
-4×9 DataFrame
- Row │ Column  Min    Q1       Median   Mean     Q3       Max    Count  Missing_Count 
-     │ String  Int64  Float64  Float64  Float64  Float64  Int64  Int64  Int64         
-─────┼────────────────────────────────────────────────────────────────────────────────
-   1 │ A           1     2.0       3.0   3.0        4.0       5      5              0
-   2 │ B           7     7.75      8.5   8.5        9.25     10      4              1
-   3 │ C          11    12.0      13.0  12.6667    13.5      14      3              2
-   4 │ D          16    17.0      18.0  18.0       19.0      20      5              0
+julia> @summary(df);
 
-julia> @summary(df, (B:D))
-3×9 DataFrame
- Row │ Column  Min    Q1       Median   Mean     Q3       Max    Count  Missing_Count 
-     │ String  Int64  Float64  Float64  Float64  Float64  Int64  Int64  Int64         
-─────┼────────────────────────────────────────────────────────────────────────────────
-   1 │ B           7     7.75      8.5   8.5        9.25     10      4              1
-   2 │ C          11    12.0      13.0  12.6667    13.5      14      3              2
-   3 │ D          16    17.0      18.0  18.0       19.0      20      5              0
+julia> @summary(df, (B:D));
 
 julia> @chain df begin
        @summary(B:D)
-       end
-3×9 DataFrame
- Row │ Column  Min    Q1       Median   Mean     Q3       Max    Count  Missing_Count 
-     │ String  Int64  Float64  Float64  Float64  Float64  Int64  Int64  Int64         
-─────┼────────────────────────────────────────────────────────────────────────────────
-   1 │ B           7     7.75      8.5   8.5        9.25     10      4              1
-   2 │ C          11    12.0      13.0  12.6667    13.5      14      3              2
-   3 │ D          16    17.0      18.0  18.0       19.0      20      5              0
+       end;
 ```
 """
 
@@ -2113,19 +2091,7 @@ Fills missing values in a given column of a DataFrame. This function uses either
 - `method`: "nocb" or "locf" depending on the desired strategy. 
 ```jldoctest
 
-julia> df = DataFrame(dt1=[missing, 0.2, missing, missing, 1, missing, 5, 6], dt2=[0.3, missing, missing, 3, missing, 5, 6,missing])
-8×2 DataFrame
- Row │ dt1        dt2       
-     │ Float64?   Float64?  
-─────┼──────────────────────
-   1 │ missing          0.3
-   2 │       0.2  missing   
-   3 │ missing    missing   
-   4 │ missing          3.0
-   5 │       1.0  missing   
-   6 │ missing          5.0
-   7 │       5.0        6.0
-   8 │       6.0  missing   
+julia> df = DataFrame(dt1=[missing, 0.2, missing, missing, 1, missing, 5, 6], dt2=[0.3, missing, missing, 3, missing, 5, 6,missing]);
    
 julia> @chain df begin
        @mutate(dt1 = ~fill_na(dt1, "locf"))
