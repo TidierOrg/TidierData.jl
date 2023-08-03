@@ -20,7 +20,7 @@ function summary_stats(df::DataFrame)
 end
 
 """
-$doscstring_summary
+$docstring_summary
 """
 macro summary(df, cols...)
     if length(cols) == 0
