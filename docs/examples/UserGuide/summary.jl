@@ -23,5 +23,6 @@ end
 # ## or for a range of columns
 
 @chain df begin
-    @summary(B:D) # you can also write this @summary(2:4)
+    @select(B:D)
+    @summary() # you can also write this @summary(2:4)
 end

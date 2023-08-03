@@ -2055,7 +2055,7 @@ julia> @unite(df, new_col, (b, c, d), "-")
 ```
 """
 
-const = docstring_summary
+const docstring_summary =
 """
        @summary(df, cols...)
 
@@ -2101,7 +2101,7 @@ julia> @chain df begin
 ```
 """
 
-const = docstring_fill_na
+const docstring_fill_na =
 """
    fill(column, method)
 
