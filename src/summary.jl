@@ -36,39 +36,3 @@ macro summary(df, cols...)
     end
 end
 
-function locf(column::AbstractVector)
-    last_observation = column[1]
-    for i in 1:length(column)
-        if ismissing(column[i])
-            column[i] = last_observation
-        else
-            last_observation = column[i]
-        end
-    end
-    return column
-end
-
-function nocb(column::AbstractVector)
-    next_observation = column[end]
-    for i in length(column):-1:1
-        if ismissing(column[i])
-            column[i] = next_observation
-        else
-            next_observation = column[i]
-        end
-    end
-    return column
-end
-
-"""
-$docstring_fill_na
-"""
-function fill_na(column::AbstractVector, method::String)
-    if method == "locf"
-        return locf(column)
-    elseif method == "nocb"
-        return nocb(column)
-    else
-        error("Unsupported fill method. Choose either 'locf' or 'nocb'.")
-    end
-end
