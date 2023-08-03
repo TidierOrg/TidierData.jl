@@ -1,5 +1,4 @@
-# The @`separate()` macro in `TidierData.jl`
-# The `@separate()` macro in `TidierData.jl` separates a single column into multiple columns. This is particularly useful for splitting a column containing delimited values into individual columns.
+# Follwing the tidyverse syntax, the `@separate()` macro in `TidierData.jl` separates a single column into multiple columns. This is particularly useful for splitting a column containing delimited values into individual columns.
 
 using TidierData
 
