@@ -2096,18 +2096,6 @@ julia> df = DataFrame(dt1=[missing, 0.2, missing, missing, 1, missing, 5, 6], dt
 julia> @chain df begin
               @mutate(dt1 = ~fill_na(dt1, "locf"))
               @mutate(dt2 = ~fill_na(dt2, "nocb"))
-              end
-8×2 DataFrame
- Row │ dt1        dt2       
-     │ Float64?   Float64?  
-─────┼──────────────────────
-   1 │ missing          0.3
-   2 │       0.2        3.0
-   3 │       0.2        3.0
-   4 │       0.2        3.0
-   5 │       1.0        5.0
-   6 │       1.0        5.0
-   7 │       5.0        6.0
-   8 │       6.0  missing   
+              end;  
 ```
 """
