@@ -36,11 +36,6 @@ macro summary(df, cols...)
     end
 end
 
-
-#"""
-#$docstring_fill_na 
-#"""
-
 function locf(column::AbstractVector)
     last_observation = column[1]
     for i in 1:length(column)
@@ -65,7 +60,10 @@ function nocb(column::AbstractVector)
     return column
 end
 
-function fill(column::AbstractVector, method::String)
+"""
+$docstring_fill_na
+"""
+function fill_na(column::AbstractVector, method::String)
     if method == "locf"
         return locf(column)
     elseif method == "nocb"
