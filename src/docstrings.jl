@@ -2100,3 +2100,48 @@ julia> @chain df begin
    3 │ D          16    17.0      18.0  18.0       19.0      20      5              0
 ```
 """
+
+const = docstring_fill_na
+"""
+   fill(column, method)
+
+Fills missing values in a given column of a DataFrame. This function uses either Last Observation Carried Forward (LOCF) or Next Observation Carried Backward (NOCB) methods based on the provided argument. 
+
+# Arguments
+
+- `column`: Column that with missing values
+- `method`: "nocb" or "locf" depending on the desired strategy. 
+```jldoctest
+
+julia> df = DataFrame(dt1=[missing, 0.2, missing, missing, 1, missing, 5, 6], dt2=[0.3, missing, missing, 3, missing, 5, 6,missing])
+8×2 DataFrame
+ Row │ dt1        dt2       
+     │ Float64?   Float64?  
+─────┼──────────────────────
+   1 │ missing          0.3
+   2 │       0.2  missing   
+   3 │ missing    missing   
+   4 │ missing          3.0
+   5 │       1.0  missing   
+   6 │ missing          5.0
+   7 │       5.0        6.0
+   8 │       6.0  missing   
+   
+julia> @chain df begin
+       @mutate(dt1 = ~fill_na(dt1, "locf"))
+       @mutate(dt2 = ~fill_na(dt2, "nocb"))
+       end
+8×2 DataFrame
+ Row │ dt1        dt2       
+     │ Float64?   Float64?  
+─────┼──────────────────────
+   1 │ missing          0.3
+   2 │       0.2        3.0
+   3 │       0.2        3.0
+   4 │       0.2        3.0
+   5 │       1.0        5.0
+   6 │       1.0        5.0
+   7 │       5.0        6.0
+   8 │       6.0  missing   
+```
+"""
