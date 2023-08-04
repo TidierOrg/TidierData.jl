@@ -307,7 +307,7 @@ function parse_autovec(tidy_expr::Union{Expr,Symbol})
     elseif @capture(x, fn_(args__))
       # This is the do-not-vectorize "list"
       # `in` should be vectorized so do not add to this exclusion list
-      if fn in [:Ref :Set :Cols :(:) :∘ :lag :lead :ntile :repeat :across :desc :mean :std :var :median :first :last :minimum :maximum :sum :length :skipmissing :quantile :passmissing :cumsum :cumprod :accumulate]
+      if fn in not_vectorized[]
         return x
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($fn.($(args...)))

@@ -23,6 +23,9 @@ export TidierData_set, across, desc, n, row_number, starts_with, ends_with, matc
 const code = Ref{Bool}(false) # output DataFrames.jl code?
 const log = Ref{Bool}(false) # output tidylog output? (not yet implemented)
 
+# Expose the global do-not-vectorize "list"
+const not_vectorized = Ref{Vector{Symbol}}([:Ref, :Set, :Cols, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate])
+
 # Includes
 include("docstrings.jl")
 include("parsing.jl")
