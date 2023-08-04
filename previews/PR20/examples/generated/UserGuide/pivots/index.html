@@ -13,17 +13,17 @@
       
       
       
-        <link rel="prev" href="../rename/">
+        <link rel="prev" href="../binding/">
       
       
-        <link rel="next" href="../summarize/">
+        <link rel="next" href="../column_names/">
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
-        <title>@mutate - TidierData.jl</title>
+        <title>Pivoting - TidierData.jl</title>
       
     
     
@@ -79,7 +79,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#using-mutate-to-add-a-new-column" class="md-skip">
+        <a href="#pivot_wider" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              @mutate
+              Pivoting
             
           </span>
         </div>
@@ -318,76 +318,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          @mutate
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../mutate_transmute/" class="md-nav__link">
         @mutate
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#using-mutate-to-add-a-new-column" class="md-nav__link">
-    Using @mutate() to add a new column
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-mutate-to-update-an-existing-column" class="md-nav__link">
-    Using @mutate() to update an existing column
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-mutate-with-in" class="md-nav__link">
-    Using @mutate() with in
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-mutate-with-n-and-row_number" class="md-nav__link">
-    Using @mutate with n() and row_number()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-transmute-to-update-and-select-columns" class="md-nav__link">
-    Using @transmute to update and select columns.
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -548,11 +483,55 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../pivots/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Pivoting
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Pivoting
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pivot_wider" class="md-nav__link">
+    @pivot_wider()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pivot_longer" class="md-nav__link">
+    @pivot_longer()
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -657,36 +636,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#using-mutate-to-add-a-new-column" class="md-nav__link">
-    Using @mutate() to add a new column
+  <a href="#pivot_wider" class="md-nav__link">
+    @pivot_wider()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-mutate-to-update-an-existing-column" class="md-nav__link">
-    Using @mutate() to update an existing column
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-mutate-with-in" class="md-nav__link">
-    Using @mutate() with in
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-mutate-with-n-and-row_number" class="md-nav__link">
-    Using @mutate with n() and row_number()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-transmute-to-update-and-select-columns" class="md-nav__link">
-    Using @transmute to update and select columns.
+  <a href="#pivot_longer" class="md-nav__link">
+    @pivot_longer()
   </a>
   
 </li>
@@ -706,83 +664,69 @@
                   
 
 
-  <h1>@mutate</h1>
+  <h1>Pivoting</h1>
 
-<div><p>The primary purpose of <code>@mutate()</code> is to either create a new column or to update an existing column <em>without</em> changing the number of rows in the dataset. If you only plan to select the mutated columns, then you can use <code>@transmute()</code> instead of <code>@mutate()</code>. However, in <code>TidierData.jl</code>, <code>@select()</code> can also be used to create and select new columns (unlike R's <code>tidyverse</code>), which means that <code>@transmute()</code> is a redundant function in that it has the same functionality as <code>@select()</code>. <code>@transmute</code> is included in <code>TidierData.jl</code> for convenience but is not strictly required.</p>
+<div><p>Pivoting a dataset is needed when information sitting inside of cell values needs to be converted into column names (to make the dataset wider) or vice verse (to make the dataset longer). Either action can be referred to as "reshaping" a dataset, and various frameworks refer to the actions as unstacking/stacking or spreading/gathering. In R's tidyverse, these actions are referred to as pivoting, where the two accompanying actions are <code>@pivot_wider()</code> and <code>@pivot_longer()</code>.</p>
+<p><a id="@pivot_wider()"></a></p>
+<p><a id="@pivot_wider()-1"></a></p>
+<h2 id="pivot_wider"><code>@pivot_wider()</code><a class="headerlink" href="#pivot_wider" title="Permanent link">¤</a></h2>
+<p>Pivoting a dataset to make it wider is needed when information sitting inside of cell values needs to be converted into column names. The wider format is sometimes required for the purposes of calculating correlations or running statistical tests.</p>
+<p>Let's start with a "long" DataFrame and make it wide. Why would we want to make it wide? Well, if we wanted to calculate a correlation between <code>A</code> and <code>B</code> for rows with corresponding <code>id</code> numbers, we may need to first make sure that <code>A</code> and <code>B</code> are represented in adjacent columns.</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">TidierData</span>
-<span class="k">using</span><span class="w"> </span><span class="n">RDatasets</span>
 
-<span class="n">movies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataset</span><span class="p">(</span><span class="s">"ggplot2"</span><span class="p">,</span><span class="w"> </span><span class="s">"movies"</span><span class="p">);</span>
+<span class="n">df_long</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span>
+<span class="w">                    </span><span class="n">variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"A"</span><span class="p">,</span><span class="w"> </span><span class="s">"B"</span><span class="p">,</span><span class="w"> </span><span class="s">"A"</span><span class="p">,</span><span class="w"> </span><span class="s">"B"</span><span class="p">],</span>
+<span class="w">                    </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">])</span>
 </code></pre></div>
-<p><a id="Using-@mutate()-to-add-a-new-column"></a></p>
-<p><a id="Using-@mutate()-to-add-a-new-column-1"></a></p>
-<h2 id="using-mutate-to-add-a-new-column">Using <code>@mutate()</code> to add a new column<a class="headerlink" href="#using-mutate-to-add-a-new-column" title="Permanent link">¤</a></h2>
-<p>Let's create a new column that contains the budget for each movie expressed in millions of dollars, and the select a handful of columns and rows for the sake of brevity. Notice that the underscores in in <code>1_000_000</code> are strictly optional and included only for the sake of readability. Underscores within numbers are ignored by Julia, such that <code>1_000_000</code> is read by Julia exactly the same as <code>1000000</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@filter</span><span class="p">(</span><span class="o">!</span><span class="n">ismissing</span><span class="p">(</span><span class="n">Budget</span><span class="p">))</span>
-<span class="w">  </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">Budget_Millions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Budget</span><span class="o">/</span><span class="mi">1_000_000</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@select</span><span class="p">(</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">Budget</span><span class="p">,</span><span class="w"> </span><span class="n">Budget_Millions</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
-<span class="k">end</span>
-</code></pre></div>
-<div><div style="float: left;"><span>5×3 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Title</th><th style="text-align: left;">Budget</th><th style="text-align: left;">Budget_Millions</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Union{Missing, Int32}" style="text-align: left;">Int32?</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">'G' Men</td><td style="text-align: right;">450000</td><td style="text-align: right;">0.45</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">'Manos' the Hands of Fate</td><td style="text-align: right;">19000</td><td style="text-align: right;">0.019</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">'Til There Was You</td><td style="text-align: right;">23000000</td><td style="text-align: right;">23.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">.com for Murder</td><td style="text-align: right;">5000000</td><td style="text-align: right;">5.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">10 Things I Hate About You</td><td style="text-align: right;">16000000</td><td style="text-align: right;">16.0</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>4×3 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">id</th><th style="text-align: left;">variable</th><th style="text-align: left;">value</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">A</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">1</td><td style="text-align: left;">B</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">2</td><td style="text-align: left;">A</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">2</td><td style="text-align: left;">B</td><td style="text-align: right;">4</td></tr></tbody></table></div>
 
-<p><a id="Using-@mutate()-to-update-an-existing-column"></a></p>
-<p><a id="Using-@mutate()-to-update-an-existing-column-1"></a></p>
-<h2 id="using-mutate-to-update-an-existing-column">Using <code>@mutate()</code> to update an existing column<a class="headerlink" href="#using-mutate-to-update-an-existing-column" title="Permanent link">¤</a></h2>
-<p>Here we will repeat the same exercise, except that we will overwrite the existing <code>Budget</code> column.</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="nd">@filter</span><span class="p">(</span><span class="o">!</span><span class="n">ismissing</span><span class="p">(</span><span class="n">Budget</span><span class="p">))</span>
-<span class="w">    </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">Budget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Budget</span><span class="o">/</span><span class="mi">1_000_000</span><span class="p">)</span>
-<span class="w">    </span><span class="nd">@select</span><span class="p">(</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">Budget</span><span class="p">)</span>
-<span class="w">    </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
-<span class="k">end</span>
+<p>To make this dataset wider, we can do the following:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@pivot_wider</span><span class="p">(</span><span class="n">df_long</span><span class="p">,</span><span class="w"> </span><span class="n">names_from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">variable</span><span class="p">,</span><span class="w"> </span><span class="n">values_from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="p">)</span>
 </code></pre></div>
-<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Title</th><th style="text-align: left;">Budget</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">'G' Men</td><td style="text-align: right;">0.45</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">'Manos' the Hands of Fate</td><td style="text-align: right;">0.019</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">'Til There Was You</td><td style="text-align: right;">23.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">.com for Murder</td><td style="text-align: right;">5.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">10 Things I Hate About You</td><td style="text-align: right;">16.0</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>2×3 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">id</th><th style="text-align: left;">A</th><th style="text-align: left;">B</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">3</td><td style="text-align: right;">4</td></tr></tbody></table></div>
 
-<p><a id="Using-@mutate()-with-in"></a></p>
-<p><a id="Using-@mutate()-with-in-1"></a></p>
-<h2 id="using-mutate-with-in">Using <code>@mutate()</code> with <code>in</code><a class="headerlink" href="#using-mutate-with-in" title="Permanent link">¤</a></h2>
-<p>Here's an example of using <code>@mutate</code> with <code>in</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@filter</span><span class="p">(</span><span class="o">!</span><span class="n">ismissing</span><span class="p">(</span><span class="n">Budget</span><span class="p">))</span>
-<span class="w">  </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">Nineties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Year</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1990</span><span class="o">:</span><span class="mi">1999</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@select</span><span class="p">(</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">Year</span><span class="p">,</span><span class="w"> </span><span class="n">Nineties</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
-<span class="k">end</span>
+<p>In <code>@pivot_wider()</code>, both the <code>names_from</code> and <code>values_from</code> arguments are required. <code>@pivot_wider()</code> also supports string values for the <code>names_from</code> and <code>values_from</code> arguments.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@pivot_wider</span><span class="p">(</span><span class="n">df_long</span><span class="p">,</span><span class="w"> </span><span class="n">names_from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"variable"</span><span class="p">,</span><span class="w"> </span><span class="n">values_from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"value"</span><span class="p">)</span>
 </code></pre></div>
-<div><div style="float: left;"><span>5×3 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Title</th><th style="text-align: left;">Year</th><th style="text-align: left;">Nineties</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Int32" style="text-align: left;">Int32</th><th title="Bool" style="text-align: left;">Bool</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">'G' Men</td><td style="text-align: right;">1935</td><td style="text-align: right;">false</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">'Manos' the Hands of Fate</td><td style="text-align: right;">1966</td><td style="text-align: right;">false</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">'Til There Was You</td><td style="text-align: right;">1997</td><td style="text-align: right;">true</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">.com for Murder</td><td style="text-align: right;">2002</td><td style="text-align: right;">false</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">10 Things I Hate About You</td><td style="text-align: right;">1999</td><td style="text-align: right;">true</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>2×3 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">id</th><th style="text-align: left;">A</th><th style="text-align: left;">B</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">3</td><td style="text-align: right;">4</td></tr></tbody></table></div>
 
-<p><a id="Using-@mutate-with-n()-and-row_number()"></a></p>
-<p><a id="Using-@mutate-with-n()-and-row_number()-1"></a></p>
-<h2 id="using-mutate-with-n-and-row_number">Using <code>@mutate</code> with <code>n()</code> and <code>row_number()</code><a class="headerlink" href="#using-mutate-with-n-and-row_number" title="Permanent link">¤</a></h2>
-<p>Here's an example of using <code>@mutate</code> with both <code>n()</code> and <code>row_number()</code>. Within the context of <code>mutate()</code>, <code>n()</code> and <code>row_number()</code> are created into temporarily columns, which means that they can be used inside of expressions.</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">Row_Num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">row_number</span><span class="p">(),</span>
-<span class="w">          </span><span class="n">Total_Rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="p">())</span>
-<span class="w">  </span><span class="nd">@filter</span><span class="p">(</span><span class="o">!</span><span class="n">ismissing</span><span class="p">(</span><span class="n">Budget</span><span class="p">))</span>
-<span class="w">  </span><span class="nd">@select</span><span class="p">(</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">Year</span><span class="p">,</span><span class="w"> </span><span class="n">Row_Num</span><span class="p">,</span><span class="w"> </span><span class="n">Total_Rows</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
-<span class="k">end</span>
+<p><a id="@pivot_longer()"></a></p>
+<p><a id="@pivot_longer()-1"></a></p>
+<h2 id="pivot_longer"><code>@pivot_longer()</code><a class="headerlink" href="#pivot_longer" title="Permanent link">¤</a></h2>
+<p>For calculating summary statistics (e.g., mean) by groups, or for plotting purposes, DataFrames often need to be converted to their longer form. For this, we can use <code>@pivot_longer</code>. First, let's start with a "wide" DataFrame.</p>
+<div class="highlight"><pre><span></span><code><span class="n">df_wide</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">],</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">])</span>
 </code></pre></div>
-<div><div style="float: left;"><span>5×4 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Title</th><th style="text-align: left;">Year</th><th style="text-align: left;">Row_Num</th><th style="text-align: left;">Total_Rows</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Int32" style="text-align: left;">Int32</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">'G' Men</td><td style="text-align: right;">1935</td><td style="text-align: right;">22</td><td style="text-align: right;">58788</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">'Manos' the Hands of Fate</td><td style="text-align: right;">1966</td><td style="text-align: right;">35</td><td style="text-align: right;">58788</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">'Til There Was You</td><td style="text-align: right;">1997</td><td style="text-align: right;">48</td><td style="text-align: right;">58788</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">.com for Murder</td><td style="text-align: right;">2002</td><td style="text-align: right;">91</td><td style="text-align: right;">58788</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">10 Things I Hate About You</td><td style="text-align: right;">1999</td><td style="text-align: right;">112</td><td style="text-align: right;">58788</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>2×3 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">id</th><th style="text-align: left;">A</th><th style="text-align: left;">B</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">3</td><td style="text-align: right;">4</td></tr></tbody></table></div>
 
-<p><a id="Using-@transmute-to-update-*and*-select-columns."></a></p>
-<p><a id="Using-@transmute-to-update-*and*-select-columns.-1"></a></p>
-<h2 id="using-transmute-to-update-and-select-columns">Using <code>@transmute</code> to update <em>and</em> select columns.<a class="headerlink" href="#using-transmute-to-update-and-select-columns" title="Permanent link">¤</a></h2>
-<p>If we knew we wanted to select only the <code>Title</code> and <code>Budget</code> columns, we could have also used<code>@transmute()</code>, which (again) is just an alias for <code>@select()</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="nd">@filter</span><span class="p">(</span><span class="o">!</span><span class="n">ismissing</span><span class="p">(</span><span class="n">Budget</span><span class="p">))</span>
-<span class="w">    </span><span class="nd">@transmute</span><span class="p">(</span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">Budget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Budget</span><span class="o">/</span><span class="mi">1_000_000</span><span class="p">)</span>
-<span class="w">    </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
-<span class="k">end</span>
+<p>Now, let's transform this wide dataset into the longer form. Unlike <code>@pivot_wider()</code>, where providing the <code>names_from</code> and <code>values_from</code> arguments is required, the only item that's required in <code>@pivot_wider()</code> is a set of columns to pivot. The <code>names_to</code> and <code>values_to</code> arguments are optional, and if not provided, they will default to "variable" and "value", respectively.</p>
+<p>We can recreate the original long dataset by doing the following. Multiple columns must be provided using selection syntax or a selection helper. Tuples containing multiple columns are not yet supported.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@pivot_longer</span><span class="p">(</span><span class="n">df_wide</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="o">:</span><span class="n">B</span><span class="p">)</span>
 </code></pre></div>
-<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Title</th><th style="text-align: left;">Budget</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">'G' Men</td><td style="text-align: right;">0.45</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">'Manos' the Hands of Fate</td><td style="text-align: right;">0.019</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">'Til There Was You</td><td style="text-align: right;">23.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">.com for Murder</td><td style="text-align: right;">5.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">10 Things I Hate About You</td><td style="text-align: right;">16.0</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>4×3 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">id</th><th style="text-align: left;">variable</th><th style="text-align: left;">value</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">A</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">A</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">1</td><td style="text-align: left;">B</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">2</td><td style="text-align: left;">B</td><td style="text-align: right;">4</td></tr></tbody></table></div>
+
+<p>Here is another way of providing the same result using a different type of selection syntax.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@pivot_longer</span><span class="p">(</span><span class="n">df_wide</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">id</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>4×3 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">id</th><th style="text-align: left;">variable</th><th style="text-align: left;">value</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">A</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">A</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">1</td><td style="text-align: left;">B</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">2</td><td style="text-align: left;">B</td><td style="text-align: right;">4</td></tr></tbody></table></div>
+
+<p>In this example, we set the <code>names_to</code> and <code>values_to</code> arguments. Either argument can be left out and will revert to the default value. The <code>names_to</code> and <code>values_to</code> arguments can be provided as strings or as bare unquoted variable names.</p>
+<p>Here is an example with <code>names_to</code> and <code>values_to</code> containing strings:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@pivot_longer</span><span class="p">(</span><span class="n">df_wide</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="o">:</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">names_to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"letter"</span><span class="p">,</span><span class="w"> </span><span class="n">values_to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"number"</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>4×3 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">id</th><th style="text-align: left;">letter</th><th style="text-align: left;">number</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">A</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">A</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">1</td><td style="text-align: left;">B</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">2</td><td style="text-align: left;">B</td><td style="text-align: right;">4</td></tr></tbody></table></div>
+
+<p>And here is an example with <code>names_to</code> and <code>values_to</code> containing bare unquoted variables:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@pivot_longer</span><span class="p">(</span><span class="n">df_wide</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="o">:</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">names_to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">letter</span><span class="p">,</span><span class="w"> </span><span class="n">values_to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">number</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>4×3 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">id</th><th style="text-align: left;">letter</th><th style="text-align: left;">number</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">A</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">A</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">1</td><td style="text-align: left;">B</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">2</td><td style="text-align: left;">B</td><td style="text-align: right;">4</td></tr></tbody></table></div>
 
 <hr>
 <p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></div>
@@ -812,7 +756,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../rename/" class="md-footer__link md-footer__link--prev" aria-label="Previous: @rename" rel="prev">
+          <a href="../binding/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Binding" rel="prev">
             <div class="md-footer__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
             </div>
@@ -821,20 +765,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                @rename
+                Binding
               </div>
             </div>
           </a>
         
         
           
-          <a href="../summarize/" class="md-footer__link md-footer__link--next" aria-label="Next: @summarize" rel="next">
+          <a href="../column_names/" class="md-footer__link md-footer__link--next" aria-label="Next: Column names" rel="next">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                @summarize
+                Column names
               </div>
             </div>
             <div class="md-footer__button md-icon">
