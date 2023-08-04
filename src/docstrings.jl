@@ -1989,3 +1989,92 @@ julia> as_string(missing)
 missing
 ```
 """
+
+const docstring_separate = 
+"""
+   @separate(df, From, Into, Separator)
+
+Separate a string column into mulitiple new columns based on a specified delimter 
+
+# Arguments
+- `df`: A DataFrame
+- `From`: Column that will be split
+- `Into`: New column names, supports [] or ()
+- `Separator`: the string or chacater on which to split
+
+# Examples
+```jldoctest
+julia> df = DataFrame(a = ["1-1", "2-2", "3-3-3"]);
+
+julia> @separate(df, a, [b, c, d], "-")
+3×3 DataFrame
+ Row │ b          c          d          
+     │ SubStrin…  SubStrin…  SubStrin…? 
+─────┼──────────────────────────────────
+   1 │ 1          1          missing    
+   2 │ 2          2          missing    
+   3 │ 3          3          3
+
+julia> @chain df begin
+       @separate(a, (b, c, d), "-")
+       end
+3×3 DataFrame
+ Row │ b          c          d          
+     │ SubStrin…  SubStrin…  SubStrin…? 
+─────┼──────────────────────────────────
+   1 │ 1          1          missing    
+   2 │ 2          2          missing    
+   3 │ 3          3          3
+```
+"""
+
+const docstring_unite = 
+"""
+      @unite(df, new_cols, from_cols, sep)
+
+Separate a multiple columns into one new columns using a specific delimter
+
+# Arguments
+- `df`: A DataFrame
+- `new_col`: New column that will recieve the combination
+- `from_cols`: Column names that it will combine, supports [] or ()
+- `sep`: the string or character that will seprate the values in the new column
+
+# Examples
+```jldoctest
+julia> df = DataFrame( b = ["1", "2", "3"], c = ["1", "2", "3"], d = [missing, missing, "3"]);
+
+julia> @unite(df, new_col, (b, c, d), "-")
+3×4 DataFrame
+ Row │ b       c       d        new_col 
+     │ String  String  String?  String  
+─────┼──────────────────────────────────
+   1 │ 1       1       missing  1-1
+   2 │ 2       2       missing  2-2
+   3 │ 3       3       3        3-3-3
+```
+"""
+
+const docstring_summary =
+"""
+       @summary(df, cols...)
+
+For numerical columns, returns a dataframe with the Q1,Q3, min, max, mean, median, number of missing values
+
+# Arguments
+- 'df': A DataFrame
+- `cols`: columns on which summary will be performed. This is an optional arguement, without which summary will be performed on all numerical columns
+
+# Examples
+```jldoctest 
+julia> df = DataFrame( A = [1, 2, 3, 4, 5], B = [missing, 7, 8, 9, 10], C = [11, missing, 13, 14, missing], D = [16, 17, 18, 19, 20]);
+
+julia> @summary(df);
+
+julia> @summary(df, (B:D));
+
+julia> @chain df begin
+       @summary(B:D)
+       end;
+```
+"""
