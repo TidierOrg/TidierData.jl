@@ -712,12 +712,15 @@
 <li><a href="./#TidierData.@rename-Tuple%7BAny,%20Vararg%7BAny%7D%7D"><code>TidierData.@rename</code></a></li>
 <li><a href="./#TidierData.@right_join-Tuple%7BAny,%20Any,%20Any%7D"><code>TidierData.@right_join</code></a></li>
 <li><a href="./#TidierData.@select-Tuple%7BAny,%20Vararg%7BAny%7D%7D"><code>TidierData.@select</code></a></li>
+<li><a href="./#TidierData.@separate-NTuple%7B4,%20Any%7D"><code>TidierData.@separate</code></a></li>
 <li><a href="./#TidierData.@slice-Tuple%7BAny,%20Vararg%7BAny%7D%7D"><code>TidierData.@slice</code></a></li>
 <li><a href="./#TidierData.@summarise-Tuple%7BAny,%20Vararg%7BAny%7D%7D"><code>TidierData.@summarise</code></a></li>
 <li><a href="./#TidierData.@summarize-Tuple%7BAny,%20Vararg%7BAny%7D%7D"><code>TidierData.@summarize</code></a></li>
+<li><a href="./#TidierData.@summary-Tuple%7BAny,%20Vararg%7BAny%7D%7D"><code>TidierData.@summary</code></a></li>
 <li><a href="./#TidierData.@tally-Tuple%7BAny,%20Vararg%7BAny%7D%7D"><code>TidierData.@tally</code></a></li>
 <li><a href="./#TidierData.@transmute-Tuple%7BAny,%20Vararg%7BAny%7D%7D"><code>TidierData.@transmute</code></a></li>
 <li><a href="./#TidierData.@ungroup-Tuple%7BAny%7D"><code>TidierData.@ungroup</code></a></li>
+<li><a href="./#TidierData.@unite-NTuple%7B4,%20Any%7D"><code>TidierData.@unite</code></a></li>
 </ul>
 <p><a id="Reference-Exported-functions"></a></p>
 <p><a id="Reference-Exported-functions-1"></a></p>
@@ -736,7 +739,7 @@
 <li><code>option</code>: "code"</li>
 <li><code>value</code>: <code>true</code> or <code>false</code></li>
 </ul>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L44-L56" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L47-L59" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.across-Tuple" href="#TidierData.across-Tuple">#</a>
 <strong><code>TidierData.across</code></strong> — <em>Method</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">across</span><span class="p">(</span><span class="n">variable</span><span class="p">[</span><span class="n">s</span><span class="p">],</span><span class="w"> </span><span class="k">function</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
@@ -795,7 +798,7 @@
 <span class="go">   4 │ d         4     14          1         11          5         15</span>
 <span class="go">   5 │ e         5     15          1         11          5         15</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/pseudofunctions.jl#L1-L61" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/pseudofunctions.jl#L1-L61" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.as_float-Tuple{Any}" href="#TidierData.as_float-Tuple%7BAny%7D">#</a>
 <strong><code>TidierData.as_float</code></strong> — <em>Method</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">as_float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -816,7 +819,7 @@
 <span class="gp">julia&gt;</span><span class="w"> </span><span class="n">as_float</span><span class="p">(</span><span class="nb">missing</span><span class="p">)</span>
 <span class="go">missing</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/type_conversions.jl#L1-L22" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/type_conversions.jl#L1-L22" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.as_integer-Tuple{Any}" href="#TidierData.as_integer-Tuple%7BAny%7D">#</a>
 <strong><code>TidierData.as_integer</code></strong> — <em>Method</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">as_integer</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -843,7 +846,7 @@
 <span class="gp">julia&gt;</span><span class="w"> </span><span class="n">as_integer</span><span class="p">(</span><span class="nb">missing</span><span class="p">)</span>
 <span class="go">missing</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/type_conversions.jl#L20-L47" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/type_conversions.jl#L20-L47" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.as_string-Tuple{Any}" href="#TidierData.as_string-Tuple%7BAny%7D">#</a>
 <strong><code>TidierData.as_string</code></strong> — <em>Method</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">as_string</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -864,7 +867,7 @@
 <span class="gp">julia&gt;</span><span class="w"> </span><span class="n">as_string</span><span class="p">(</span><span class="nb">missing</span><span class="p">)</span>
 <span class="go">missing</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/type_conversions.jl#L42-L63" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/type_conversions.jl#L42-L63" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.case_when-Tuple" href="#TidierData.case_when-Tuple">#</a>
 <strong><code>TidierData.case_when</code></strong> — <em>Method</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">case_when</span><span class="p">(</span><span class="n">condition</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">return_value</span><span class="p">)</span>
@@ -940,7 +943,7 @@
 <span class="go">   4 │       4      3</span>
 <span class="go">   5 │       5      3</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/conditionals.jl#L28-L104" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/conditionals.jl#L28-L104" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.desc-Tuple" href="#TidierData.desc-Tuple">#</a>
 <strong><code>TidierData.desc</code></strong> — <em>Method</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">desc</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
@@ -971,7 +974,7 @@
 <span class="go">   9 │ e        10     20</span>
 <span class="go">  10 │ e         9     19</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/pseudofunctions.jl#L8-L38" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/pseudofunctions.jl#L8-L38" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.if_else-Tuple{Union{Missing, Bool}, Any, Any, Any}" href="#TidierData.if_else-Tuple%7BUnion%7BMissing,%20Bool%7D,%20Any,%20Any,%20Any%7D">#</a>
 <strong><code>TidierData.if_else</code></strong> — <em>Method</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">if_else</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span><span class="w"> </span><span class="n">yes</span><span class="p">,</span><span class="w"> </span><span class="n">no</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">miss</span><span class="p">])</span>
@@ -1039,7 +1042,7 @@
 <span class="go">   4 │       4      3</span>
 <span class="go">   5 │       5      3</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/conditionals.jl#L1-L68" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/conditionals.jl#L1-L68" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.n-Tuple{}" href="#TidierData.n-Tuple%7B%7D">#</a>
 <strong><code>TidierData.n</code></strong> — <em>Method</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">n</span><span class="p">()</span>
@@ -1075,7 +1078,7 @@
 <span class="go">   4 │ d         2</span>
 <span class="go">   5 │ e         2</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/pseudofunctions.jl#L15-L50" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/pseudofunctions.jl#L15-L50" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.ntile-Tuple{Any, Integer}" href="#TidierData.ntile-Tuple%7BAny,%20Integer%7D">#</a>
 <strong><code>TidierData.ntile</code></strong> — <em>Method</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">ntile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="o">::</span><span class="kt">Integer</span><span class="p">)</span>
@@ -1145,7 +1148,7 @@
 <span class="go">   7 │     7        3</span>
 <span class="go">   8 │     8        3</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/ntile.jl#L10-L81" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/ntile.jl#L10-L81" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.row_number-Tuple{}" href="#TidierData.row_number-Tuple%7B%7D">#</a>
 <strong><code>TidierData.row_number</code></strong> — <em>Method</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">row_number</span><span class="p">()</span>
@@ -1207,7 +1210,7 @@
 <span class="go">   4 │ b</span>
 <span class="go">   5 │ c</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/pseudofunctions.jl#L22-L83" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/pseudofunctions.jl#L22-L83" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@arrange-Tuple{Any, Vararg{Any}}" href="#TidierData.@arrange-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@arrange</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@arrange</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">exprs</span><span class="o">...</span><span class="p">)</span>
@@ -1257,7 +1260,7 @@
 <span class="go">   9 │ e        10     20</span>
 <span class="go">  10 │ e         9     19</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L519-L568" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L522-L571" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@bind_cols-Tuple{Any, Vararg{Any}}" href="#TidierData.@bind_cols-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@bind_cols</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@bind_cols</span><span class="p">(</span><span class="n">dfs</span><span class="o">...</span><span class="p">)</span>
@@ -1285,7 +1288,7 @@
 <span class="go">   2 │     2      2      5      5      8      8</span>
 <span class="go">   3 │     3      3      6      6      9      9</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/binding.jl#L22-L49" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/binding.jl#L22-L49" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@bind_rows-Tuple{Any, Vararg{Any}}" href="#TidierData.@bind_rows-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@bind_rows</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@bind_rows</span><span class="p">(</span><span class="n">dfs</span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">)</span>
@@ -1353,7 +1356,7 @@
 <span class="go">   8 │     8  missing        8      3</span>
 <span class="go">   9 │     9  missing        9      3</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/binding.jl#L1-L71" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/binding.jl#L1-L71" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@count-Tuple{Any, Vararg{Any}}" href="#TidierData.@count-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@count</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@count</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">exprs</span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">wt</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="n">sort</span><span class="p">])</span>
@@ -1431,7 +1434,7 @@
 <span class="go">   3 │ c            7</span>
 <span class="go">   4 │ a            6       </span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/compound_verbs.jl#L50-L128" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/compound_verbs.jl#L50-L128" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@distinct-Tuple{Any, Vararg{Any}}" href="#TidierData.@distinct-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@distinct</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">distinct</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">exprs</span><span class="o">...</span><span class="p">)</span>
@@ -1508,7 +1511,7 @@
 <span class="go">   9 │ e         4     19</span>
 <span class="go">  10 │ e         5     20</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L543-L622" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L546-L625" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@drop_na-Tuple{Any, Vararg{Any}}" href="#TidierData.@drop_na-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@drop_na</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@drop_na</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">cols</span><span class="o">...</span><span class="p">])</span>
@@ -1568,7 +1571,7 @@
 <span class="go">   2 │     2  missing </span>
 <span class="go">   3 │     4        4</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L631-L691" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L634-L694" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@filter-Tuple{Any, Vararg{Any}}" href="#TidierData.@filter-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@filter</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@filter</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">exprs</span><span class="o">...</span><span class="p">)</span>
@@ -1613,7 +1616,7 @@
 <span class="go">   1 │ a         1     11</span>
 <span class="go">   2 │ c         3     13</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L367-L411" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L370-L414" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@full_join-Tuple{Any, Any, Any}" href="#TidierData.@full_join-Tuple%7BAny,%20Any,%20Any%7D">#</a>
 <strong><code>TidierData.@full_join</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@full_join</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span><span class="w"> </span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">by</span><span class="p">])</span>
@@ -1675,7 +1678,7 @@
 <span class="go">   2 │ b             2  missing </span>
 <span class="go">   3 │ c       missing        4</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/joins.jl#L82-L143" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/joins.jl#L82-L143" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@glimpse" href="#TidierData.@glimpse">#</a>
 <strong><code>TidierData.@glimpse</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@glimpse</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">80</span><span class="p">)</span>
@@ -1712,7 +1715,7 @@
 <span class="go">.b             Int64          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,</span>
 <span class="go">.c             String         a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a,</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L673-L710" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L676-L713" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@group_by-Tuple{Any, Vararg{Any}}" href="#TidierData.@group_by-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@group_by</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@group_by</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">exprs</span><span class="o">...</span><span class="p">)</span>
@@ -1754,7 +1757,7 @@
 <span class="go">   4 │ D         4.0</span>
 <span class="go">   5 │ E         5.0</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L425-L467" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L428-L470" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@inner_join-Tuple{Any, Any, Any}" href="#TidierData.@inner_join-Tuple%7BAny,%20Any,%20Any%7D">#</a>
 <strong><code>TidierData.@inner_join</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@inner_join</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span><span class="w"> </span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">by</span><span class="p">])</span>
@@ -1806,7 +1809,7 @@
 <span class="go">─────┼──────────────────────</span>
 <span class="go">   1 │ a           1      3</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/joins.jl#L55-L106" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/joins.jl#L55-L106" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@left_join-Tuple{Any, Any, Any}" href="#TidierData.@left_join-Tuple%7BAny,%20Any,%20Any%7D">#</a>
 <strong><code>TidierData.@left_join</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@left_join</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span><span class="w"> </span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">by</span><span class="p">])</span>
@@ -1863,7 +1866,7 @@
 <span class="go">   1 │ a           1        3</span>
 <span class="go">   2 │ b           2  missing</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/joins.jl#L1-L57" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/joins.jl#L1-L57" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@mutate-Tuple{Any, Vararg{Any}}" href="#TidierData.@mutate-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@mutate</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@mutate</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">exprs</span><span class="o">...</span><span class="p">)</span>
@@ -1934,7 +1937,7 @@
 <span class="go">─────┼──────────────────</span>
 <span class="go">   1 │     3.0     13.0</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L231-L303" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L234-L306" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@pivot_longer-Tuple{Any, Vararg{Any}}" href="#TidierData.@pivot_longer-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@pivot_longer</code></strong> — <em>Macro</em>.</p>
 <p>@pivot<em>longer(df, cols, [names</em>to], [values_to])</p>
@@ -1999,7 +2002,7 @@
 <span class="go">   3 │     1  B           2</span>
 <span class="go">   4 │     2  B           4</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/pivots.jl#L38-L104" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/pivots.jl#L38-L104" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@pivot_wider-Tuple{Any, Vararg{Any}}" href="#TidierData.@pivot_wider-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@pivot_wider</code></strong> — <em>Macro</em>.</p>
 <p>@pivot<em>wider(df, names</em>from, values_from)</p>
@@ -2043,7 +2046,7 @@
 <span class="go">   1 │     1      1      2</span>
 <span class="go">   2 │     2      0      4</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/pivots.jl#L1-L45" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/pivots.jl#L1-L45" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@pull-Tuple{Any, Any}" href="#TidierData.@pull-Tuple%7BAny,%20Any%7D">#</a>
 <strong><code>TidierData.@pull</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@pull</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">column</span><span class="p">)</span>
@@ -2077,7 +2080,7 @@
 <span class="go"> 4</span>
 <span class="go"> 5</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L616-L649" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L619-L652" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@rename-Tuple{Any, Vararg{Any}}" href="#TidierData.@rename-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@rename</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@rename</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">exprs</span><span class="o">...</span><span class="p">)</span>
@@ -2104,7 +2107,7 @@
 <span class="go">   4 │ d         4     14</span>
 <span class="go">   5 │ e         5     15</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L173-L200" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L176-L203" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@right_join-Tuple{Any, Any, Any}" href="#TidierData.@right_join-Tuple%7BAny,%20Any,%20Any%7D">#</a>
 <strong><code>TidierData.@right_join</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@right_join</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span><span class="w"> </span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">by</span><span class="p">])</span>
@@ -2161,7 +2164,7 @@
 <span class="go">   1 │ a             1      3</span>
 <span class="go">   2 │ c       missing      4</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/joins.jl#L28-L84" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/joins.jl#L28-L84" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@select-Tuple{Any, Vararg{Any}}" href="#TidierData.@select-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@select</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@select</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">exprs</span><span class="o">...</span><span class="p">)</span>
@@ -2318,7 +2321,42 @@
 <span class="go">   4 │     4     14</span>
 <span class="go">   5 │     5     15</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L57-L215" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L60-L218" class="documenter-source">source</a><br></p>
+<p><a id="TidierData.@separate-NTuple{4, Any}" href="#TidierData.@separate-NTuple%7B4,%20Any%7D">#</a>
+<strong><code>TidierData.@separate</code></strong> — <em>Macro</em>.</p>
+<p>@separate(df, From, Into, Separator)</p>
+<p>Separate a string column into mulitiple new columns based on a specified delimter </p>
+<p><strong>Arguments</strong></p>
+<ul>
+<li><code>df</code>: A DataFrame</li>
+<li><code>From</code>: Column that will be split</li>
+<li><code>Into</code>: New column names, supports [] or ()</li>
+<li><code>Separator</code>: the string or chacater on which to split</li>
+</ul>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="gp">julia&gt;</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"1-1"</span><span class="p">,</span><span class="w"> </span><span class="s">"2-2"</span><span class="p">,</span><span class="w"> </span><span class="s">"3-3-3"</span><span class="p">]);</span>
+
+<span class="gp">julia&gt;</span><span class="w"> </span><span class="nd">@separate</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">],</span><span class="w"> </span><span class="s">"-"</span><span class="p">)</span>
+<span class="go">3×3 DataFrame</span>
+<span class="go"> Row │ b          c          d          </span>
+<span class="go">     │ SubStrin…  SubStrin…  SubStrin…? </span>
+<span class="go">─────┼──────────────────────────────────</span>
+<span class="go">   1 │ 1          1          missing    </span>
+<span class="go">   2 │ 2          2          missing    </span>
+<span class="go">   3 │ 3          3          3</span>
+
+<span class="gp">julia&gt;</span><span class="w"> </span><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">       </span><span class="nd">@separate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">),</span><span class="w"> </span><span class="s">"-"</span><span class="p">)</span>
+<span class="w">       </span><span class="k">end</span>
+<span class="go">3×3 DataFrame</span>
+<span class="go"> Row │ b          c          d          </span>
+<span class="go">     │ SubStrin…  SubStrin…  SubStrin…? </span>
+<span class="go">─────┼──────────────────────────────────</span>
+<span class="go">   1 │ 1          1          missing    </span>
+<span class="go">   2 │ 2          2          missing    </span>
+<span class="go">   3 │ 3          3          3</span>
+</code></pre></div>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/separate_unite.jl#L27-L62" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@slice-Tuple{Any, Vararg{Any}}" href="#TidierData.@slice-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@slice</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@slice</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">exprs</span><span class="o">...</span><span class="p">)</span>
@@ -2371,7 +2409,7 @@
 <span class="go">   4 │ d         4     14</span>
 <span class="go">   5 │ e         5     15</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L472-L524" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L475-L527" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@summarise-Tuple{Any, Vararg{Any}}" href="#TidierData.@summarise-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@summarise</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@summarize</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">exprs</span><span class="o">...</span><span class="p">)</span>
@@ -2413,7 +2451,7 @@
 <span class="go">─────┼────────────────────────────────────────────</span>
 <span class="go">   1 │         1         11          5         15</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L360-L401" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L363-L404" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@summarize-Tuple{Any, Vararg{Any}}" href="#TidierData.@summarize-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@summarize</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@summarize</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">exprs</span><span class="o">...</span><span class="p">)</span>
@@ -2455,7 +2493,29 @@
 <span class="go">─────┼────────────────────────────────────────────</span>
 <span class="go">   1 │         1         11          5         15</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L289-L330" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L292-L333" class="documenter-source">source</a><br></p>
+<p><a id="TidierData.@summary-Tuple{Any, Vararg{Any}}" href="#TidierData.@summary-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
+<strong><code>TidierData.@summary</code></strong> — <em>Macro</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="w">   </span><span class="nd">@summary</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">cols</span><span class="o">...</span><span class="p">)</span>
+</code></pre></div>
+<p>For numerical columns, returns a dataframe with the Q1,Q3, min, max, mean, median, number of missing values</p>
+<p><strong>Arguments</strong></p>
+<ul>
+<li>'df': A DataFrame</li>
+<li><code>cols</code>: columns on which summary will be performed. This is an optional arguement, without which summary will be performed on all numerical columns</li>
+</ul>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="gp">julia&gt;</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">],</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">],</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="mi">17</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">]);</span>
+
+<span class="gp">julia&gt;</span><span class="w"> </span><span class="nd">@summary</span><span class="p">(</span><span class="n">df</span><span class="p">);</span>
+
+<span class="gp">julia&gt;</span><span class="w"> </span><span class="nd">@summary</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">B</span><span class="o">:</span><span class="n">D</span><span class="p">));</span>
+
+<span class="gp">julia&gt;</span><span class="w"> </span><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">       </span><span class="nd">@summary</span><span class="p">(</span><span class="n">B</span><span class="o">:</span><span class="n">D</span><span class="p">)</span>
+<span class="w">       </span><span class="k">end</span><span class="p">;</span>
+</code></pre></div>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/summary.jl#L22-L43" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@tally-Tuple{Any, Vararg{Any}}" href="#TidierData.@tally-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@tally</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@tally</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">wt</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="n">sort</span><span class="p">])</span>
@@ -2535,7 +2595,7 @@
 <span class="go">   3 │ c            7</span>
 <span class="go">   4 │ a            6       </span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/compound_verbs.jl#L5-L85" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/compound_verbs.jl#L5-L85" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@transmute-Tuple{Any, Vararg{Any}}" href="#TidierData.@transmute-Tuple%7BAny,%20Vararg%7BAny%7D%7D">#</a>
 <strong><code>TidierData.@transmute</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@transmute</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">exprs</span><span class="o">...</span><span class="p">)</span>
@@ -2562,7 +2622,7 @@
 <span class="go">   4 │    18</span>
 <span class="go">   5 │    20</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L115-L142" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L118-L145" class="documenter-source">source</a><br></p>
 <p><a id="TidierData.@ungroup-Tuple{Any}" href="#TidierData.@ungroup-Tuple%7BAny%7D">#</a>
 <strong><code>TidierData.@ungroup</code></strong> — <em>Macro</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@ungroup</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
@@ -2606,7 +2666,32 @@
 <span class="go">   4 │ d         4     14</span>
 <span class="go">   5 │ e         5     15</span>
 </code></pre></div>
-<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/0c62580c98ae60ac8424bbbf14e5011822780501/src/TidierData.jl#L465-L509" class="documenter-source">source</a><br></p>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/TidierData.jl#L468-L512" class="documenter-source">source</a><br></p>
+<p><a id="TidierData.@unite-NTuple{4, Any}" href="#TidierData.@unite-NTuple%7B4,%20Any%7D">#</a>
+<strong><code>TidierData.@unite</code></strong> — <em>Macro</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nd">@unite</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">new_cols</span><span class="p">,</span><span class="w"> </span><span class="n">from_cols</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="p">)</span>
+</code></pre></div>
+<p>Separate a multiple columns into one new columns using a specific delimter</p>
+<p><strong>Arguments</strong></p>
+<ul>
+<li><code>df</code>: A DataFrame</li>
+<li><code>new_col</code>: New column that will recieve the combination</li>
+<li><code>from_cols</code>: Column names that it will combine, supports [] or ()</li>
+<li><code>sep</code>: the string or character that will seprate the values in the new column</li>
+</ul>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="gp">julia&gt;</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"1"</span><span class="p">,</span><span class="w"> </span><span class="s">"2"</span><span class="p">,</span><span class="w"> </span><span class="s">"3"</span><span class="p">],</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"1"</span><span class="p">,</span><span class="w"> </span><span class="s">"2"</span><span class="p">,</span><span class="w"> </span><span class="s">"3"</span><span class="p">],</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="s">"3"</span><span class="p">]);</span>
+
+<span class="gp">julia&gt;</span><span class="w"> </span><span class="nd">@unite</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">new_col</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">),</span><span class="w"> </span><span class="s">"-"</span><span class="p">)</span>
+<span class="go">3×4 DataFrame</span>
+<span class="go"> Row │ b       c       d        new_col </span>
+<span class="go">     │ String  String  String?  String  </span>
+<span class="go">─────┼──────────────────────────────────</span>
+<span class="go">   1 │ 1       1       missing  1-1</span>
+<span class="go">   2 │ 2       2       missing  2-2</span>
+<span class="go">   3 │ 3       3       3        3-3-3</span>
+</code></pre></div>
+<p><a target="_blank" href="https://github.com/TidierOrg/TidierData.jl/blob/66b8639eabc94f6519a4f0f27af2fe3dd546729b/src/separate_unite.jl#L51-L75" class="documenter-source">source</a><br></p>
 <p><a id="Reference-Internal-functions"></a></p>
 <p><a id="Reference-Internal-functions-1"></a></p>
 <h2 id="reference-internal-functions">Reference - Internal functions<a class="headerlink" href="#reference-internal-functions" title="Permanent link">¤</a></h2></div>
