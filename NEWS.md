@@ -1,5 +1,8 @@
 # TidierData.jl updates
 
+## v0.9.1 - 2023-08-06
+- Export `TidierData_not_vectorized[]` to make it easier for other packages to access it
+
 ## v0.9.0 - 2023-08-04
 - Exposed `not_vectorized[]` as a package global variable so that the user or other packages can modify it
 - Added `@separate`, `@unite`, and `@summary`
