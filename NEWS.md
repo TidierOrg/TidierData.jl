@@ -1,5 +1,9 @@
 # TidierData.jl updates
 
+## v0.9.2 - 2023-08-06
+- Remove `TidierData_not_vectorized[]` from exports
+- Add `TidierCats.jl` functions to `not_vectorized[]` list
+
 ## v0.9.1 - 2023-08-06
 - Export `TidierData_not_vectorized[]` to make it easier for other packages to access it
 
