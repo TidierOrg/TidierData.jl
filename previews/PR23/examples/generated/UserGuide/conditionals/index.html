@@ -13,17 +13,17 @@
       
       
       
-        <link rel="prev" href="../filter/">
+        <link rel="prev" href="../across/">
       
       
-        <link rel="next" href="../group_by/">
+        <link rel="next" href="../joins/">
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
-        <title>@slice - TidierData.jl</title>
+        <title>Conditionals - TidierData.jl</title>
       
     
     
@@ -79,7 +79,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#slicing-using-a-range-of-numbers" class="md-skip">
+        <a href="#if_else" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              @slice
+              Conditionals
             
           </span>
         </div>
@@ -363,76 +363,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          @slice
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../slice/" class="md-nav__link">
         @slice
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#slicing-using-a-range-of-numbers" class="md-nav__link">
-    Slicing using a range of numbers
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#slicing-using-a-more-complex-unitrange-of-numbers" class="md-nav__link">
-    Slicing using a more complex UnitRange of numbers
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#separate-multiple-row-selections-with-commas" class="md-nav__link">
-    Separate multiple row selections with commas
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#use-n-as-short-hand-to-indicate-the-number-of-rows" class="md-nav__link">
-    Use n() as short-hand to indicate the number of rows
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#inverted-selection-using-negative-numbers" class="md-nav__link">
-    Inverted selection using negative numbers
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -503,11 +438,62 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../conditionals/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Conditionals
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Conditionals
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#if_else" class="md-nav__link">
+    if_else()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#case_when" class="md-nav__link">
+    case_when()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#do-these-functions-work-outside-of-tidierdatajl" class="md-nav__link">
+    Do these functions work outside of TidierData.jl?
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -687,36 +673,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#slicing-using-a-range-of-numbers" class="md-nav__link">
-    Slicing using a range of numbers
+  <a href="#if_else" class="md-nav__link">
+    if_else()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#slicing-using-a-more-complex-unitrange-of-numbers" class="md-nav__link">
-    Slicing using a more complex UnitRange of numbers
+  <a href="#case_when" class="md-nav__link">
+    case_when()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#separate-multiple-row-selections-with-commas" class="md-nav__link">
-    Separate multiple row selections with commas
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#use-n-as-short-hand-to-indicate-the-number-of-rows" class="md-nav__link">
-    Use n() as short-hand to indicate the number of rows
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#inverted-selection-using-negative-numbers" class="md-nav__link">
-    Inverted selection using negative numbers
+  <a href="#do-these-functions-work-outside-of-tidierdatajl" class="md-nav__link">
+    Do these functions work outside of TidierData.jl?
   </a>
   
 </li>
@@ -736,90 +708,96 @@
                   
 
 
-  <h1>@slice</h1>
+  <h1>Conditionals</h1>
 
-<div><p>Slicing rows is similar to filtering rows, except that slicing is performed based on row numbers rather tha filter criteria. In <code>TidierData.jl</code>, slicing works similarly to R's <code>tidyverse</code> in that both positive (which rows to keep) and negative (which rows to remove) slicing is supported. For <code>@slice()</code>, any valid <code>UnitRange</code> of integers is considered valid; this is not the case for <code>@select()</code> or <code>across()</code>.</p>
-<p>Remember: Just like every other <code>TidierData.jl</code> top-level macro, <code>@slice()</code> respects group. This means that in a grouped data frame, <code>@slice(1:2)</code> will select the first 2 rows <em>from each group</em>.</p>
+<div><p>Conditional functions are a useful tool to update or create new columns conditional on the values of a column of data. When continuous variables are converted to categories, this is sometimes referred to as "recoding" a column.</p>
+<p>TidierData.jl provides two functions to recode data: <code>if_else()</code> and <code>case_when()</code>.</p>
+<p><a id="if_else()"></a></p>
+<p><a id="if_else()-1"></a></p>
+<h2 id="if_else"><code>if_else()</code><a class="headerlink" href="#if_else" title="Permanent link">¤</a></h2>
+<p>Why do we need another <code>if_else()</code> function if base Julia already comes with an <code>ifelse()</code> function. Similar to R, the base Julia implementation of <code>if_else()</code> does not include a way to designate what value to return if the enclosed vector contains a missing value. Additionally, the base Julia implementation of <code>ifelse()</code> produces an error if presented with a <code>missing</code> value in the condition. The TidierData.jl <code>if_else()</code> can handle missing values and includes an optional 4th argument that is used to designate what to return in the event of a `missing`` value for the condition. Let's take a look at some examples.</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">TidierData</span>
 
-<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">row_num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">10</span><span class="p">,</span>
-<span class="w">               </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">string</span><span class="o">.</span><span class="p">(</span><span class="n">repeat</span><span class="p">(</span><span class="sc">'a'</span><span class="o">:</span><span class="sc">'e'</span><span class="p">,</span><span class="w"> </span><span class="n">inner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">)),</span>
-<span class="w">               </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">])</span>
 </code></pre></div>
-<div><div style="float: left;"><span>10×3 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">row_num</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: left;">b</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: left;">b</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">6</td><td style="text-align: right;">6</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">7</td><td style="text-align: right;">7</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">8</td><td style="text-align: right;">8</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">9</td><td style="text-align: right;">9</td><td style="text-align: left;">e</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">10</td><td style="text-align: right;">10</td><td style="text-align: left;">e</td><td style="text-align: right;">4</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>5×1 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td></tr></tbody></table></div>
 
-<p><a id="Slicing-using-a-range-of-numbers"></a></p>
-<p><a id="Slicing-using-a-range-of-numbers-1"></a></p>
-<h2 id="slicing-using-a-range-of-numbers">Slicing using a range of numbers<a class="headerlink" href="#slicing-using-a-range-of-numbers" title="Permanent link">¤</a></h2>
-<p>This is an easy way of retrieving 5 consecutive rows.</p>
+<p>Here, we have created a <code>DataFrame</code> containing a single column <code>a</code> with 5 values, for which the 3rd value is missing.</p>
+<p>Now, let's create a new column <code>b</code> that contains a "yes" if <code>a</code> is greater than or equal to 3, and a "no" otherwise. Notice that when we do this, the <code>missing</code> values remains as <code>missing</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
+<span class="w">  </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">if_else</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s">"yes"</span><span class="p">,</span><span class="w"> </span><span class="s">"no"</span><span class="p">))</span>
 <span class="k">end</span>
 </code></pre></div>
-<div><div style="float: left;"><span>5×3 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">row_num</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: left;">b</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: left;">b</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, String}" style="text-align: left;">String?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">no</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">no</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: left;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: left;">yes</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">yes</td></tr></tbody></table></div>
 
-<p><a id="Slicing-using-a-more-complex-UnitRange-of-numbers"></a></p>
-<p><a id="Slicing-using-a-more-complex-UnitRange-of-numbers-1"></a></p>
-<h2 id="slicing-using-a-more-complex-unitrange-of-numbers">Slicing using a more complex UnitRange of numbers<a class="headerlink" href="#slicing-using-a-more-complex-unitrange-of-numbers" title="Permanent link">¤</a></h2>
-<p>How would we obtain every other from 1 to 7 (counting up by 2)? Note that <code>range()</code> is similar to <code>seq()</code> in R.</p>
+<p>What if we wanted to fill in the missing value with "unknown"? All we need to do is provide an optional 4th argument containing the value to return in the event of a missing condition. When we run this version, <code>missing</code> values in <code>a</code> are converted to "unknown" in <code>b</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@slice</span><span class="p">(</span><span class="n">range</span><span class="p">(</span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="p">))</span>
+<span class="w">  </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">if_else</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s">"yes"</span><span class="p">,</span><span class="w"> </span><span class="s">"no"</span><span class="p">,</span><span class="w"> </span><span class="s">"unknown"</span><span class="p">))</span>
 <span class="k">end</span>
 </code></pre></div>
-<div><div style="float: left;"><span>4×3 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">row_num</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">3</td><td style="text-align: left;">b</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">5</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">7</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="String" style="text-align: left;">String</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">no</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">no</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: left;">unknown</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: left;">yes</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">yes</td></tr></tbody></table></div>
 
-<p>This same code can also be written using Julia's shorthand syntax for unit ranges.</p>
+<p>Although both of these examples showed how to return a single value (like "yes" and "no"), you can also return a vector of values, which is useful for updating only a subset of the values of a column. For example, if we wanted to create a column <code>b</code> that contains a 3 when <code>a</code> is greater than or equal to 3 but otherwise remains unchanged, we could provide a 3 for the <code>yes</code> condition and a vector (column) <code>a</code> in the <code>no</code> condition. If we do not provide the optional 4th argument, <code>missing</code> values remain <code>missing</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">2</span><span class="o">:</span><span class="mi">7</span><span class="p">)</span>
+<span class="w">  </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">if_else</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">))</span>
 <span class="k">end</span>
 </code></pre></div>
-<div><div style="float: left;"><span>4×3 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">row_num</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">3</td><td style="text-align: left;">b</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">5</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">7</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">3</td></tr></tbody></table></div>
 
-<p><a id="Separate-multiple-row-selections-with-commas"></a></p>
-<p><a id="Separate-multiple-row-selections-with-commas-1"></a></p>
-<h2 id="separate-multiple-row-selections-with-commas">Separate multiple row selections with commas<a class="headerlink" href="#separate-multiple-row-selections-with-commas" title="Permanent link">¤</a></h2>
-<p>If you have multiple different row selections, you can separate them with commas.</p>
+<p><a id="case_when()"></a></p>
+<p><a id="case_when()-1"></a></p>
+<h2 id="case_when"><code>case_when()</code><a class="headerlink" href="#case_when" title="Permanent link">¤</a></h2>
+<p>Although <code>if_else()</code> is convenient when evaluating a single condition, it can be cumbersome when evaluating multiple conditions because subsequent conditions need to be nested within the <code>no</code> condition for the preceding argument. For situations where multiple conditions need to be evaluated, <code>case_when()</code> is more convenient.</p>
+<p>Let's first consider a similar example from above and recreate it using <code>case_when()</code>. The following code creates a column <code>b</code> that assigns a value if 3 if <code>a &gt;= 3</code> and otherwise leaves the value unchanged.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span>
+<span class="w">  </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">case_when</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">3</span><span class="w">  </span><span class="o">=&gt;</span><span class="w">  </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">                        </span><span class="nb">true</span><span class="w">    </span><span class="o">=&gt;</span><span class="w">  </span><span class="n">a</span><span class="p">))</span>
 <span class="k">end</span>
 </code></pre></div>
-<div><div style="float: left;"><span>6×3 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">row_num</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: left;">b</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: left;">b</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">6</td><td style="text-align: right;">10</td><td style="text-align: left;">e</td><td style="text-align: right;">4</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">3</td></tr></tbody></table></div>
 
-<p><a id="Use-n()-as-short-hand-to-indicate-the-number-of-rows"></a></p>
-<p><a id="Use-n()-as-short-hand-to-indicate-the-number-of-rows-1"></a></p>
-<h2 id="use-n-as-short-hand-to-indicate-the-number-of-rows">Use <code>n()</code> as short-hand to indicate the number of rows<a class="headerlink" href="#use-n-as-short-hand-to-indicate-the-number-of-rows" title="Permanent link">¤</a></h2>
-<p>Select the last 2 rows.</p>
+<p>What is going on here? <code>case_when()</code> uses a <code>condition =&gt; return_value</code> syntax, which are encoded as pairs in Julia. You can provide a single pair, or multiple pairs separated by commas. Because the pairs operator (<code>=&gt;</code>) might be confused with a greater than or equal to sign (<code>&gt;=</code>), we have padded two spaces on either side of the <code>=&gt;</code> to make sure that the pair remains visually distinct. We do not use a <code>~</code> operator in <code>case_when()</code> (as is used in R) because the <code>~</code> operator is used to denote de-vectorized functions in TidierData.jl.</p>
+<p>There are 2 other things to note above. First, the <code>true</code> condition evaluates to <code>true</code> for all remaining values of <code>a</code>. The only reason that the <code>b</code> contains a <code>missing</code> value here is that the <code>true</code> condition was met, leading to the value of <code>a</code> (in this case, <code>missing</code>) to be assigned to <code>b</code>. Second, we were able to return a single value (3) in the first condition, and a vector (column) of data (<code>a</code>) in the second condition.</p>
+<p>What if we wanted to fill in the missing values with something else? In this case, we would need to create an explicit condition that checks for missing values and assigns a return value to that condition.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@slice</span><span class="p">(</span><span class="n">n</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">())</span>
+<span class="w">  </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">case_when</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">3</span><span class="w">        </span><span class="o">=&gt;</span><span class="w">  </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">                        </span><span class="n">ismissing</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w">  </span><span class="o">=&gt;</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">                        </span><span class="nb">true</span><span class="w">          </span><span class="o">=&gt;</span><span class="w">  </span><span class="n">a</span><span class="p">))</span>
 <span class="k">end</span>
 </code></pre></div>
-<div><div style="float: left;"><span>2×3 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">row_num</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">9</td><td style="text-align: left;">e</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">10</td><td style="text-align: left;">e</td><td style="text-align: right;">4</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">3</td></tr></tbody></table></div>
 
-<p>You can even use <code>n()</code> inside of UnitRanges, just like in R. Notice that the order of operations is slightly different in Julia as compared to R, so you don't have to wrap the <code>n()-1</code> expression inside of parentheses.</p>
+<p>Do our conditions have to be mutually exclusive? No. The return value for the <em>first</em> matching condition is assigned to <code>b</code> because the conditions are evaluated sequentially from first to last.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@slice</span><span class="p">(</span><span class="n">n</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">())</span>
+<span class="w">  </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">case_when</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">4</span><span class="w">  </span><span class="o">=&gt;</span><span class="w">  </span><span class="s">"hi"</span><span class="p">,</span>
+<span class="w">                        </span><span class="n">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="w">  </span><span class="o">=&gt;</span><span class="w">  </span><span class="s">"medium"</span><span class="p">,</span>
+<span class="w">                        </span><span class="n">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w">  </span><span class="o">=&gt;</span><span class="w">  </span><span class="s">"low"</span><span class="p">))</span>
 <span class="k">end</span>
 </code></pre></div>
-<div><div style="float: left;"><span>2×3 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">row_num</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">9</td><td style="text-align: left;">e</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">10</td><td style="text-align: left;">e</td><td style="text-align: right;">4</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, String}" style="text-align: left;">String?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">low</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">low</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: left;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: left;">medium</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">hi</td></tr></tbody></table></div>
 
-<p><a id="Inverted-selection-using-negative-numbers"></a></p>
-<p><a id="Inverted-selection-using-negative-numbers-1"></a></p>
-<h2 id="inverted-selection-using-negative-numbers">Inverted selection using negative numbers<a class="headerlink" href="#inverted-selection-using-negative-numbers" title="Permanent link">¤</a></h2>
-<p>This line selects all rows except the first 5 rows.</p>
+<p>Again, if we want to fill in remaining values (which in this case are the <code>missing</code> ones), we can map the final condition <code>true</code> to the value of "unknown". Because the ordering of the conditions matters, the <code>true</code> condition should always be listed last if it is included.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="nd">@slice</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">))</span>
+<span class="w">  </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">case_when</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">4</span><span class="w">  </span><span class="o">=&gt;</span><span class="w">  </span><span class="s">"hi"</span><span class="p">,</span>
+<span class="w">                        </span><span class="n">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="w">  </span><span class="o">=&gt;</span><span class="w">  </span><span class="s">"medium"</span><span class="p">,</span>
+<span class="w">                        </span><span class="n">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w">  </span><span class="o">=&gt;</span><span class="w">  </span><span class="s">"low"</span><span class="p">,</span>
+<span class="w">                        </span><span class="nb">true</span><span class="w">   </span><span class="o">=&gt;</span><span class="w">  </span><span class="s">"unknown"</span><span class="p">))</span>
 <span class="k">end</span>
 </code></pre></div>
-<div><div style="float: left;"><span>5×3 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">row_num</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">6</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">7</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">8</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">9</td><td style="text-align: left;">e</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">10</td><td style="text-align: left;">e</td><td style="text-align: right;">4</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="String" style="text-align: left;">String</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">low</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">low</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: left;">unknown</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: left;">medium</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">hi</td></tr></tbody></table></div>
 
+<p><a id="Do-these-functions-work-outside-of-TidierData.jl?"></a></p>
+<p><a id="Do-these-functions-work-outside-of-TidierData.jl?-1"></a></p>
+<h2 id="do-these-functions-work-outside-of-tidierdatajl">Do these functions work outside of TidierData.jl?<a class="headerlink" href="#do-these-functions-work-outside-of-tidierdatajl" title="Permanent link">¤</a></h2>
+<p>Yes, both <code>if_else()</code> and <code>case_when()</code> work outside of TidierData.jl. However, you'll need to remember that if working with vectors, both the functions and conditions will need to be vectorized, and in the case of <code>case_when()</code>, the <code>=&gt;</code> will need to be written as <code>.=&gt;</code>. The reason this is not needed when using these functions inside of TidierData.jl is because they are auto-vectorized.</p>
 <hr>
 <p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></div>
 
@@ -848,7 +826,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../filter/" class="md-footer__link md-footer__link--prev" aria-label="Previous: @filter" rel="prev">
+          <a href="../across/" class="md-footer__link md-footer__link--prev" aria-label="Previous: across" rel="prev">
             <div class="md-footer__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
             </div>
@@ -857,20 +835,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                @filter
+                across
               </div>
             </div>
           </a>
         
         
           
-          <a href="../group_by/" class="md-footer__link md-footer__link--next" aria-label="Next: @group_by" rel="next">
+          <a href="../joins/" class="md-footer__link md-footer__link--next" aria-label="Next: Joins" rel="next">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                @group_by
+                Joins
               </div>
             </div>
             <div class="md-footer__button md-icon">

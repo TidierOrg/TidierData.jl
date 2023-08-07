@@ -13,17 +13,17 @@
       
       
       
-        <link rel="prev" href="../slice/">
+        <link rel="prev" href="../joins/">
       
       
-        <link rel="next" href="../arrange/">
+        <link rel="next" href="../pivots/">
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
-        <title>@group_by - TidierData.jl</title>
+        <title>Binding - TidierData.jl</title>
       
     
     
@@ -79,7 +79,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#combining-group_by-with-mutate" class="md-skip">
+        <a href="#bind_rows" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              @group_by
+              Binding
             
           </span>
         </div>
@@ -378,69 +378,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          @group_by
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../group_by/" class="md-nav__link">
         @group_by
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#combining-group_by-with-mutate" class="md-nav__link">
-    Combining @group_by() with @mutate()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#combining-group_by-with-summarize" class="md-nav__link">
-    Combining @group_by() with @summarize()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#grouping-by-multiple-columns" class="md-nav__link">
-    Grouping by multiple columns
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#combining-group_by-with-filter" class="md-nav__link">
-    Combining @group_by() with @filter()
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -526,11 +468,55 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../binding/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Binding
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Binding
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bind_rows" class="md-nav__link">
+    @bind_rows()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bind_cols" class="md-nav__link">
+    @bind_cols()
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -680,29 +666,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#combining-group_by-with-mutate" class="md-nav__link">
-    Combining @group_by() with @mutate()
+  <a href="#bind_rows" class="md-nav__link">
+    @bind_rows()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#combining-group_by-with-summarize" class="md-nav__link">
-    Combining @group_by() with @summarize()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#grouping-by-multiple-columns" class="md-nav__link">
-    Grouping by multiple columns
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#combining-group_by-with-filter" class="md-nav__link">
-    Combining @group_by() with @filter()
+  <a href="#bind_cols" class="md-nav__link">
+    @bind_cols()
   </a>
   
 </li>
@@ -722,72 +694,46 @@
                   
 
 
-  <h1>@group_by</h1>
+  <h1>Binding</h1>
 
-<div><p>Grouping and ungrouping behavior is one of the nicest parts of using R's tidyverse. Once a data frame is grouped, <em>all</em> verbs applied to that data frame respect the grouping, including but not limited to <code>@mutate()</code>, <code>@summarize()</code>, <code>@slice()</code> and <code>@filter</code>, which allows for really powerful abstractions. For example, with <code>@group_by()</code> followed by <code>@filter()</code>, you can limit the rows of a dataset to the maximum or minimum values for each group.</p>
-<p>Exactly as in R's <code>tidyverse</code>, once a data frame is grouped, it remains grouped until either <code>@summarize()</code> is called (which "peels off" one layer of grouping) or <code>@ungroup()</code> is called, which removes all layers of grouping. Also as in R's <code>tidyverse</code>, <code>@group_by()</code> sorts the groups in ascending order. Unlike in R, there is never any question about whether a data frame is currently grouped because GroupedDataFrames print out in a <em>very</em> different form than DataFrames, making them easy to tell apart.</p>
-<p>When using <code>@chain</code>, note that you can write either <code>@ungroup</code> or <code>@ungroup()</code>. Both are considered valid.</p>
+<div><p>Whereas joins are useful for combining data frames based on matching keys, another way to combine data frames is to bind them together, which can be done either by rows or by columns. <code>TidierData.jl</code> implements these actions using <code>@bind_rows()</code> and <code>@bind_cols()</code>, respectively.</p>
+<p>Let's generate three data frames to combine.</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">TidierData</span>
-<span class="k">using</span><span class="w"> </span><span class="n">RDatasets</span>
 
-<span class="n">movies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataset</span><span class="p">(</span><span class="s">"ggplot2"</span><span class="p">,</span><span class="w"> </span><span class="s">"movies"</span><span class="p">);</span>
-</code></pre></div>
-<p><a id="Combining-@group_by()-with-@mutate()"></a></p>
-<p><a id="Combining-@group_by()-with-@mutate()-1"></a></p>
-<h2 id="combining-group_by-with-mutate">Combining <code>@group_by()</code> with <code>@mutate()</code><a class="headerlink" href="#combining-group_by-with-mutate" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="nd">@group_by</span><span class="p">(</span><span class="n">Year</span><span class="p">)</span>
-<span class="w">    </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">Mean_Yearly_Rating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">skipmissing</span><span class="p">(</span><span class="n">Rating</span><span class="p">)))</span>
-<span class="w">    </span><span class="nd">@select</span><span class="p">(</span><span class="n">Year</span><span class="p">,</span><span class="w"> </span><span class="n">Rating</span><span class="p">,</span><span class="w"> </span><span class="n">Mean_Yearly_Rating</span><span class="p">)</span>
-<span class="w">    </span><span class="nd">@ungroup</span>
-<span class="w">    </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
-<span class="k">end</span>
-</code></pre></div>
-<div><div style="float: left;"><span>5×3 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Year</th><th style="text-align: left;">Rating</th><th style="text-align: left;">Mean_Yearly_Rating</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int32" style="text-align: left;">Int32</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1893</td><td style="text-align: right;">7.0</td><td style="text-align: right;">7.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">1894</td><td style="text-align: right;">4.6</td><td style="text-align: right;">4.88889</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">1894</td><td style="text-align: right;">5.0</td><td style="text-align: right;">4.88889</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">1894</td><td style="text-align: right;">5.8</td><td style="text-align: right;">4.88889</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">1894</td><td style="text-align: right;">4.2</td><td style="text-align: right;">4.88889</td></tr></tbody></table></div>
+<span class="n">df1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="mi">3</span><span class="p">);</span>
 
-<p><a id="Combining-@group_by()-with-@summarize()"></a></p>
-<p><a id="Combining-@group_by()-with-@summarize()-1"></a></p>
-<h2 id="combining-group_by-with-summarize">Combining @group_by() with @summarize()<a class="headerlink" href="#combining-group_by-with-summarize" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="nd">@group_by</span><span class="p">(</span><span class="n">Year</span><span class="p">)</span>
-<span class="w">    </span><span class="nd">@summarize</span><span class="p">(</span><span class="n">Mean_Yearly_Rating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">skipmissing</span><span class="p">(</span><span class="n">Rating</span><span class="p">)),</span>
-<span class="w">        </span><span class="n">Median_Yearly_Rating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">median</span><span class="p">(</span><span class="n">skipmissing</span><span class="p">(</span><span class="n">Rating</span><span class="p">)))</span>
-<span class="w">    </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
-<span class="k">end</span>
-</code></pre></div>
-<div><div style="float: left;"><span>5×3 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Year</th><th style="text-align: left;">Mean_Yearly_Rating</th><th style="text-align: left;">Median_Yearly_Rating</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int32" style="text-align: left;">Int32</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1893</td><td style="text-align: right;">7.0</td><td style="text-align: right;">7.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">1894</td><td style="text-align: right;">4.88889</td><td style="text-align: right;">4.6</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">1895</td><td style="text-align: right;">5.5</td><td style="text-align: right;">5.7</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">1896</td><td style="text-align: right;">5.26923</td><td style="text-align: right;">5.3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">1897</td><td style="text-align: right;">4.67778</td><td style="text-align: right;">4.6</td></tr></tbody></table></div>
+<span class="n">df2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">4</span><span class="o">:</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="o">=</span><span class="mi">4</span><span class="o">:</span><span class="mi">6</span><span class="p">);</span>
 
-<p><a id="Grouping-by-multiple-columns"></a></p>
-<p><a id="Grouping-by-multiple-columns-1"></a></p>
-<h2 id="grouping-by-multiple-columns">Grouping by multiple columns<a class="headerlink" href="#grouping-by-multiple-columns" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@group_by</span><span class="p">(</span><span class="n">Year</span><span class="p">,</span><span class="w"> </span><span class="n">Comedy</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@summarize</span><span class="p">(</span><span class="n">Mean_Yearly_Rating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">skipmissing</span><span class="p">(</span><span class="n">Rating</span><span class="p">)),</span>
-<span class="w">      </span><span class="n">Median_Yearly_Rating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">median</span><span class="p">(</span><span class="n">skipmissing</span><span class="p">(</span><span class="n">Rating</span><span class="p">)))</span>
-<span class="w">  </span><span class="nd">@ungroup</span><span class="w"> </span><span class="c"># Need to ungroup to peel off grouping by Year</span>
-<span class="w">  </span><span class="nd">@arrange</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="n">Year</span><span class="p">),</span><span class="w"> </span><span class="n">Comedy</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
-<span class="k">end</span>
+<span class="n">df3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">7</span><span class="o">:</span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="o">=</span><span class="mi">7</span><span class="o">:</span><span class="mi">9</span><span class="p">);</span>
 </code></pre></div>
-<div><div style="float: left;"><span>5×4 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Year</th><th style="text-align: left;">Comedy</th><th style="text-align: left;">Mean_Yearly_Rating</th><th style="text-align: left;">Median_Yearly_Rating</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int32" style="text-align: left;">Int32</th><th title="Int32" style="text-align: left;">Int32</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">2005</td><td style="text-align: right;">0</td><td style="text-align: right;">6.62788</td><td style="text-align: right;">6.75</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2005</td><td style="text-align: right;">1</td><td style="text-align: right;">6.30081</td><td style="text-align: right;">6.1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">2004</td><td style="text-align: right;">0</td><td style="text-align: right;">6.76521</td><td style="text-align: right;">6.9</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">2004</td><td style="text-align: right;">1</td><td style="text-align: right;">6.42898</td><td style="text-align: right;">6.6</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">2003</td><td style="text-align: right;">0</td><td style="text-align: right;">6.40409</td><td style="text-align: right;">6.6</td></tr></tbody></table></div>
+<p><a id="@bind_rows()"></a></p>
+<p><a id="@bind_rows()-1"></a></p>
+<h2 id="bind_rows"><code>@bind_rows()</code><a class="headerlink" href="#bind_rows" title="Permanent link">¤</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nd">@bind_rows</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span><span class="w"> </span><span class="n">df2</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>6×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: right;">4</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">6</td><td style="text-align: right;">6</td><td style="text-align: right;">6</td></tr></tbody></table></div>
 
-<p><a id="Combining-@group_by()-with-@filter()"></a></p>
-<p><a id="Combining-@group_by()-with-@filter()-1"></a></p>
-<h2 id="combining-group_by-with-filter">Combining @group_by() with @filter()<a class="headerlink" href="#combining-group_by-with-filter" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="nd">@group_by</span><span class="p">(</span><span class="n">Year</span><span class="p">)</span>
-<span class="w">    </span><span class="nd">@filter</span><span class="p">(</span><span class="n">Rating</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">minimum</span><span class="p">(</span><span class="n">Rating</span><span class="p">))</span>
-<span class="w">    </span><span class="nd">@ungroup</span>
-<span class="w">    </span><span class="nd">@select</span><span class="p">(</span><span class="n">Year</span><span class="p">,</span><span class="w"> </span><span class="n">Rating</span><span class="p">)</span>
-<span class="w">    </span><span class="nd">@arrange</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="n">Year</span><span class="p">))</span>
-<span class="w">    </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">10</span><span class="p">)</span>
-<span class="k">end</span>
+<p><code>@bind_rows()</code> keeps columns that are present in at least one of the provided data frames. Any missing columns will be filled with <code>missing</code> values.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@bind_rows</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span><span class="w"> </span><span class="n">df3</span><span class="p">)</span>
 </code></pre></div>
-<div><div style="float: left;"><span>10×2 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Year</th><th style="text-align: left;">Rating</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int32" style="text-align: left;">Int32</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">2005</td><td style="text-align: right;">1.8</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">6</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">7</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">8</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">9</td><td style="text-align: right;">2003</td><td style="text-align: right;">1.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">10</td><td style="text-align: right;">2003</td><td style="text-align: right;">1.0</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>6×3 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">2</td><td style="font-style: italic; text-align: right;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">7</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">7</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">8</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">8</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">6</td><td style="text-align: right;">9</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">9</td></tr></tbody></table></div>
+
+<p>There is an optional <code>id</code> argument to add an identifier for combined data frames. Note that both <code>@bind_rows</code> and <code>@bind_cols</code> accept multiple (i.e., more than 2) data frames, as in the example below.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@bind_rows</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span><span class="w"> </span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="n">df3</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"id"</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>9×4 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">id</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">2</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: right;">4</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">5</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">6</td><td style="text-align: right;">6</td><td style="text-align: right;">6</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">7</td><td style="text-align: right;">7</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">7</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">8</td><td style="text-align: right;">8</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">8</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">9</td><td style="text-align: right;">9</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">9</td><td style="text-align: right;">3</td></tr></tbody></table></div>
+
+<p><a id="@bind_cols()"></a></p>
+<p><a id="@bind_cols()-1"></a></p>
+<h2 id="bind_cols"><code>@bind_cols()</code><a class="headerlink" href="#bind_cols" title="Permanent link">¤</a></h2>
+<p><code>@bind_cols</code> works similarly to R's <code>tidyverse</code> although the <code>.name_repair</code> argument is not supported.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@bind_cols</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span><span class="w"> </span><span class="n">df2</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>3×4 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">a_1</th><th style="text-align: left;">b_1</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">4</td><td style="text-align: right;">4</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">5</td><td style="text-align: right;">5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: right;">6</td><td style="text-align: right;">6</td></tr></tbody></table></div>
 
 <hr>
 <p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></div>
@@ -817,7 +763,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../slice/" class="md-footer__link md-footer__link--prev" aria-label="Previous: @slice" rel="prev">
+          <a href="../joins/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Joins" rel="prev">
             <div class="md-footer__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
             </div>
@@ -826,20 +772,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                @slice
+                Joins
               </div>
             </div>
           </a>
         
         
           
-          <a href="../arrange/" class="md-footer__link md-footer__link--next" aria-label="Next: @arrange" rel="next">
+          <a href="../pivots/" class="md-footer__link md-footer__link--next" aria-label="Next: Pivoting" rel="next">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                @arrange
+                Pivoting
               </div>
             </div>
             <div class="md-footer__button md-icon">
