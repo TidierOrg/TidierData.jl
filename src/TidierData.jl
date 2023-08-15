@@ -69,45 +69,45 @@ macro select(df, exprs...)
 
   tidy_exprs = parse_tidy.(tidy_exprs)
   df_expr = quote
-    if $(esc(df)) isa GroupedDataFrame
-      @chain $(esc(df)) begin
-        @chain _ begin
-          if $any_found_n
-            transform(_, nrow => :TidierData_n; ungroup = false)
-          else
-            _
-          end
-        end
-        @chain _ begin
-          if $any_found_row_number
-            transform(_, eachindex => :TidierData_row_number; ungroup = false)
-          else
-            _
-          end    
-        end
-        select($(tidy_exprs...); ungroup = false)
-        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
+    if $any_found_n || $any_found_row_number
+      if $(esc(df)) isa GroupedDataFrame
+        local df_copy = deepcopy($(esc(df)))
+      else
+        local df_copy = copy($(esc(df)))
       end
     else
-      @chain $(esc(df)) begin
-        @chain _ begin
-          if $any_found_n
-            transform(_, nrow => :TidierData_n)
-          else
-            _
-          end
-        end
-        @chain _ begin
-          if $any_found_row_number
-            transform(_, eachindex => :TidierData_row_number)
-          else
-            _
-          end
-        end
-        select($(tidy_exprs...))
-        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
+      local df_copy = $(esc(df)) # not a copy
+    end
+    
+    if $(esc(df)) isa GroupedDataFrame
+      if $any_found_n
+        transform!(df_copy, nrow => :TidierData_n; ungroup = false)
+      end
+      if $any_found_row_number
+        transform!(df_copy, eachindex => :TidierData_row_number; ungroup = false)
+      end    
+      
+      local df_output = select(df_copy, $(tidy_exprs...); ungroup = false)
+      
+      if $any_found_n || $any_found_row_number
+        select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
+      end
+    else
+      if $any_found_n
+        transform!(df_copy, nrow => :TidierData_n)
+      end
+      if $any_found_row_number
+        transform!(df_copy, eachindex => :TidierData_row_number)
+      end
+        
+      local df_output = select(df_copy, $(tidy_exprs...))
+
+      if $any_found_n || $any_found_row_number
+        select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
       end
     end
+
+    df_output
   end
   if code[]
     @info MacroTools.prettify(df_expr)
@@ -127,45 +127,45 @@ macro transmute(df, exprs...)
 
   tidy_exprs = parse_tidy.(tidy_exprs)
   df_expr = quote
-    if $(esc(df)) isa GroupedDataFrame
-      @chain $(esc(df)) begin
-        @chain _ begin
-          if $any_found_n
-            transform(_, nrow => :TidierData_n; ungroup = false)
-          else
-            _
-          end
-        end
-        @chain _ begin
-          if $any_found_row_number
-            transform(_, eachindex => :TidierData_row_number; ungroup = false)
-          else
-            _
-          end    
-        end
-        select($(tidy_exprs...); ungroup = false)
-        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
+    if $any_found_n || $any_found_row_number
+      if $(esc(df)) isa GroupedDataFrame
+        local df_copy = deepcopy($(esc(df)))
+      else
+        local df_copy = copy($(esc(df)))
       end
     else
-      @chain $(esc(df)) begin
-        @chain _ begin
-          if $any_found_n
-            transform(_, nrow => :TidierData_n)
-          else
-            _
-          end
-        end
-        @chain _ begin
-          if $any_found_row_number
-            transform(_, eachindex => :TidierData_row_number)
-          else
-            _
-          end
-        end
-        select($(tidy_exprs...))
-        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
+      local df_copy = $(esc(df)) # not a copy
+    end
+    
+    if $(esc(df)) isa GroupedDataFrame
+      if $any_found_n
+        transform!(df_copy, nrow => :TidierData_n; ungroup = false)
+      end
+      if $any_found_row_number
+        transform!(df_copy, eachindex => :TidierData_row_number; ungroup = false)
+      end    
+      
+      local df_output = select(df_copy, $(tidy_exprs...); ungroup = false)
+      
+      if $any_found_n || $any_found_row_number
+        select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
+      end
+    else
+      if $any_found_n
+        transform!(df_copy, nrow => :TidierData_n)
+      end
+      if $any_found_row_number
+        transform!(df_copy, eachindex => :TidierData_row_number)
+      end
+        
+      local df_output = select(df_copy, $(tidy_exprs...))
+
+      if $any_found_n || $any_found_row_number
+        select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
       end
     end
+
+    df_output
   end
   if code[]
     @info MacroTools.prettify(df_expr)
@@ -185,45 +185,45 @@ macro rename(df, exprs...)
 
   tidy_exprs = parse_tidy.(tidy_exprs)
   df_expr = quote
-    if $(esc(df)) isa GroupedDataFrame
-      @chain $(esc(df)) begin
-        @chain _ begin
-          if $any_found_n
-            transform(_, nrow => :TidierData_n; ungroup = false)
-          else
-            _
-          end
-        end
-        @chain _ begin
-          if $any_found_row_number
-            transform(_, eachindex => :TidierData_row_number; ungroup = false)
-          else
-            _
-          end    
-        end
-        rename($(tidy_exprs...); ungroup = false)
-        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
+    if $any_found_n || $any_found_row_number
+      if $(esc(df)) isa GroupedDataFrame
+        local df_copy = deepcopy($(esc(df)))
+      else
+        local df_copy = copy($(esc(df)))
       end
     else
-      @chain $(esc(df)) begin
-        @chain _ begin
-          if $any_found_n
-            transform(_, nrow => :TidierData_n)
-          else
-            _
-          end
-        end
-        @chain _ begin
-          if $any_found_row_number
-            transform(_, eachindex => :TidierData_row_number)
-          else
-            _
-          end
-        end
-        rename($(tidy_exprs...))
-        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
+      local df_copy = $(esc(df)) # not a copy
+    end
+
+    if $(esc(df)) isa GroupedDataFrame
+      if $any_found_n
+        transform!(df_copy, nrow => :TidierData_n; ungroup = false)
+      end
+      if $any_found_row_number
+        transform!(df_copy, eachindex => :TidierData_row_number; ungroup = false)    
+      end
+      
+      local df_output = rename(df_copy, $(tidy_exprs...); ungroup = false)
+      
+      if $any_found_n || $any_found_row_number
+        select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
+      end
+    else
+      if $any_found_n
+        transform!(df_copy, nrow => :TidierData_n)
+      end
+      if $any_found_row_number
+        transform!(df_copy, eachindex => :TidierData_row_number)
+      end
+      
+      local df_output = rename(df_copy, $(tidy_exprs...))
+      
+      if $any_found_n || $any_found_row_number
+        select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
       end
     end
+
+    df_output
   end
   if code[]
     @info MacroTools.prettify(df_expr)
@@ -243,45 +243,45 @@ macro mutate(df, exprs...)
 
   tidy_exprs = parse_tidy.(tidy_exprs)
   df_expr = quote
-    if $(esc(df)) isa GroupedDataFrame
-      @chain $(esc(df)) begin
-        @chain _ begin
-          if $any_found_n
-            transform(_, nrow => :TidierData_n; ungroup = false)
-          else
-            _
-          end
-        end
-        @chain _ begin
-          if $any_found_row_number
-            transform(_, eachindex => :TidierData_row_number; ungroup = false)
-          else
-            _
-          end    
-        end
-        transform($(tidy_exprs...); ungroup = false)
-        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
+    if $any_found_n || $any_found_row_number
+      if $(esc(df)) isa GroupedDataFrame
+        local df_copy = deepcopy($(esc(df)))
+      else
+        local df_copy = copy($(esc(df)))
       end
     else
-      @chain $(esc(df)) begin
-        @chain _ begin
-          if $any_found_n
-            transform(_, nrow => :TidierData_n)
-          else
-            _
-          end
-        end
-        @chain _ begin
-          if $any_found_row_number
-            transform(_, eachindex => :TidierData_row_number)
-          else
-            _
-          end
-        end
-        transform($(tidy_exprs...))
-        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
+      local df_copy = $(esc(df)) # not a copy
+    end
+
+    if $(esc(df)) isa GroupedDataFrame
+      if $any_found_n
+        transform!(df_copy, nrow => :TidierData_n; ungroup = false)
+      end
+      if $any_found_row_number
+        transform!(df_copy, eachindex => :TidierData_row_number; ungroup = false)   
+      end
+
+      local df_output = transform(df_copy, $(tidy_exprs...); ungroup = false)
+
+      if $any_found_n || $any_found_row_number
+        select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
+      end
+    else
+      if $any_found_n
+        transform!(df_copy, nrow => :TidierData_n)
+      end
+      if $any_found_row_number
+        transform!(df_copy, eachindex => :TidierData_row_number)
+      end
+      
+      local df_output = transform(df_copy, $(tidy_exprs...))
+
+      if $any_found_n || $any_found_row_number
+        select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
       end
     end
+
+    df_output
   end
   if code[]
     @info MacroTools.prettify(df_expr)
@@ -301,58 +301,51 @@ macro summarize(df, exprs...)
 
   tidy_exprs = parse_tidy.(tidy_exprs; autovec=false)
   df_expr = quote
-    if $(esc(df)) isa GroupedDataFrame
-      local col_names = groupcols($(esc(df)))
-      @chain $(esc(df)) begin
-        @chain _ begin
-          if $any_found_n
-            transform(_, nrow => :TidierData_n; ungroup = false)
-          else
-            _
-          end  
-        end
-        @chain _ begin
-          if $any_found_row_number
-            transform(_, eachindex => :TidierData_row_number; ungroup = false)
-          else
-            _
-          end  
-        end
-        @chain _ begin
-          if length(col_names) == 1
-            @chain _ begin
-              combine(_, $(tidy_exprs...); ungroup = true)
-              select(_, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
-            end
-          else
-            @chain _ begin
-              combine(_, $(tidy_exprs...); ungroup = true)
-              select(_, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
-              groupby(_, col_names[1:end-1]; sort = true)
-            end
-          end
-        end
+    if $any_found_n || $any_found_row_number
+      if $(esc(df)) isa GroupedDataFrame
+        local df_copy = deepcopy($(esc(df)))
+      else
+        local df_copy = copy($(esc(df)))
       end
     else
-      @chain $(esc(df)) begin
-        @chain _ begin
-          if $any_found_n
-            transform(_, nrow => :TidierData_n; ungroup = false)
-          else
-            _
-          end  
+      local df_copy = $(esc(df)) # not a copy
+    end
+    
+    if $(esc(df)) isa GroupedDataFrame
+      local col_names = groupcols($(esc(df)))
+      if $any_found_n
+        transform!(df_copy, nrow => :TidierData_n; ungroup = false)  
+      end
+      if $any_found_row_number
+        transform!(df_copy, eachindex => :TidierData_row_number; ungroup = false)  
+      end
+      
+      if length(col_names) == 1
+        local df_output = combine(df_copy, $(tidy_exprs...); ungroup = true)
+        if $any_found_n || $any_found_row_number
+          select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
         end
-        @chain _ begin
-          if $any_found_row_number
-            transform(_, eachindex => :TidierData_row_number; ungroup = false)
-          else
-            _
-          end  
+      else
+        local df_output = combine(df_copy, $(tidy_exprs...); ungroup = true)
+        if $any_found_n || $any_found_row_number
+          select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
         end
-        combine($(tidy_exprs...))
-        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
+        df_output = groupby(df_output, col_names[1:end-1]; sort = false)
+      end
+    else
+      if $any_found_n
+        transform!(df_copy, nrow => :TidierData_n; ungroup = false)
+      end
+      if $any_found_row_number
+        transform!(df_copy, eachindex => :TidierData_row_number; ungroup = false)  
+      end
+      local df_output = combine(df_copy, $(tidy_exprs...))
+      if $any_found_n || $any_found_row_number
+        select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
       end
     end
+
+    df_output
   end
   if code[]
     @info MacroTools.prettify(df_expr)
@@ -379,45 +372,45 @@ macro filter(df, exprs...)
 
   tidy_exprs = parse_tidy.(tidy_exprs; subset=true)
   df_expr = quote
-    if $(esc(df)) isa GroupedDataFrame
-      @chain $(esc(df)) begin
-        @chain _ begin
-          if $any_found_n
-            transform(_, nrow => :TidierData_n; ungroup = false)
-          else
-            _
-          end
-        end
-        @chain _ begin
-          if $any_found_row_number
-            transform(_, eachindex => :TidierData_row_number; ungroup = false)
-          else
-            _
-          end    
-        end
-        subset($(tidy_exprs...); skipmissing = true, ungroup = false)
-        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
+    if $any_found_n || $any_found_row_number
+      if $(esc(df)) isa GroupedDataFrame
+        local df_copy = deepcopy($(esc(df)))
+      else
+        local df_copy = copy($(esc(df)))
       end
     else
-      @chain $(esc(df)) begin
-        @chain _ begin
-          if $any_found_n
-            transform(_, nrow => :TidierData_n)
-          else
-            _
-          end
-        end
-        @chain _ begin
-          if $any_found_row_number
-            transform(_, eachindex => :TidierData_row_number)
-          else
-            _
-          end
-        end
-        subset($(tidy_exprs...); skipmissing = true)
-        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
+      local df_copy = $(esc(df)) # not a copy
+    end
+
+    if $(esc(df)) isa GroupedDataFrame
+      if $any_found_n
+        transform!(df_copy, nrow => :TidierData_n; ungroup = false)
+      end
+      if $any_found_row_number
+        transform!(df_copy, eachindex => :TidierData_row_number; ungroup = false)    
+      end
+
+      local df_output = subset(df_copy, $(tidy_exprs...); skipmissing = true, ungroup = false)
+      
+      if $any_found_n || $any_found_row_number
+        select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
+      end
+    else
+      if $any_found_n
+        transform!(df_copy, nrow => :TidierData_n)
+      end
+      if $any_found_row_number
+        transform!(df_copy, eachindex => :TidierData_row_number)
+      end
+
+      local df_output = subset(df_copy, $(tidy_exprs...); skipmissing = true)
+
+      if $any_found_n || $any_found_row_number
+        select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
       end
     end
+
+    df_output
   end
   if code[]
     @info MacroTools.prettify(df_expr)
@@ -439,25 +432,38 @@ macro group_by(df, exprs...)
   grouping_exprs = parse_group_by.(exprs)
 
   df_expr = quote
-    @chain $(esc(df)) begin
-      @chain _ begin
-        if $any_found_n
-          transform(_, nrow => :TidierData_n)
-        else
-          _
-        end
+    local any_expressions = all(typeof.($tidy_exprs) .!= QuoteNode)
+
+    if $any_found_n || $any_found_row_number || any_expressions
+      if $(esc(df)) isa GroupedDataFrame
+        local df_copy = deepcopy($(esc(df)))
+      else
+        local df_copy = copy($(esc(df)))
       end
-      @chain _ begin
-        if $any_found_row_number
-          transform(_, eachindex => :TidierData_row_number)
-        else
-          _
-        end
-      end
-      transform($(tidy_exprs...))
-      select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
-      groupby(Cols($(grouping_exprs...)); sort = true)
+    else
+      local df_copy = $(esc(df)) # not a copy
     end
+
+    if $any_found_n
+      transform!(df_copy, nrow => :TidierData_n)
+    end
+    if $any_found_row_number
+      transform!(df_copy, eachindex => :TidierData_row_number)
+    end
+    
+    if any_expressions
+      transform!(df_copy, $(tidy_exprs...))
+    end
+
+    if $any_found_n || $any_found_row_number
+      select!(df_copy, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
+    end
+    
+    # removed ;sort = true for speed reasons
+    # this can cause a large number of allocations when the grouped variable is a string
+    local df_output = groupby(df_copy, Cols($(grouping_exprs...)); sort = false)
+
+    df_output
   end
   if code[]
     @info MacroTools.prettify(df_expr)
@@ -531,7 +537,7 @@ macro arrange(df, exprs...)
       @chain $(esc(df)) begin
         DataFrame # remove grouping
         sort([$(arrange_exprs...)]) # Must use [] instead of Cols() here
-        groupby(col_names; sort = true) # regroup
+        groupby(col_names; sort = false) # regroup
       end
     else
       sort($(esc(df)), [$(arrange_exprs...)]) # Must use [] instead of Cols() here
@@ -557,57 +563,47 @@ macro distinct(df, exprs...)
   df_expr = quote
     if $(esc(df)) isa GroupedDataFrame
       local col_names = groupcols($(esc(df)))
-      @chain $(esc(df)) begin
-        DataFrame # remove grouping because `unique()` does not work on GroupDataFrames
-        @chain _ begin
-          if $any_found_n
-            transform(_, nrow => :TidierData_n)
-          else
-            _
-          end
-        end
-        @chain _ begin
-          if $any_found_row_number
-            transform(_, eachindex => :TidierData_row_number)
-          else
-            _
-          end    
-        end
-        @chain _ begin
-          if length([$tidy_exprs...]) == 0
-            unique(_)
-          else
-            unique(_, Cols($(tidy_exprs...)))
-          end
-        end
-        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
-        groupby(col_names; sort = true) # regroup
+
+      # `@distinct()` uses a different pattern from the other macros
+      # because if the original DataFrame is grouped, it must be ungrouped
+      # and then regrouped, so there's no need to make a deepcopy.
+      # This is because `unique()` does not work on GroupDataFrames.
+      local df_copy = DataFrame($(esc(df)))
+      if $any_found_n
+        transform!(df_copy, nrow => :TidierData_n)
       end
+      if $any_found_row_number
+        transform!(df_copy, eachindex => :TidierData_row_number)
+      end
+      if length([$tidy_exprs...]) == 0
+        unique!(df_copy)
+      else
+        unique!(df_copy, Cols($(tidy_exprs...)))
+      end
+
+      if $any_found_n || $any_found_row_number
+        select!(df_copy, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
+      end
+      groupby(df_copy, col_names; sort = false) # regroup and value to return
     else
-      @chain $(esc(df)) begin
-        @chain _ begin
-          if $any_found_n
-            transform(_, nrow => :TidierData_n)
-          else
-            _
-          end
-        end
-        @chain _ begin
-          if $any_found_row_number
-            transform(_, eachindex => :TidierData_row_number)
-          else
-            _
-          end
-        end
-        @chain _ begin
-          if length([$tidy_exprs...]) == 0
-            unique(_)
-          else
-            unique(_, Cols($(tidy_exprs...)))
-          end
-        end
-        select(Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
+      local df_copy = copy($(esc(df)))
+      if $any_found_n
+        transform!(df_copy, nrow => :TidierData_n)
       end
+      if $any_found_row_number
+        transform!(df_copy, eachindex => :TidierData_row_number)
+      end
+      if length([$tidy_exprs...]) == 0
+        unique!(df_copy)
+      else
+        unique!(df_copy, Cols($(tidy_exprs...)))
+      end
+      
+      if $any_found_n || $any_found_row_number
+        select!(df_copy, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
+      end
+
+      df_copy # value to return
     end
   end
   if code[]
@@ -644,26 +640,22 @@ macro drop_na(df, exprs...)
   df_expr = quote
     if $(esc(df)) isa GroupedDataFrame
       local col_names = groupcols($(esc(df)))
-      @chain $(esc(df)) begin
-        DataFrame # remove grouping because `dropmissing()` does not work on GroupDataFrames
-        @chain _ begin
-          if $num_exprs == 0
-            dropmissing(_)
-          else
-            dropmissing(_, Cols($(tidy_exprs...)))
-          end
-        end
-        groupby(col_names; sort = true) # regroup
+      
+      # A copy is only needed for grouped dataframes because the copy
+      # has to be regrouped because `dropmissing()` does not support
+      # grouped data frames.
+      local df_copy = DataFrame($(esc(df)))
+      if $num_exprs == 0
+        dropmissing!(df_copy)
+      else
+        dropmissing!(df_copy, Cols($(tidy_exprs...)))
       end
+      groupby(df_copy, col_names; sort = false) # regroup
     else
-      @chain $(esc(df)) begin
-        @chain _ begin
-          if $num_exprs == 0
-            dropmissing(_)
-          else
-            dropmissing(_, Cols($(tidy_exprs...)))
-          end
-        end
+      if $num_exprs == 0
+        dropmissing($(esc(df)))
+      else
+        dropmissing($(esc(df)), Cols($(tidy_exprs...)))
       end
     end
   end
