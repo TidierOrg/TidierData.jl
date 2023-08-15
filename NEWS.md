@@ -1,5 +1,9 @@
 # TidierData.jl updates
 
+## v0.10.0 - 2023-08-15
+- Refactor macros to make them much faster and memory-efficient.
+- `@group_by` no longer automatically sorts by group, which makes it much faster. This is a slight change in behavior from `dplyr` but the speed trade-off is worth it.
+
 ## v0.9.2 - 2023-08-06
 - Remove `TidierData_not_vectorized[]` from exports
 - Add `TidierCats.jl` functions to `not_vectorized[]` list
