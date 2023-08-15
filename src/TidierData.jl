@@ -71,7 +71,7 @@ macro select(df, exprs...)
   df_expr = quote
     if $any_found_n || $any_found_row_number
       if $(esc(df)) isa GroupedDataFrame
-        local df_copy = deepcopy($(esc(df)))
+        local df_copy = transform($(esc(df)); ungroup = false)
       else
         local df_copy = copy($(esc(df)))
       end
@@ -129,7 +129,7 @@ macro transmute(df, exprs...)
   df_expr = quote
     if $any_found_n || $any_found_row_number
       if $(esc(df)) isa GroupedDataFrame
-        local df_copy = deepcopy($(esc(df)))
+        local df_copy = transform($(esc(df)); ungroup = false)
       else
         local df_copy = copy($(esc(df)))
       end
@@ -187,7 +187,7 @@ macro rename(df, exprs...)
   df_expr = quote
     if $any_found_n || $any_found_row_number
       if $(esc(df)) isa GroupedDataFrame
-        local df_copy = deepcopy($(esc(df)))
+        local df_copy = transform($(esc(df)); ungroup = false)
       else
         local df_copy = copy($(esc(df)))
       end
@@ -245,7 +245,7 @@ macro mutate(df, exprs...)
   df_expr = quote
     if $any_found_n || $any_found_row_number
       if $(esc(df)) isa GroupedDataFrame
-        local df_copy = deepcopy($(esc(df)))
+        local df_copy = transform($(esc(df)); ungroup = false)
       else
         local df_copy = copy($(esc(df)))
       end
@@ -303,7 +303,7 @@ macro summarize(df, exprs...)
   df_expr = quote
     if $any_found_n || $any_found_row_number
       if $(esc(df)) isa GroupedDataFrame
-        local df_copy = deepcopy($(esc(df)))
+        local df_copy = transform($(esc(df)); ungroup = false)
       else
         local df_copy = copy($(esc(df)))
       end
@@ -374,7 +374,7 @@ macro filter(df, exprs...)
   df_expr = quote
     if $any_found_n || $any_found_row_number
       if $(esc(df)) isa GroupedDataFrame
-        local df_copy = deepcopy($(esc(df)))
+        local df_copy = transform($(esc(df)); ungroup = false)
       else
         local df_copy = copy($(esc(df)))
       end
@@ -436,7 +436,7 @@ macro group_by(df, exprs...)
 
     if $any_found_n || $any_found_row_number || any_expressions
       if $(esc(df)) isa GroupedDataFrame
-        local df_copy = deepcopy($(esc(df)))
+        local df_copy = transform($(esc(df)); ungroup = false)
       else
         local df_copy = copy($(esc(df)))
       end
@@ -566,7 +566,7 @@ macro distinct(df, exprs...)
 
       # `@distinct()` uses a different pattern from the other macros
       # because if the original DataFrame is grouped, it must be ungrouped
-      # and then regrouped, so there's no need to make a deepcopy.
+      # and then regrouped, so there's no need to make a copy up front.
       # This is because `unique()` does not work on GroupDataFrames.
       local df_copy = DataFrame($(esc(df)))
       if $any_found_n
