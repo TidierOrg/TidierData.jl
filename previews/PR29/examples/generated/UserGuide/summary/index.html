@@ -13,17 +13,17 @@
       
       
       
-        <link rel="prev" href="../../../..">
+        <link rel="prev" href="../sep_unite/">
       
       
-        <link rel="next" href="../select/">
+        <link rel="next" href="../column_names/">
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
-        <title>Movies dataset - TidierData.jl</title>
+        <title>@summary - TidierData.jl</title>
       
     
     
@@ -78,6 +78,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#summary-for-the-whole-dataframe" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -108,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Movies dataset
+              @summary
             
           </span>
         </div>
@@ -268,19 +273,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../dataset_movies/" class="md-nav__link">
         Movies dataset
       </a>
-      
     </li>
   
 
@@ -516,11 +513,62 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../summary/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          @summary
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         @summary
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#summary-for-the-whole-dataframe" class="md-nav__link">
+    Summary for the whole dataframe
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#you-can-specify-columns-for-which-you-want-to-compute-the-summary-this-is-useful-if-the-dataframe-has-a-large-number-of-columns-and-youre-interested-in-only-a-subset-of-them" class="md-nav__link">
+    You can specify columns for which you want to compute the summary. This is useful if the DataFrame has a large number of columns and you're interested in only a subset of them.
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#or-for-a-range-of-columns" class="md-nav__link">
+    or for a range of columns
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -618,6 +666,35 @@
   
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#summary-for-the-whole-dataframe" class="md-nav__link">
+    Summary for the whole dataframe
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#you-can-specify-columns-for-which-you-want-to-compute-the-summary-this-is-useful-if-the-dataframe-has-a-large-number-of-columns-and-youre-interested-in-only-a-subset-of-them" class="md-nav__link">
+    You can specify columns for which you want to compute the summary. This is useful if the DataFrame has a large number of columns and you're interested in only a subset of them.
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#or-for-a-range-of-columns" class="md-nav__link">
+    or for a range of columns
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -631,53 +708,48 @@
                   
 
 
-  <h1>Movies dataset</h1>
+  <h1>@summary</h1>
 
-<div><p>To get started, we will load the <code>movies</code> dataset from the <code>RDatasets.jl</code> package.</p>
+<div><p>The <code>@summary()</code> macro in <code>TidierData.jl</code> provides a concise way to compute summary statistics on data. Similar to its R counterpart, it will provide the mean, median, Q1, Q3, minimum, maximum, and number of missing values in a numerical column or columns.</p>
+<p><a id="Summary-for-the-whole-dataframe"></a></p>
+<p><a id="Summary-for-the-whole-dataframe-1"></a></p>
+<h2 id="summary-for-the-whole-dataframe">Summary for the whole dataframe<a class="headerlink" href="#summary-for-the-whole-dataframe" title="Permanent link">¤</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">TidierData</span>
-<span class="k">using</span><span class="w"> </span><span class="n">RDatasets</span>
 
-<span class="n">movies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataset</span><span class="p">(</span><span class="s">"ggplot2"</span><span class="p">,</span><span class="w"> </span><span class="s">"movies"</span><span class="p">);</span>
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">],</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">],</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="mi">17</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">]);</span>
+
+<span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@summary</span><span class="p">()</span>
+<span class="k">end</span>
+
+<span class="nd">@summary</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </code></pre></div>
-<p>To work with this dataset, we will use the <code>@chain</code> macro. This macro initiates a pipe, and every function or macro provided to it between the <code>begin</code> and <code>end</code> blocks modifies the dataframe mentioned at the beginning of the pipe. You don't have to necessarily spread a chain over multiple lines of code, but when working with data frames it's often easiest to do so. Before going further, take a look at the <a href="https://github.com/jkrumbiegel/Chain.jl">Chain.jl GitHub page</a> to see all the cool things that are possible with this, including mid-chain side effects using <code>@aside</code> and mid-chain assignment of variables.</p>
-<p>Let's take a look at the first 5 rows of the <code>movies</code> dataset using <code>@slice()</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
+<div><div style="float: left;"><span>4×9 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Column</th><th style="text-align: left;">Min</th><th style="text-align: left;">Q1</th><th style="text-align: left;">Median</th><th style="text-align: left;">Mean</th><th style="text-align: left;">Q3</th><th style="text-align: left;">Max</th><th style="text-align: left;">Count</th><th style="text-align: left;">Missing_Count</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">A</td><td style="text-align: right;">1</td><td style="text-align: right;">2.0</td><td style="text-align: right;">3.0</td><td style="text-align: right;">3.0</td><td style="text-align: right;">4.0</td><td style="text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">B</td><td style="text-align: right;">7</td><td style="text-align: right;">7.75</td><td style="text-align: right;">8.5</td><td style="text-align: right;">8.5</td><td style="text-align: right;">9.25</td><td style="text-align: right;">10</td><td style="text-align: right;">4</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">C</td><td style="text-align: right;">11</td><td style="text-align: right;">12.0</td><td style="text-align: right;">13.0</td><td style="text-align: right;">12.6667</td><td style="text-align: right;">13.5</td><td style="text-align: right;">14</td><td style="text-align: right;">3</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">D</td><td style="text-align: right;">16</td><td style="text-align: right;">17.0</td><td style="text-align: right;">18.0</td><td style="text-align: right;">18.0</td><td style="text-align: right;">19.0</td><td style="text-align: right;">20</td><td style="text-align: right;">5</td><td style="text-align: right;">0</td></tr></tbody></table></div>
+
+<p><a id="You-can-specify-columns-for-which-you-want-to-compute-the-summary.-This-is-useful-if-the-DataFrame-has-a-large-number-of-columns-and-you" re-interested-in-only-a-subset-of-them.></a></p>
+<p><a id="You-can-specify-columns-for-which-you-want-to-compute-the-summary.-This-is-useful-if-the-DataFrame-has-a-large-number-of-columns-and-you" re-interested-in-only-a-subset-of-them.-1></a></p>
+<h2 id="you-can-specify-columns-for-which-you-want-to-compute-the-summary-this-is-useful-if-the-dataframe-has-a-large-number-of-columns-and-youre-interested-in-only-a-subset-of-them">You can specify columns for which you want to compute the summary. This is useful if the DataFrame has a large number of columns and you're interested in only a subset of them.<a class="headerlink" href="#you-can-specify-columns-for-which-you-want-to-compute-the-summary-this-is-useful-if-the-dataframe-has-a-large-number-of-columns-and-youre-interested-in-only-a-subset-of-them" title="Permanent link">¤</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@summary</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="nd">@summary</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>1×9 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Column</th><th style="text-align: left;">Min</th><th style="text-align: left;">Q1</th><th style="text-align: left;">Median</th><th style="text-align: left;">Mean</th><th style="text-align: left;">Q3</th><th style="text-align: left;">Max</th><th style="text-align: left;">Count</th><th style="text-align: left;">Missing_Count</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">B</td><td style="text-align: right;">7</td><td style="text-align: right;">7.75</td><td style="text-align: right;">8.5</td><td style="text-align: right;">8.5</td><td style="text-align: right;">9.25</td><td style="text-align: right;">10</td><td style="text-align: right;">4</td><td style="text-align: right;">1</td></tr></tbody></table></div>
+
+<p><a id="or-for-a-range-of-columns"></a></p>
+<p><a id="or-for-a-range-of-columns-1"></a></p>
+<h2 id="or-for-a-range-of-columns">or for a range of columns<a class="headerlink" href="#or-for-a-range-of-columns" title="Permanent link">¤</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@select</span><span class="p">(</span><span class="n">B</span><span class="o">:</span><span class="n">D</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@summary</span><span class="p">()</span><span class="w"> </span><span class="c"># you can also write this @summary(2:4)</span>
 <span class="k">end</span>
 </code></pre></div>
-<div><div style="float: left;"><span>5×24 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Title</th><th style="text-align: left;">Year</th><th style="text-align: left;">Length</th><th style="text-align: left;">Budget</th><th style="text-align: left;">Rating</th><th style="text-align: left;">Votes</th><th style="text-align: left;">R1</th><th style="text-align: left;">R2</th><th style="text-align: left;">R3</th><th style="text-align: left;">R4</th><th style="text-align: left;">R5</th><th style="text-align: left;">R6</th><th style="text-align: left;">R7</th><th style="text-align: left;">R8</th><th style="text-align: left;">R9</th><th style="text-align: left;">R10</th><th style="text-align: left;">MPAA</th><th style="text-align: left;">Action</th><th style="text-align: left;">Animation</th><th style="text-align: left;">Comedy</th><th style="text-align: left;">Drama</th><th style="text-align: left;">Documentary</th><th style="text-align: left;">Romance</th><th style="text-align: left;">Short</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Int32" style="text-align: left;">Int32</th><th title="Int32" style="text-align: left;">Int32</th><th title="Union{Missing, Int32}" style="text-align: left;">Int32?</th><th title="Float64" style="text-align: left;">Float64</th><th title="Int32" style="text-align: left;">Int32</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="CategoricalArrays.CategoricalValue{String, UInt8}" style="text-align: left;">Cat…</th><th title="Int32" style="text-align: left;">Int32</th><th title="Int32" style="text-align: left;">Int32</th><th title="Int32" style="text-align: left;">Int32</th><th title="Int32" style="text-align: left;">Int32</th><th title="Int32" style="text-align: left;">Int32</th><th title="Int32" style="text-align: left;">Int32</th><th title="Int32" style="text-align: left;">Int32</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">$</td><td style="text-align: right;">1971</td><td style="text-align: right;">121</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">6.4</td><td style="text-align: right;">348</td><td style="text-align: right;">4.5</td><td style="text-align: right;">4.5</td><td style="text-align: right;">4.5</td><td style="text-align: right;">4.5</td><td style="text-align: right;">14.5</td><td style="text-align: right;">24.5</td><td style="text-align: right;">24.5</td><td style="text-align: right;">14.5</td><td style="text-align: right;">4.5</td><td style="text-align: right;">4.5</td><td style="text-align: left;"></td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">$1000 a Touchdown</td><td style="text-align: right;">1939</td><td style="text-align: right;">71</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">6.0</td><td style="text-align: right;">20</td><td style="text-align: right;">0.0</td><td style="text-align: right;">14.5</td><td style="text-align: right;">4.5</td><td style="text-align: right;">24.5</td><td style="text-align: right;">14.5</td><td style="text-align: right;">14.5</td><td style="text-align: right;">14.5</td><td style="text-align: right;">4.5</td><td style="text-align: right;">4.5</td><td style="text-align: right;">14.5</td><td style="text-align: left;"></td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">1</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">$21 a Day Once a Month</td><td style="text-align: right;">1941</td><td style="text-align: right;">7</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">8.2</td><td style="text-align: right;">5</td><td style="text-align: right;">0.0</td><td style="text-align: right;">0.0</td><td style="text-align: right;">0.0</td><td style="text-align: right;">0.0</td><td style="text-align: right;">0.0</td><td style="text-align: right;">24.5</td><td style="text-align: right;">0.0</td><td style="text-align: right;">44.5</td><td style="text-align: right;">24.5</td><td style="text-align: right;">24.5</td><td style="text-align: left;"></td><td style="text-align: right;">0</td><td style="text-align: right;">1</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">$40,000</td><td style="text-align: right;">1996</td><td style="text-align: right;">70</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">8.2</td><td style="text-align: right;">6</td><td style="text-align: right;">14.5</td><td style="text-align: right;">0.0</td><td style="text-align: right;">0.0</td><td style="text-align: right;">0.0</td><td style="text-align: right;">0.0</td><td style="text-align: right;">0.0</td><td style="text-align: right;">0.0</td><td style="text-align: right;">0.0</td><td style="text-align: right;">34.5</td><td style="text-align: right;">45.5</td><td style="text-align: left;"></td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">1</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">$50,000 Climax Show, The</td><td style="text-align: right;">1975</td><td style="text-align: right;">71</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">3.4</td><td style="text-align: right;">17</td><td style="text-align: right;">24.5</td><td style="text-align: right;">4.5</td><td style="text-align: right;">0.0</td><td style="text-align: right;">14.5</td><td style="text-align: right;">14.5</td><td style="text-align: right;">4.5</td><td style="text-align: right;">0.0</td><td style="text-align: right;">0.0</td><td style="text-align: right;">0.0</td><td style="text-align: right;">24.5</td><td style="text-align: left;"></td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>3×9 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Column</th><th style="text-align: left;">Min</th><th style="text-align: left;">Q1</th><th style="text-align: left;">Median</th><th style="text-align: left;">Mean</th><th style="text-align: left;">Q3</th><th style="text-align: left;">Max</th><th style="text-align: left;">Count</th><th style="text-align: left;">Missing_Count</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">B</td><td style="text-align: right;">7</td><td style="text-align: right;">7.75</td><td style="text-align: right;">8.5</td><td style="text-align: right;">8.5</td><td style="text-align: right;">9.25</td><td style="text-align: right;">10</td><td style="text-align: right;">4</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">C</td><td style="text-align: right;">11</td><td style="text-align: right;">12.0</td><td style="text-align: right;">13.0</td><td style="text-align: right;">12.6667</td><td style="text-align: right;">13.5</td><td style="text-align: right;">14</td><td style="text-align: right;">3</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">D</td><td style="text-align: right;">16</td><td style="text-align: right;">17.0</td><td style="text-align: right;">18.0</td><td style="text-align: right;">18.0</td><td style="text-align: right;">19.0</td><td style="text-align: right;">20</td><td style="text-align: right;">5</td><td style="text-align: right;">0</td></tr></tbody></table></div>
 
-<p>Let's use <code>@glimpse()</code> to preview the dataset.</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@glimpse</span><span class="p">(</span><span class="n">movies</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>Rows: 58788
-Columns: 24
-.Title         String         $, $1000 a Touchdown, $21 a Day Once a Month, $40,
-.Year          Int32          1971, 1939, 1941, 1996, 1975, 2000, 2002, 2002, 19
-.Length        Int32          121, 71, 7, 70, 71, 91, 93, 25, 97, 61, 99, 96, 10
-.Budget        Union{Missing, Int32}missing, missing, missing, missing, missing,
-.Rating        Float64        6.4, 6.0, 8.2, 8.2, 3.4, 4.3, 5.3, 6.7, 6.6, 6.0,
-.Votes         Int32          348, 20, 5, 6, 17, 45, 200, 24, 18, 51, 23, 53, 44
-.R1            Float64        4.5, 0.0, 0.0, 14.5, 24.5, 4.5, 4.5, 4.5, 4.5, 4.5
-.R2            Float64        4.5, 14.5, 0.0, 0.0, 4.5, 4.5, 0.0, 4.5, 4.5, 0.0,
-.R3            Float64        4.5, 4.5, 0.0, 0.0, 0.0, 4.5, 4.5, 4.5, 4.5, 4.5,
-.R4            Float64        4.5, 24.5, 0.0, 0.0, 14.5, 14.5, 4.5, 4.5, 0.0, 4.
-.R5            Float64        14.5, 14.5, 0.0, 0.0, 14.5, 14.5, 24.5, 4.5, 0.0,
-.R6            Float64        24.5, 14.5, 24.5, 0.0, 4.5, 14.5, 24.5, 14.5, 0.0,
-.R7            Float64        24.5, 14.5, 0.0, 0.0, 0.0, 4.5, 14.5, 14.5, 34.5,
-.R8            Float64        14.5, 4.5, 44.5, 0.0, 0.0, 4.5, 4.5, 14.5, 14.5, 4
-.R9            Float64        4.5, 4.5, 24.5, 34.5, 0.0, 14.5, 4.5, 4.5, 4.5, 4.
-.R10           Float64        4.5, 14.5, 24.5, 45.5, 24.5, 14.5, 14.5, 14.5, 24.
-.MPAA          CategoricalArrays.CategoricalValue{String, UInt8}, , , , , , R, ,
-.Action        Int32          0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0,
-.Animation     Int32          0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-.Comedy        Int32          1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0,
-.Drama         Int32          1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1,
-.Documentary   Int32          0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-.Romance       Int32          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-.Short         Int32          0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0,
-</code></pre></div>
 <hr>
 <p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></div>
 
@@ -706,7 +778,7 @@ Columns: 24
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home" rel="prev">
+          <a href="../sep_unite/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Separating" rel="prev">
             <div class="md-footer__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
             </div>
@@ -715,20 +787,20 @@ Columns: 24
                 Previous
               </span>
               <div class="md-ellipsis">
-                Home
+                Separating
               </div>
             </div>
           </a>
         
         
           
-          <a href="../select/" class="md-footer__link md-footer__link--next" aria-label="Next: @select" rel="next">
+          <a href="../column_names/" class="md-footer__link md-footer__link--next" aria-label="Next: Column names" rel="next">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                @select
+                Column names
               </div>
             </div>
             <div class="md-footer__button md-icon">
