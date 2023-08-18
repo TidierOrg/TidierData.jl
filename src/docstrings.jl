@@ -2079,7 +2079,7 @@ julia> @chain df begin
 ```
 """
 
-const docstring_fill_missing 
+const docstring_fill_missing =
 """
    @fill_missing(df, columns, method)
 
@@ -2192,10 +2192,10 @@ Determine if the given column contains floating-point numbers.
 julia> df = DataFrame( b = ["missing", "b", "c"], 
 c = ["1.1", "2.2", "missing"], d = [missing, missing, "A"]);
 
-julia> is_float(df.b)
+julia> is_string(df.b)
 true
 
-julia> is_float(df.c)
+julia> is_string(df.c)
 false
 ```
 """
@@ -2217,10 +2217,10 @@ Determine if the given column contains floating-point numbers.
 julia> df = DataFrame( b = ["missing", "b", "c"], 
 c = ["1.1", "2.2", "missing"], d = [missing, missing, 1]);
 
-julia> is_float(df.d)
+julia> is_integer(df.d)
 true
 
-julia> is_float(df.b)
+julia> is_integer(df.b)
 false
 ```
 """
@@ -2242,10 +2242,10 @@ Determine if the given column contains floating-point numbers.
 julia> df = DataFrame( b = ["missing", "b", "c"], 
 c = ["1.1", "2.2", "missing"], d = [missing, missing, 1]);
 
-julia> is_float(df.d)
+julia> is_categorical(df.d)
 true
 
-julia> is_float(df.b)
+julia> is_categorical(df.b)
 false
 ```
 """
