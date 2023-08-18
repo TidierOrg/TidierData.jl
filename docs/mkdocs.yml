@@ -133,5 +133,6 @@ nav:
   - "Column names": "examples/generated/UserGuide/column_names.md"
   - "Interpolation" : "examples/generated/UserGuide/interpolation.md"
   - "Auto-vectorization" : "examples/generated/UserGuide/autovec.md"
+  - "Benchmarking" : "examples/generated/UserGuide/benchmarking_git.md"
   - "Contribute" : "examples/generated/Contributors/Howto.md"
   - "Reference" : "reference.md"

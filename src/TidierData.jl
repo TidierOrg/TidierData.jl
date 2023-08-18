@@ -15,10 +15,10 @@ using Reexport
 @reexport using ShiftedArrays: lag, lead
 
 export TidierData_set, across, desc, n, row_number, starts_with, ends_with, matches, if_else, case_when, ntile, 
-      as_float, as_integer, as_string, @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
+      as_float, as_integer, as_string, is_float, is_string, is_categorical, is_integer, @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
       @group_by, @ungroup, @slice, @arrange, @distinct, @pull, @left_join, @right_join, @inner_join, @full_join,
       @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_na, @glimpse, @separate,
-      @unite, @summary
+      @unite, @summary, @fill_missing
 
 # Package global variables
 const code = Ref{Bool}(false) # output DataFrames.jl code?
@@ -42,6 +42,7 @@ include("ntile.jl")
 include("type_conversions.jl")
 include("separate_unite.jl")
 include("summary.jl")
+include("is_type.jl")
 
 # Function to set global variables
 """
