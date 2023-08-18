@@ -2149,7 +2149,7 @@ Last Group (3 rows): dt5 = 'b': ASCII/Unicode U+0062 (category Ll: Letter, lower
 ```
 """
 
-"""
+
 const docstring_is_float = 
 """
     is_float(column::AbstractVector)
