@@ -6,6 +6,7 @@ using Chain
 using Statistics
 using Cleaner
 using Reexport
+using Random: randperm
 
 # Exporting `Cols` because `summarize(!!vars, funs))` with multiple interpolated
 # columns requires `Cols()` to be nested within `Cols()`, so `Cols` needs to be exported.
@@ -13,12 +14,13 @@ using Reexport
 @reexport using Chain
 @reexport using Statistics
 @reexport using ShiftedArrays: lag, lead
+@reexport using Random: randperm
 
 export TidierData_set, across, desc, n, row_number, starts_with, ends_with, matches, if_else, case_when, ntile, 
       as_float, as_integer, as_string, is_float, is_string, is_categorical, is_integer, @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
       @group_by, @ungroup, @slice, @arrange, @distinct, @pull, @left_join, @right_join, @inner_join, @full_join,
       @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_na, @glimpse, @separate,
-      @unite, @summary, @fill_missing
+      @unite, @summary, @fill_missing, @slice_sample
 
 # Package global variables
 const code = Ref{Bool}(false) # output DataFrames.jl code?
@@ -698,4 +700,21 @@ macro glimpse(df, width = 80)
   return df_expr
 end
 
+end
+
+"""
+$docstring_slice_sample
+"""
+macro slice_sample(df, n::Int)
+  df_expr = quote
+      if $(esc(df)) isa GroupedDataFrame
+          combine($(esc(df)); ungroup = false) do sdf
+              sdf[randperm(nrow(sdf))[1:$(esc(n))], :]
+          end
+      else
+          $(esc(df))[randperm(nrow($(esc(df))))[1:$(esc(n))], :]
+      end
+  end
+
+  return df_expr
 end

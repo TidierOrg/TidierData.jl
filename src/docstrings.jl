@@ -2249,3 +2249,32 @@ julia> is_categorical(df.b)
 false
 ```
 """
+
+const docstring_slice_sample =
+"""
+    @slice_sample(df, n::Int)
+
+Randomly sample `n` rows from a DataFrame `df` or from each group in a GroupedDataFrame.
+
+# Arguments
+- `df::DataFrame|GroupedDataFrame`: The source data frame or grouped data frame from which to sample rows.
+- `n::Int`: The number of rows to sample. If `df` has fewer rows than `n`, all rows will be returned.
+
+# Examples
+```julia
+julia>  df = DataFrame(dt1=[missing, 0.2, missing, missing, 1, missing, 5, 6], 
+dt2=[0.3, 2, missing, 3, missing, 5, 6,missing], dt3=[missing, 0.2, missing, missing, 1, missing, 5, 6], 
+dt4=['a', 'b', 'a', 'b', 'a', 'a', 'a', 'b']);
+
+julia> 
+
+julia> @chain df begin 
+       @slice_sample(4)
+       end;
+
+julia> @chain df begin
+       @group_by(dt4)
+       @slice_sample(2)
+       end;
+```
+"""
