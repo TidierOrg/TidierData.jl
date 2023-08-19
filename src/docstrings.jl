@@ -2178,7 +2178,7 @@ const docstring_is_string =
 """
     is_string(column::AbstractVector)
 
-Determine if the given column contains floating-point numbers.
+Determine if the given column contains strings.
 
 # Arguments
 - `column::AbstractVector`: The column whose data type needs to be checked.
@@ -2202,7 +2202,7 @@ const docstring_is_integer =
 """
     is_integer(column::AbstractVector)
 
-Determine if the given column contains floating-point numbers.
+Determine if the given column contains integers.
 
 # Arguments
 - `column::AbstractVector`: The column whose data type needs to be checked.
@@ -2217,7 +2217,7 @@ julia> df = DataFrame( b = [missing, 2, 3], c = [missing, 2.2, 34], d = [missing
 julia> is_integer(df.b)
 true
 
-julia> is_integer(df.b)
+julia> is_integer(df.d)
 false
 ```
 """
