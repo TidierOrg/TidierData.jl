@@ -2164,8 +2164,7 @@ Determine if the given column contains floating-point numbers.
 
 # Examples
 ```jldoctest
-julia> df = DataFrame( b = ["missing", "2", "3"], 
-c = ["missing", "2.2", "34"], d = [missing, missing, "A"]);
+julia> df = DataFrame( b = [missing, 2, 3], c = [missing, 2.2, 34], d = [missing, missing, "A"]);
 
 julia> is_float(df.c)
 true
@@ -2189,10 +2188,9 @@ Determine if the given column contains floating-point numbers.
 
 # Examples
 ```jldoctest
-julia> df = DataFrame( b = ["missing", "b", "c"], 
-c = ["1.1", "2.2", "missing"], d = [missing, missing, "A"]);
+julia> df = DataFrame( b = [missing, 2, 3], c = [missing, 2.2, 34], d = [missing, missing, "A"]);
 
-julia> is_string(df.b)
+julia> is_string(df.d)
 true
 
 julia> is_string(df.c)
@@ -2214,38 +2212,12 @@ Determine if the given column contains floating-point numbers.
 
 # Examples
 ```jldoctest
-julia> df = DataFrame( b = ["missing", "b", "c"], 
-c = ["1.1", "2.2", "missing"], d = [missing, missing, 1]);
+julia> df = DataFrame( b = [missing, 2, 3], c = [missing, 2.2, 34], d = [missing, missing, "A"]);
 
-julia> is_integer(df.d)
+julia> is_integer(df.b)
 true
 
 julia> is_integer(df.b)
-false
-```
-"""
-
-const docstring_is_categorical = 
-"""
-    is_categorical(column::AbstractVector)
-
-Determine if the given column contains floating-point numbers.
-
-# Arguments
-- `column::AbstractVector`: The column whose data type needs to be checked.
-
-# Returns
-- `Bool`: `true` if the column contains categorical variables, `false` otherwise.
-
-# Examples
-```jldoctest
-julia> df = DataFrame( b = ["missing", "b", "c"], 
-c = ["1.1", "2.2", "missing"], d = [missing, missing, 1]);
-
-julia> is_categorical(df.d)
-true
-
-julia> is_categorical(df.b)
 false
 ```
 """
@@ -2262,9 +2234,7 @@ Randomly sample `n` rows from a DataFrame `df` or from each group in a GroupedDa
 
 # Examples
 ```julia
-julia>  df = DataFrame(dt1=[missing, 0.2, missing, missing, 1, missing, 5, 6], 
-dt2=[0.3, 2, missing, 3, missing, 5, 6,missing], dt3=[missing, 0.2, missing, missing, 1, missing, 5, 6], 
-dt4=['a', 'b', 'a', 'b', 'a', 'a', 'a', 'b']);
+julia>  df = DataFrame(dt1=[missing, 0.2, missing, missing, 1, missing, 5, 6], dt2=[0.3, 2, missing, 3, missing, 5, 6,missing], dt3=[missing, 0.2, missing, missing, 1, missing, 5, 6], dt4=['a', 'b', 'a', 'b', 'a', 'a', 'a', 'b']);
 
 julia> 
 
