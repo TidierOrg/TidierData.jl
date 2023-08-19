@@ -700,8 +700,6 @@ macro glimpse(df, width = 80)
   return df_expr
 end
 
-end
-
 """
 $docstring_slice_sample
 """
@@ -717,4 +715,6 @@ macro slice_sample(df, n::Int)
   end
 
   return df_expr
+end
+
 end
