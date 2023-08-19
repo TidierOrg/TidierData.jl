@@ -36,11 +36,8 @@ macro summary(df, cols...)
     end
 end
 
-### And filled
+### fill_missing
 
-function isgrouped(df::Any)
-    return typeof(df) == GroupedDataFrame
-end
 function fill_missing(df::DataFrame, method::String)
     return fill_missing(df, Symbol.(names(df)), method)
 end
@@ -50,7 +47,7 @@ function fill_missing(df::DataFrame, cols::Vector{Symbol}, method::String)
     for col in cols
         if method == "down"
             last_observation = new_df[1, col]
-            for i in 1:size(new_df, 1)
+            for i in 1:nrow(new_df)
                 if ismissing(new_df[i, col])
                     new_df[i, col] = last_observation
                 else
@@ -59,7 +56,7 @@ function fill_missing(df::DataFrame, cols::Vector{Symbol}, method::String)
             end
         elseif method == "up"
             next_observation = new_df[end, col]
-            for i in size(new_df, 1):-1:1
+            for i in nrow(new_df):-1:1
                 if ismissing(new_df[i, col])
                     new_df[i, col] = next_observation
                 else
@@ -78,6 +75,7 @@ function fill_missing(gdf::GroupedDataFrame, cols::Vector{Symbol}, method::Strin
     group_cols = groupcols(gdf)
     results = []
     for group in gdf
+        # call the DataFrame version of fill_missing on the SubDataFrame
         processed_group = fill_missing(DataFrame(group), cols, method)
         push!(results, processed_group)
     end
@@ -89,38 +87,40 @@ end
 docstring_fill_missing
 """
 macro fill_missing(df, args...)
-    if length(args) == 1  # Only method is provided
+    # Handling the simpler case of only a method provided
+    if length(args) == 1
         method = args[1]
         return quote
-            if isgrouped($(esc(df)))
-                combine(gd -> fill_missing(gd, $(esc(method))), $(esc(df)))
+            if $(esc(df)) isa GroupedDataFrame
+                combine($(esc(df))) do gd
+                    fill_missing(gd, $(esc(method)))
+                end
             else
                 fill_missing($(esc(df)), $(esc(method)))
             end
         end
     end
 
-    # Extract columns and method
+    
     cols, method = args[1], args[2]
-
     if @capture(cols, (args__,))
-        # args captured
+        
     elseif @capture(cols, [args__])
-        # args captured
+        
+    elseif typeof(cols) == Symbol  # Handling a single column
+        args = [cols]
     else
-        throw(ArgumentError("Expected a tuple or array for columns"))
+        throw(ArgumentError("Expected a tuple, array, or single column for columns"))
     end
 
     args_quoted = QuoteNode.(args)
-    
-    # Construct the function call expression with columns
-    var_expr = quote
-        if isgrouped($(esc(df)))
-            combine(gd -> fill_missing(gd, [$(args_quoted...)], $(esc(method))), $(esc(df)))
+
+    return quote
+        if $(esc(df)) isa GroupedDataFrame
+            fill_missing($(esc(df)), [$(args_quoted...)], $(esc(method)))
         else
             fill_missing($(esc(df)), [$(args_quoted...)], $(esc(method)))
         end
     end
-    return var_expr
 end
 

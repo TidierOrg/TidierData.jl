@@ -1,6 +1,6 @@
-using TidierData
-using DataFrames
+# The @fill_missing macro is a reimplementation of fill(). To mirror the syntax in R, the methods availble are "up" (fill from bottom up) and "down" fill from top down.
 
+using TidierData
 
 df = DataFrame(
     a = [missing, 2, 3, missing, 5],
@@ -18,7 +18,6 @@ end
 
 @fill_missing(df, "down")
 
-# This fills all missing values in the DataFrame with the next available observation.
 
 # ## Fill specifc columns
 # This fills missing values in columns `a` and `c` going from bottom to top.
