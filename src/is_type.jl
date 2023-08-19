@@ -1,5 +1,5 @@
 """
-docstring_is_categorical
+$docstring_is_categorical
 """
 function is_float(column::AbstractVector)
     T = eltype(column)
@@ -10,7 +10,7 @@ function is_float(column::AbstractVector)
 end
 
 """
-docstring_is_categorical
+$docstring_is_categorical
 """
 function is_integer(column::AbstractVector)
     T = eltype(column)
@@ -21,7 +21,7 @@ function is_integer(column::AbstractVector)
 end
 
 """
-docstring_is_categorical
+$docstring_is_categorical
 """
 function is_string(column::AbstractVector)
     T = eltype(column)
@@ -32,7 +32,7 @@ function is_string(column::AbstractVector)
 end
 
 """
-docstring_is_categorical
+$docstring_is_categorical
 """
 function is_categorical(column::AbstractVector)
     T = eltype(column)
