@@ -2,8 +2,9 @@ theme:
   name: material
   logo: assets/Tidier_jl_logo.png
   features:
+    - content.code.copy
     # - announce.dismiss
-    #- content.code.annotate
+    - content.code.annotate
     # - content.tabs.link
     #- content.tooltips
     # - header.autohide
@@ -130,6 +131,8 @@ nav:
   - "Joins" : "examples/generated/UserGuide/joins.md"
   - "Binding" : "examples/generated/UserGuide/binding.md" 
   - "Pivoting": "examples/generated/UserGuide/pivots.md"
+  - "Separating" : "examples/generated/UserGuide/sep_unite.md"
+  - "@summary" : "examples/generated/UserGuide/summary.md"
   - "Column names": "examples/generated/UserGuide/column_names.md"
   - "Interpolation" : "examples/generated/UserGuide/interpolation.md"
   - "Auto-vectorization" : "examples/generated/UserGuide/autovec.md"
