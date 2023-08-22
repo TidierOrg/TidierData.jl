@@ -100,7 +100,11 @@ macro fill_missing(df, args...)
       end
   end
 
-  cols..., method = args
+  cols = args[1:(length(args)-1)]
+  method = args[length(args)]
+  
+  # Requires Julia 1.9
+  # cols..., method = args
 
   cols_quoted = QuoteNode.(cols)
 
