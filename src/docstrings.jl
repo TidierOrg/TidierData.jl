@@ -2081,20 +2081,25 @@ julia> @chain df begin
 
 const docstring_fill_missing =
 """
-   @fill_missing(df, columns, method)
+   @fill_missing(df, [columns...], direction)
 
 Fill missing values in a DataFrame `df` using the specified method.
 
 # Arguments
-- `df`: The DataFrame in which you want to fill missing values.
-- `columns`: (Optional) A tuple or array specifying the columns in which you want to fill missing values. If not provided, the operation is applied to all columns.
-- `method`: The method to use for filling missing values. Options include: up(nocb) or down (locf)
+- `df`: The DataFrame or GroupedDataFrame in which you want to fill missing values.
+- `columns`: (Optional) The columns for which missing values need to be filled, separated by commas. If not provided, the operation is applied to all columns.
+- `direction`: A string containing the method to use for filling missing values. Options include: "down" (last observation carried forward) or "up" (next observation carried backward).
 
 # Examples
 ```jldoctest
-julia> df = DataFrame(dt1=[missing, 0.2, missing, missing, 1, missing, 5, 6], dt2=[0.3, 2, missing, 3, missing, 5, 6,missing], dt3=[missing, 0.2, missing, missing, 1, missing, 5, 6], dt4=[0.3, missing, missing, 3, missing, 5, 6,missing], dt5=['a', 'b', 'a', 'b', 'a', 'a', 'a', 'b']);
+julia> df = DataFrame(
+          dt1 = [missing, 0.2, missing, missing, 1, missing, 5, 6],
+          dt2 = [0.3, 2, missing, 3, missing, 5, 6,missing],
+          dt3 = [missing, 0.2, missing, missing, 1, missing, 5, 6],
+          dt4 = [0.3, missing, missing, 3, missing, 5, 6, missing],
+          dt5 = ['a', 'b', 'a', 'b', 'a', 'a', 'a', 'b']);
 
-julia> @fill_missing(df, [dt2, dt4], "down")
+julia> @fill_missing(df, dt2, dt4, "down")
 8×5 DataFrame
  Row │ dt1        dt2       dt3        dt4       dt5  
      │ Float64?   Float64?  Float64?   Float64?  Char 
@@ -2126,7 +2131,7 @@ julia> @chain df begin
 
 julia> @chain df begin
        @group_by(dt5)
-       @fill_missing((dt1), "up")
+       @fill_missing(dt1, "up")
        end
 GroupedDataFrame with 2 groups based on key: dt5
 First Group (5 rows): dt5 = 'a': ASCII/Unicode U+0061 (category Ll: Letter, lowercase)
@@ -2148,7 +2153,6 @@ Last Group (3 rows): dt5 = 'b': ASCII/Unicode U+0062 (category Ll: Letter, lower
    3 │      6.0  missing          6.0  missing    b
 ```
 """
-
 
 const docstring_is_float = 
 """

@@ -23,9 +23,8 @@ end
 # This fills missing values in columns `a` and `c` going from bottom to top.
 
 @chain df begin
-    @fill_missing((a, c), "up") ### also supports @fill_missing([a, c], up)
+    @fill_missing(a, c, "up")
 end
-
 
 # ## Fill with Grouped DataFrames
 # When grouping by the `group` column, this fills missing values in columns `a` within each group going from top to bottom within that group

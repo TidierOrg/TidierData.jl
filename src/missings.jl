@@ -92,33 +92,23 @@ macro fill_missing(df, args...)
       return quote
           if $(esc(df)) isa GroupedDataFrame
               combine($(esc(df))) do gd
-                  fill_missing(gd, $(esc(method)))
+                  fill_missing(gd, $method)
               end
           else
-              fill_missing($(esc(df)), $(esc(method)))
+              fill_missing($(esc(df)), $method)
           end
       end
   end
 
-  
-  cols, method = args[1], args[2]
-  if @capture(cols, (args__,))
-      
-  elseif @capture(cols, [args__])
-      
-  elseif typeof(cols) == Symbol  # Handling a single column
-      args = [cols]
-  else
-      throw(ArgumentError("Expected a tuple, array, or single column for columns"))
-  end
+  cols..., method = args
 
-  args_quoted = QuoteNode.(args)
+  cols_quoted = QuoteNode.(cols)
 
   return quote
       if $(esc(df)) isa GroupedDataFrame
-          fill_missing($(esc(df)), [$(args_quoted...)], $(esc(method)))
+          fill_missing($(esc(df)), [$(cols_quoted...)], $method)
       else
-          fill_missing($(esc(df)), [$(args_quoted...)], $(esc(method)))
+          fill_missing($(esc(df)), [$(cols_quoted...)], $method)
       end
   end
 end
