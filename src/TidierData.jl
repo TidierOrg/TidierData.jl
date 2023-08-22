@@ -14,7 +14,6 @@ using Reexport
 @reexport using Chain
 @reexport using Statistics
 @reexport using ShiftedArrays: lag, lead
-@reexport using Random: randperm
 
 export TidierData_set, across, desc, n, row_number, starts_with, ends_with, matches, if_else, case_when, ntile, 
       as_float, as_integer, as_string, is_float, is_integer, is_string, @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
