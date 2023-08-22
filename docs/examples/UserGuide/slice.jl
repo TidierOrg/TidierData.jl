@@ -60,3 +60,9 @@ end
 @chain df begin
     @slice(-(1:5))
 end
+
+# ## Sample 5 random rows in the data frame
+
+@chain df begin
+  @slice_sample(5)
+end

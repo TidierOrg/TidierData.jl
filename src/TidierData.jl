@@ -4,6 +4,7 @@ using DataFrames
 using MacroTools
 using Chain
 using Statistics
+using StatsBase # primarily for `sample()`
 using Cleaner
 using Reexport
 
@@ -15,21 +16,22 @@ using Reexport
 @reexport using ShiftedArrays: lag, lead
 
 export TidierData_set, across, desc, n, row_number, starts_with, ends_with, matches, if_else, case_when, ntile, 
-      as_float, as_integer, as_string, @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
+      as_float, as_integer, as_string, is_float, is_integer, is_string, @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
       @group_by, @ungroup, @slice, @arrange, @distinct, @pull, @left_join, @right_join, @inner_join, @full_join,
-      @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_na, @glimpse, @separate,
-      @unite, @summary
+      @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_missing, @glimpse, @separate,
+      @unite, @summary, @fill_missing, @slice_sample
 
 # Package global variables
 const code = Ref{Bool}(false) # output DataFrames.jl code?
 const log = Ref{Bool}(false) # output tidylog output? (not yet implemented)
 
 # Expose the global do-not-vectorize "list"
-const not_vectorized = Ref{Vector{Symbol}}([:Ref, :Set, :Cols, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :as_categorical])
+const not_vectorized = Ref{Vector{Symbol}}([:Ref, :Set, :Cols, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :is_float, :is_integer, :is_string, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :as_categorical, :is_categorical])
 
 # Includes
 include("docstrings.jl")
 include("parsing.jl")
+include("slice.jl")
 include("joins.jl")
 include("binding.jl")
 include("pivots.jl")
@@ -42,6 +44,8 @@ include("ntile.jl")
 include("type_conversions.jl")
 include("separate_unite.jl")
 include("summary.jl")
+include("is_type.jl")
+include("missings.jl")
 
 # Function to set global variables
 """
@@ -479,53 +483,6 @@ macro ungroup(df)
 end
 
 """
-$docstring_slice
-"""
-macro slice(df, exprs...)
-  df_expr = quote
-    local interpolated_indices = parse_slice_n.($exprs, nrow(DataFrame($(esc(df)))))
-    local original_indices = [eval.(interpolated_indices)...]
-    local clean_indices = Int64[]
-    for index in original_indices
-      if index isa Number
-        push!(clean_indices, index)
-      else
-        append!(clean_indices, collect(index))
-      end
-    end
-    
-    if all(clean_indices .> 0)
-      if $(esc(df)) isa GroupedDataFrame
-        combine($(esc(df)); ungroup = false) do sdf
-          sdf[clean_indices, :]
-        end
-      else
-        combine($(esc(df))) do sdf
-          sdf[clean_indices, :]
-        end
-      end
-    elseif all(clean_indices .< 0)
-      clean_indices = -clean_indices
-      if $(esc(df)) isa GroupedDataFrame
-        combine($(esc(df)); ungroup = true) do sdf
-          sdf[Not(clean_indices), :]
-        end
-      else
-        combine($(esc(df))) do sdf
-          sdf[Not(clean_indices), :]
-        end
-      end
-    else
-      throw("@slice() indices must either be all positive or all negative.")
-    end
-  end
-  if code[]
-    @info MacroTools.prettify(df_expr)
-  end
-  return df_expr
-end
-
-"""
 $docstring_arrange
 """
 macro arrange(df, exprs...)
@@ -625,44 +582,6 @@ macro pull(df, column)
     @info MacroTools.prettify(vec_expr)
   end
   return vec_expr
-end
-
-"""
-$docstring_drop_na
-"""
-macro drop_na(df, exprs...)
-  interpolated_exprs = parse_interpolation.(exprs)
-
-  tidy_exprs = [i[1] for i in interpolated_exprs]
-
-  tidy_exprs = parse_tidy.(tidy_exprs)
-  num_exprs = length(exprs)
-  df_expr = quote
-    if $(esc(df)) isa GroupedDataFrame
-      local col_names = groupcols($(esc(df)))
-      
-      # A copy is only needed for grouped dataframes because the copy
-      # has to be regrouped because `dropmissing()` does not support
-      # grouped data frames.
-      local df_copy = DataFrame($(esc(df)))
-      if $num_exprs == 0
-        dropmissing!(df_copy)
-      else
-        dropmissing!(df_copy, Cols($(tidy_exprs...)))
-      end
-      groupby(df_copy, col_names; sort = false) # regroup
-    else
-      if $num_exprs == 0
-        dropmissing($(esc(df)))
-      else
-        dropmissing($(esc(df)), Cols($(tidy_exprs...)))
-      end
-    end
-  end
-  if code[]
-    @info MacroTools.prettify(df_expr)
-  end
-  return df_expr
 end
 
 """

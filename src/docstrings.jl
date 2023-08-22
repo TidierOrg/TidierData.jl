@@ -1809,13 +1809,13 @@ julia> @chain df begin
 ```
 """
 
-const docstring_drop_na =
+const docstring_drop_missing =
 """
-    @drop_na(df, [cols...])
+    @drop_missing(df, [cols...])
 
 Drop all rows with missing values.
 
-When called without arguments, `@drop_na()` drops all rows with missing values in any column. If columns are provided as an optional argument, only missing values from named columns are considered when dropping rows.
+When called without arguments, `@drop_missing()` drops all rows with missing values in any column. If columns are provided as an optional argument, only missing values from named columns are considered when dropping rows.
 
 # Arguments
 - `df`: A DataFrame or GroupedDataFrame.
@@ -1836,7 +1836,7 @@ julia> df = DataFrame(
    3 │ missing        3
    4 │       4        4
 
-julia> @chain df @drop_na()
+julia> @chain df @drop_missing()
 2×2 DataFrame
  Row │ a      b     
      │ Int64  Int64 
@@ -1844,7 +1844,7 @@ julia> @chain df @drop_na()
    1 │     1      1
    2 │     4      4
 
-julia> @chain df @drop_na(a)
+julia> @chain df @drop_missing(a)
 3×2 DataFrame
  Row │ a      b       
      │ Int64  Int64?  
@@ -1853,7 +1853,7 @@ julia> @chain df @drop_na(a)
    2 │     2  missing 
    3 │     4        4
 
-julia> @chain df @drop_na(a, b)
+julia> @chain df @drop_missing(a, b)
 2×2 DataFrame
  Row │ a      b     
      │ Int64  Int64 
@@ -1861,7 +1861,7 @@ julia> @chain df @drop_na(a, b)
    1 │     1      1
    2 │     4      4
 
-julia> @chain df @drop_na(starts_with("a"))
+julia> @chain df @drop_missing(starts_with("a"))
 3×2 DataFrame
  Row │ a      b       
      │ Int64  Int64?  
@@ -2076,5 +2076,228 @@ julia> @summary(df, (B:D));
 julia> @chain df begin
        @summary(B:D)
        end;
+```
+"""
+
+const docstring_fill_missing =
+"""
+   @fill_missing(df, [columns...], direction)
+
+Fill missing values in a DataFrame `df` using the specified method.
+
+# Arguments
+- `df`: The DataFrame or GroupedDataFrame in which you want to fill missing values.
+- `columns`: (Optional) The columns for which missing values need to be filled, separated by commas. If not provided, the operation is applied to all columns.
+- `direction`: A string containing the method to use for filling missing values. Options include: "down" (last observation carried forward) or "up" (next observation carried backward).
+
+# Examples
+```jldoctest
+julia> df = DataFrame(
+          dt1 = [missing, 0.2, missing, missing, 1, missing, 5, 6],
+          dt2 = [0.3, 2, missing, 3, missing, 5, 6,missing],
+          dt3 = [missing, 0.2, missing, missing, 1, missing, 5, 6],
+          dt4 = [0.3, missing, missing, 3, missing, 5, 6, missing],
+          dt5 = ['a', 'b', 'a', 'b', 'a', 'a', 'a', 'b']);
+
+julia> @fill_missing(df, dt2, dt4, "down")
+8×5 DataFrame
+ Row │ dt1        dt2       dt3        dt4       dt5  
+     │ Float64?   Float64?  Float64?   Float64?  Char 
+─────┼────────────────────────────────────────────────
+   1 │ missing         0.3  missing         0.3  a
+   2 │       0.2       2.0        0.2       0.3  b
+   3 │ missing         2.0  missing         0.3  a
+   4 │ missing         3.0  missing         3.0  b
+   5 │       1.0       3.0        1.0       3.0  a
+   6 │ missing         5.0  missing         5.0  a
+   7 │       5.0       6.0        5.0       6.0  a
+   8 │       6.0       6.0        6.0       6.0  b
+
+julia> @chain df begin
+       @fill_missing("up")
+       end
+8×5 DataFrame
+ Row │ dt1       dt2        dt3       dt4        dt5  
+     │ Float64?  Float64?   Float64?  Float64?   Char 
+─────┼────────────────────────────────────────────────
+   1 │      0.2        0.3       0.2        0.3  a
+   2 │      0.2        2.0       0.2        3.0  b
+   3 │      1.0        3.0       1.0        3.0  a
+   4 │      1.0        3.0       1.0        3.0  b
+   5 │      1.0        5.0       1.0        5.0  a
+   6 │      5.0        5.0       5.0        5.0  a
+   7 │      5.0        6.0       5.0        6.0  a
+   8 │      6.0  missing         6.0  missing    b 
+
+julia> @chain df begin
+       @group_by(dt5)
+       @fill_missing(dt1, "up")
+       end
+GroupedDataFrame with 2 groups based on key: dt5
+First Group (5 rows): dt5 = 'a': ASCII/Unicode U+0061 (category Ll: Letter, lowercase)
+ Row │ dt1       dt2        dt3        dt4        dt5  
+     │ Float64?  Float64?   Float64?   Float64?   Char 
+─────┼─────────────────────────────────────────────────
+   1 │      1.0        0.3  missing          0.3  a
+   2 │      1.0  missing    missing    missing    a
+   3 │      1.0  missing          1.0  missing    a
+   4 │      5.0        5.0  missing          5.0  a
+   5 │      5.0        6.0        5.0        6.0  a
+⋮
+Last Group (3 rows): dt5 = 'b': ASCII/Unicode U+0062 (category Ll: Letter, lowercase)
+ Row │ dt1       dt2        dt3        dt4        dt5  
+     │ Float64?  Float64?   Float64?   Float64?   Char 
+─────┼─────────────────────────────────────────────────
+   1 │      0.2        2.0        0.2  missing    b
+   2 │      6.0        3.0  missing          3.0  b
+   3 │      6.0  missing          6.0  missing    b
+```
+"""
+
+const docstring_is_float = 
+"""
+    is_float(column::AbstractVector)
+
+Determine if the given column contains floating-point numbers.
+
+# Arguments
+- `column::AbstractVector`: The column whose data type needs to be checked.
+
+# Returns
+- `Bool`: `true` if the column contains floating-point numbers, `false` otherwise.
+
+# Examples
+```jldoctest
+julia> df = DataFrame( b = [missing, 2, 3], c = [missing, 2.2, 34], d = [missing, missing, "A"]);
+
+julia> is_float(df.c)
+true
+
+julia> is_float(df.b)
+false
+```
+"""
+
+const docstring_is_string = 
+"""
+    is_string(column::AbstractVector)
+
+Determine if the given column contains strings.
+
+# Arguments
+- `column::AbstractVector`: The column whose data type needs to be checked.
+
+# Returns
+- `Bool`: `true` if the column contains strings, `false` otherwise.
+
+# Examples
+```jldoctest
+julia> df = DataFrame( b = [missing, 2, 3], c = [missing, 2.2, 34], d = [missing, missing, "A"]);
+
+julia> is_string(df.d)
+true
+
+julia> is_string(df.c)
+false
+```
+"""
+
+const docstring_is_integer = 
+"""
+    is_integer(column::AbstractVector)
+
+Determine if the given column contains integers.
+
+# Arguments
+- `column::AbstractVector`: The column whose data type needs to be checked.
+
+# Returns
+- `Bool`: `true` if the column contains integers, `false` otherwise.
+
+# Examples
+```jldoctest
+julia> df = DataFrame( b = [missing, 2, 3], c = [missing, 2.2, 34], d = [missing, missing, "A"]);
+
+julia> is_integer(df.b)
+true
+
+julia> is_integer(df.d)
+false
+```
+"""
+
+const docstring_slice_sample =
+"""
+    @slice_sample(df, [n = 1, prop, replace = false])
+
+Randomly sample rows from a DataFrame `df` or from each group in a GroupedDataFrame. The default is to return 1 row. Either the number of rows (`n`) or the proportion of rows (`prop`) should be provided as a keyword argument
+
+# Arguments
+- `df`: The source data frame or grouped data frame from which to sample rows.
+- `n`: The number of rows to sample. Defaults to `1`.
+- `prop`: The proportion of rows to sample.
+- `replace`: Whether to sample with replacement. Defaults to `false`.
+
+# Examples
+```julia
+julia> df = DataFrame(a = 1:10, b = 11:20);
+
+julia> using StableRNGs, Random
+
+julia> rng = StableRNG(1);
+
+julia> Random.seed!(rng, 1);
+
+julia> @chain df begin 
+       @slice_sample(n = 5)
+       end
+5×2 DataFrame
+ Row │ a      b     
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     6     16
+   2 │     1     11
+   3 │     5     15
+   4 │     4     14
+   5 │     8     18
+
+julia> @chain df begin 
+       @slice_sample(n = 5, replace = true)
+       end
+5×2 DataFrame
+ Row │ a      b     
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     7     17
+   2 │     2     12
+   3 │     1     11
+   4 │     4     14
+   5 │     2     12
+
+julia> @chain df begin 
+       @slice_sample(prop = 0.5)
+       end
+5×2 DataFrame
+ Row │ a      b     
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     6     16
+   2 │     7     17
+   3 │     5     15
+   4 │     9     19
+   5 │     2     12
+
+julia> @chain df begin 
+       @slice_sample(prop = 0.5, replace = true)
+       end
+5×2 DataFrame
+ Row │ a      b     
+     │ Int64  Int64 
+─────┼──────────────
+   1 │    10     20
+   2 │     4     14
+   3 │     9     19
+   4 │     9     19
+   5 │     8     18
 ```
 """

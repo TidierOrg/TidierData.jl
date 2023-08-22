@@ -93,7 +93,8 @@ TidierData.jl currently supports the following top-level macros:
     - `@select()`, `@rename()`, and `@distinct()`
     - `@mutate()` and `@transmute()` 
     - `@summarize()` and `@summarise()`
-    - `@filter()` and `@slice()`
+    - `@filter()`
+    - `@slice()` and `@slice_sample()`
     - `@group_by()` and `@ungroup()`
     - `@arrange()`
     - `@pull()`
@@ -102,7 +103,7 @@ TidierData.jl currently supports the following top-level macros:
     - `@bind_rows()` and `@bind_cols()`
     - `@pivot_wider()` and `@pivot_longer()`
     - `@separate()` and `@unite()`
-    - `@drop_na()`
+    - `@drop_missing()` and `@fill_missing`
     - `@clean_names()` (as in R's `janitor::clean_names()` function)
     - `@summary()` (as in R's `summary()` function)
 ```
@@ -118,6 +119,7 @@ TidierData.jl also supports the following helper functions:
     - `lag()` and `lead()`
     - `starts_with()`, `ends_with()`, `matches()`, and `contains()`
     - `as_float()`, `as_integer()`, and `as_string()`
+    - `is_float()`, `is_integer()`, and `is_string()`
 ```
 
 See the [Reference](https://tidierorg.github.io/TidierData.jl/latest/reference/) page for a detailed guide to each of the macros and functions.

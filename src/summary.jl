@@ -35,4 +35,3 @@ macro summary(df, cols...)
         end
     end
 end
-
