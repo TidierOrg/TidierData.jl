@@ -1,6 +1,7 @@
-# The goal of this benchmarking is to guage how Tidier.jl performs in comparison to DataFrames.jl. Ultimatley, from this benchmarking, we see that Tidier.jl is comprable in speed to DataFrames.jl
+# The goal of this benchmarking is to guage how Tidier.jl performs in comparison to DataFrames.jl. Ultimately, from this benchmarking, we can check that Tidier.jl is comparable in speed to DataFrames.jl.
 
 # ## Why function wrap?
+
 # Wrapping code in a function allows it to compile just once, which more closely reflects the reality of production workflows. For a more robust explanation, please see @kdpsingh comment here: https://github.com/TidierOrg/TidierData.jl/issues/24#issuecomment-1682718061
 
 using TidierData
@@ -31,7 +32,6 @@ end
 @benchmark groupbysummarize_tidier()
 
 @benchmark combine(groupby(movies, :MPAA), nrow => :n)
-
 
 # ## one mutate
 function mutate_1_tidier()

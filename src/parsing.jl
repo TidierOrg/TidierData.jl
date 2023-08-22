@@ -405,11 +405,15 @@ end
 # Simply to convert n() to a number
 function parse_slice_n(var_expr::Union{Expr,Symbol,Number,String}, n::Integer)
   var_expr = MacroTools.postwalk(var_expr) do x
-    if @capture(x, fn_())
-      if fn == :n
+    if @capture(x, fn_(args__))
+      if fn == :n && length(args) == 0
         return n
       else
-        return :($fn())
+        # While this doesn't quite work, we may be able to do something like this in the future
+        # to enable arbitrary user-provided functions within `@slice()`:
+        # parse_escape_function(:($fn($(args...))))
+        # In the meantime:
+        return x 
       end
     end
     return x

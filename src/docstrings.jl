@@ -1809,13 +1809,13 @@ julia> @chain df begin
 ```
 """
 
-const docstring_drop_na =
+const docstring_drop_missing =
 """
-    @drop_na(df, [cols...])
+    @drop_missing(df, [cols...])
 
 Drop all rows with missing values.
 
-When called without arguments, `@drop_na()` drops all rows with missing values in any column. If columns are provided as an optional argument, only missing values from named columns are considered when dropping rows.
+When called without arguments, `@drop_missing()` drops all rows with missing values in any column. If columns are provided as an optional argument, only missing values from named columns are considered when dropping rows.
 
 # Arguments
 - `df`: A DataFrame or GroupedDataFrame.
@@ -1836,7 +1836,7 @@ julia> df = DataFrame(
    3 │ missing        3
    4 │       4        4
 
-julia> @chain df @drop_na()
+julia> @chain df @drop_missing()
 2×2 DataFrame
  Row │ a      b     
      │ Int64  Int64 
@@ -1844,7 +1844,7 @@ julia> @chain df @drop_na()
    1 │     1      1
    2 │     4      4
 
-julia> @chain df @drop_na(a)
+julia> @chain df @drop_missing(a)
 3×2 DataFrame
  Row │ a      b       
      │ Int64  Int64?  
@@ -1853,7 +1853,7 @@ julia> @chain df @drop_na(a)
    2 │     2  missing 
    3 │     4        4
 
-julia> @chain df @drop_na(a, b)
+julia> @chain df @drop_missing(a, b)
 2×2 DataFrame
  Row │ a      b     
      │ Int64  Int64 
@@ -1861,7 +1861,7 @@ julia> @chain df @drop_na(a, b)
    1 │     1      1
    2 │     4      4
 
-julia> @chain df @drop_na(starts_with("a"))
+julia> @chain df @drop_missing(starts_with("a"))
 3×2 DataFrame
  Row │ a      b       
      │ Int64  Int64?  
@@ -2224,27 +2224,76 @@ false
 
 const docstring_slice_sample =
 """
-    @slice_sample(df, n::Int)
+    @slice_sample(df, [n = 1, prop, replace = false])
 
-Randomly sample `n` rows from a DataFrame `df` or from each group in a GroupedDataFrame.
+Randomly sample rows from a DataFrame `df` or from each group in a GroupedDataFrame. The default is to return 1 row. Either the number of rows (`n`) or the proportion of rows (`prop`) should be provided as a keyword argument
 
 # Arguments
-- `df::DataFrame|GroupedDataFrame`: The source data frame or grouped data frame from which to sample rows.
-- `n::Int`: The number of rows to sample. If `df` has fewer rows than `n`, all rows will be returned.
+- `df`: The source data frame or grouped data frame from which to sample rows.
+- `n`: The number of rows to sample. Defaults to `1`.
+- `prop`: The proportion of rows to sample.
+- `replace`: Whether to sample with replacement. Defaults to `false`.
 
 # Examples
 ```julia
-julia>  df = DataFrame(dt1=[missing, 0.2, missing, missing, 1, missing, 5, 6], dt2=[0.3, 2, missing, 3, missing, 5, 6,missing], dt3=[missing, 0.2, missing, missing, 1, missing, 5, 6], dt4=['a', 'b', 'a', 'b', 'a', 'a', 'a', 'b']);
+julia> df = DataFrame(a = 1:10, b = 11:20);
 
-julia> 
+julia> using StableRNGs, Random
+
+julia> rng = StableRNG(1);
+
+julia> Random.seed!(rng, 1);
 
 julia> @chain df begin 
-       @slice_sample(4)
-       end;
+       @slice_sample(n = 5)
+       end
+5×2 DataFrame
+ Row │ a      b     
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     6     16
+   2 │     1     11
+   3 │     5     15
+   4 │     4     14
+   5 │     8     18
 
-julia> @chain df begin
-       @group_by(dt4)
-       @slice_sample(2)
-       end;
+julia> @chain df begin 
+       @slice_sample(n = 5, replace = true)
+       end
+5×2 DataFrame
+ Row │ a      b     
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     7     17
+   2 │     2     12
+   3 │     1     11
+   4 │     4     14
+   5 │     2     12
+
+julia> @chain df begin 
+       @slice_sample(prop = 0.5)
+       end
+5×2 DataFrame
+ Row │ a      b     
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     6     16
+   2 │     7     17
+   3 │     5     15
+   4 │     9     19
+   5 │     2     12
+
+julia> @chain df begin 
+       @slice_sample(prop = 0.5, replace = true)
+       end
+5×2 DataFrame
+ Row │ a      b     
+     │ Int64  Int64 
+─────┼──────────────
+   1 │    10     20
+   2 │     4     14
+   3 │     9     19
+   4 │     9     19
+   5 │     8     18
 ```
 """

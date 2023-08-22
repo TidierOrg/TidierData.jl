@@ -4,9 +4,9 @@ using DataFrames
 using MacroTools
 using Chain
 using Statistics
+using StatsBase # primarily for `sample()`
 using Cleaner
 using Reexport
-using Random: randperm
 
 # Exporting `Cols` because `summarize(!!vars, funs))` with multiple interpolated
 # columns requires `Cols()` to be nested within `Cols()`, so `Cols` needs to be exported.
@@ -19,7 +19,7 @@ using Random: randperm
 export TidierData_set, across, desc, n, row_number, starts_with, ends_with, matches, if_else, case_when, ntile, 
       as_float, as_integer, as_string, is_float, is_string, is_integer, @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
       @group_by, @ungroup, @slice, @arrange, @distinct, @pull, @left_join, @right_join, @inner_join, @full_join,
-      @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_na, @glimpse, @separate,
+      @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_missing, @glimpse, @separate,
       @unite, @summary, @fill_missing, @slice_sample
 
 # Package global variables
@@ -32,6 +32,7 @@ const not_vectorized = Ref{Vector{Symbol}}([:Ref, :Set, :Cols, :(:), :∘, :lag,
 # Includes
 include("docstrings.jl")
 include("parsing.jl")
+include("slice.jl")
 include("joins.jl")
 include("binding.jl")
 include("pivots.jl")
@@ -476,53 +477,6 @@ macro ungroup(df)
 end
 
 """
-$docstring_slice
-"""
-macro slice(df, exprs...)
-  df_expr = quote
-    local interpolated_indices = parse_slice_n.($exprs, nrow(DataFrame($(esc(df)))))
-    local original_indices = [eval.(interpolated_indices)...]
-    local clean_indices = Int64[]
-    for index in original_indices
-      if index isa Number
-        push!(clean_indices, index)
-      else
-        append!(clean_indices, collect(index))
-      end
-    end
-    
-    if all(clean_indices .> 0)
-      if $(esc(df)) isa GroupedDataFrame
-        combine($(esc(df)); ungroup = false) do sdf
-          sdf[clean_indices, :]
-        end
-      else
-        combine($(esc(df))) do sdf
-          sdf[clean_indices, :]
-        end
-      end
-    elseif all(clean_indices .< 0)
-      clean_indices = -clean_indices
-      if $(esc(df)) isa GroupedDataFrame
-        combine($(esc(df)); ungroup = true) do sdf
-          sdf[Not(clean_indices), :]
-        end
-      else
-        combine($(esc(df))) do sdf
-          sdf[Not(clean_indices), :]
-        end
-      end
-    else
-      throw("@slice() indices must either be all positive or all negative.")
-    end
-  end
-  if code[]
-    @info MacroTools.prettify(df_expr)
-  end
-  return df_expr
-end
-
-"""
 $docstring_arrange
 """
 macro arrange(df, exprs...)
@@ -635,9 +589,9 @@ macro pull(df, column)
 end
 
 """
-$docstring_drop_na
+$docstring_drop_missing
 """
-macro drop_na(df, exprs...)
+macro drop_missing(df, exprs...)
   interpolated_exprs = parse_interpolation.(exprs)
 
   tidy_exprs = [i[1] for i in interpolated_exprs]
@@ -697,23 +651,6 @@ macro glimpse(df, width = 80)
       println
     end
   end 
-  return df_expr
-end
-
-"""
-$docstring_slice_sample
-"""
-macro slice_sample(df, n::Int)
-  df_expr = quote
-      if $(esc(df)) isa GroupedDataFrame
-          combine($(esc(df)); ungroup = false) do sdf
-              sdf[randperm(nrow(sdf))[1:$(esc(n))], :]
-          end
-      else
-          $(esc(df))[randperm(nrow($(esc(df))))[1:$(esc(n))], :]
-      end
-  end
-
   return df_expr
 end
 
