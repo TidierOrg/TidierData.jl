@@ -1,5 +1,10 @@
 # TidierData.jl updates
 
+## v0.11.0 - 2023-08-22
+- Add `@fill_missing()`, `@slice_sample()`, `is_float()`, `is_integer()`, `is_string()`
+- Rename `@drop_na()` to `@drop_missing()` to be consistent with Julia data types.
+- Added StatsBase.jl dependency for use of `sample()` function within `@slice_sample()`
+
 ## v0.10.0 - 2023-08-15
 - Refactor macros to make them much faster and memory-efficient.
 - `@group_by` no longer automatically sorts by group, which makes it much faster. This is a slight change in behavior from `dplyr` but the speed trade-off is worth it.

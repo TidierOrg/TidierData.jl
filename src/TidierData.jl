@@ -17,7 +17,7 @@ using Reexport
 @reexport using Random: randperm
 
 export TidierData_set, across, desc, n, row_number, starts_with, ends_with, matches, if_else, case_when, ntile, 
-      as_float, as_integer, as_string, is_float, is_string, is_integer, @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
+      as_float, as_integer, as_string, is_float, is_integer, is_string, @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
       @group_by, @ungroup, @slice, @arrange, @distinct, @pull, @left_join, @right_join, @inner_join, @full_join,
       @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_missing, @glimpse, @separate,
       @unite, @summary, @fill_missing, @slice_sample
@@ -46,6 +46,7 @@ include("type_conversions.jl")
 include("separate_unite.jl")
 include("summary.jl")
 include("is_type.jl")
+include("missings.jl")
 
 # Function to set global variables
 """
@@ -582,44 +583,6 @@ macro pull(df, column)
     @info MacroTools.prettify(vec_expr)
   end
   return vec_expr
-end
-
-"""
-$docstring_drop_missing
-"""
-macro drop_missing(df, exprs...)
-  interpolated_exprs = parse_interpolation.(exprs)
-
-  tidy_exprs = [i[1] for i in interpolated_exprs]
-
-  tidy_exprs = parse_tidy.(tidy_exprs)
-  num_exprs = length(exprs)
-  df_expr = quote
-    if $(esc(df)) isa GroupedDataFrame
-      local col_names = groupcols($(esc(df)))
-      
-      # A copy is only needed for grouped dataframes because the copy
-      # has to be regrouped because `dropmissing()` does not support
-      # grouped data frames.
-      local df_copy = DataFrame($(esc(df)))
-      if $num_exprs == 0
-        dropmissing!(df_copy)
-      else
-        dropmissing!(df_copy, Cols($(tidy_exprs...)))
-      end
-      groupby(df_copy, col_names; sort = false) # regroup
-    else
-      if $num_exprs == 0
-        dropmissing($(esc(df)))
-      else
-        dropmissing($(esc(df)), Cols($(tidy_exprs...)))
-      end
-    end
-  end
-  if code[]
-    @info MacroTools.prettify(df_expr)
-  end
-  return df_expr
 end
 
 """

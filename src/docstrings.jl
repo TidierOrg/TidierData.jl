@@ -2092,7 +2092,7 @@ Fill missing values in a DataFrame `df` using the specified method.
 
 # Examples
 ```jldoctest
-julia>df = DataFrame(dt1=[missing, 0.2, missing, missing, 1, missing, 5, 6], dt2=[0.3, 2, missing, 3, missing, 5, 6,missing], dt3=[missing, 0.2, missing, missing, 1, missing, 5, 6], dt4=[0.3, missing, missing, 3, missing, 5, 6,missing], dt5=['a', 'b', 'a', 'b', 'a', 'a', 'a', 'b']);
+julia> df = DataFrame(dt1=[missing, 0.2, missing, missing, 1, missing, 5, 6], dt2=[0.3, 2, missing, 3, missing, 5, 6,missing], dt3=[missing, 0.2, missing, missing, 1, missing, 5, 6], dt4=[0.3, missing, missing, 3, missing, 5, 6,missing], dt5=['a', 'b', 'a', 'b', 'a', 'a', 'a', 'b']);
 
 julia> @fill_missing(df, [dt2, dt4], "down")
 8×5 DataFrame
