@@ -4,6 +4,7 @@
 - Add `@fill_missing()`, `@slice_sample()`, `is_float()`, `is_integer()`, `is_string()`
 - Rename `@drop_na()` to `@drop_missing()` to be consistent with Julia data types.
 - Added StatsBase.jl dependency for use of `sample()` function within `@slice_sample()`
+- Simplified dependency versions to ensure future compatability with dependency updates
 
 ## v0.10.0 - 2023-08-15
 - Refactor macros to make them much faster and memory-efficient.
