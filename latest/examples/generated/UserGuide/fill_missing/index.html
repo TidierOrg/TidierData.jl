@@ -14,22 +14,20 @@
       
       
       
-        <link rel="next" href="examples/generated/UserGuide/dataset_movies/">
       
-      
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.2">
     
     
       
-        <title>TidierData.jl</title>
+        <title>Fill missing - TidierData.jl</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.0e669242.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.0e669242.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.85d0ee34.min.css">
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.85d0ee34.min.css">
       
       
 
@@ -48,11 +46,11 @@
       
     
     
-      <link rel="stylesheet" href="stylesheets/custom.css">
+      <link rel="stylesheet" href="../../../../stylesheets/custom.css">
     
-      <link rel="stylesheet" href="assets/Documenter.css">
+      <link rel="stylesheet" href="../../../../assets/Documenter.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -81,7 +79,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#what-is-tidierdatajl" class="md-skip">
+        <a href="#fill-all-columns" class="md-skip">
           Skip to content
         </a>
       
@@ -97,9 +95,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="TidierData.jl" class="md-header__button md-logo" aria-label="TidierData.jl" data-md-component="logo">
+    <a href="../../../.." title="TidierData.jl" class="md-header__button md-logo" aria-label="TidierData.jl" data-md-component="logo">
       
-  <img src="assets/Tidier_jl_logo.png" alt="logo">
+  <img src="../../../../assets/Tidier_jl_logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -116,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Fill missing
             
           </span>
         </div>
@@ -236,9 +234,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="TidierData.jl" class="md-nav__button md-logo" aria-label="TidierData.jl" data-md-component="logo">
+    <a href="../../../.." title="TidierData.jl" class="md-nav__button md-logo" aria-label="TidierData.jl" data-md-component="logo">
       
-  <img src="assets/Tidier_jl_logo.png" alt="logo">
+  <img src="../../../../assets/Tidier_jl_logo.png" alt="logo">
 
     </a>
     TidierData.jl
@@ -265,27 +263,9 @@
       
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Home
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -294,66 +274,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-tidierdatajl" class="md-nav__link">
-    What is TidierData.jl?
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    Installation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-macros-and-functions-does-tidierdatajl-support" class="md-nav__link">
-    What macros and functions does TidierData.jl support?
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    Example
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#whats-new" class="md-nav__link">
-    What’s new
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#whats-missing" class="md-nav__link">
-    What's missing
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -364,7 +284,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/dataset_movies/" class="md-nav__link">
+      <a href="../dataset_movies/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -383,7 +303,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/select/" class="md-nav__link">
+      <a href="../select/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -402,7 +322,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/rename/" class="md-nav__link">
+      <a href="../rename/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -421,7 +341,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/mutate_transmute/" class="md-nav__link">
+      <a href="../mutate_transmute/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -440,7 +360,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/summarize/" class="md-nav__link">
+      <a href="../summarize/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -459,7 +379,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/filter/" class="md-nav__link">
+      <a href="../filter/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -478,7 +398,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/slice/" class="md-nav__link">
+      <a href="../slice/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -497,7 +417,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/group_by/" class="md-nav__link">
+      <a href="../group_by/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -516,7 +436,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/arrange/" class="md-nav__link">
+      <a href="../arrange/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -535,7 +455,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/distinct/" class="md-nav__link">
+      <a href="../distinct/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -554,7 +474,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/across/" class="md-nav__link">
+      <a href="../across/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -573,7 +493,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/conditionals/" class="md-nav__link">
+      <a href="../conditionals/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -592,7 +512,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/joins/" class="md-nav__link">
+      <a href="../joins/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -611,7 +531,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/binding/" class="md-nav__link">
+      <a href="../binding/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -630,7 +550,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/pivots/" class="md-nav__link">
+      <a href="../pivots/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -649,7 +569,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/sep_unite/" class="md-nav__link">
+      <a href="../sep_unite/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -668,7 +588,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/summary/" class="md-nav__link">
+      <a href="../summary/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -687,7 +607,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/column_names/" class="md-nav__link">
+      <a href="../column_names/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -706,7 +626,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/interpolation/" class="md-nav__link">
+      <a href="../interpolation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -725,7 +645,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/UserGuide/autovec/" class="md-nav__link">
+      <a href="../autovec/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -744,7 +664,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/generated/Contributors/Howto/" class="md-nav__link">
+      <a href="../../Contributors/Howto/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -763,7 +683,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/" class="md-nav__link">
+      <a href="../../../../reference/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -801,43 +721,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-is-tidierdatajl" class="md-nav__link">
-    What is TidierData.jl?
+  <a href="#fill-all-columns" class="md-nav__link">
+    Fill all columns
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    Installation
+  <a href="#fill-specifc-columns" class="md-nav__link">
+    Fill specifc columns
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-macros-and-functions-does-tidierdatajl-support" class="md-nav__link">
-    What macros and functions does TidierData.jl support?
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    Example
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#whats-new" class="md-nav__link">
-    What’s new
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#whats-missing" class="md-nav__link">
-    What's missing
+  <a href="#fill-with-grouped-dataframes" class="md-nav__link">
+    Fill with Grouped DataFrames
   </a>
   
 </li>
@@ -857,145 +756,60 @@
                   
 
 
-  <h1>Home</h1>
+  <h1>Fill missing</h1>
 
-<div><p><img src="assets/Tidier_jl_logo.png" align="left" style="padding-right:10px" width="150"></p>
-<p><a id="What-is-TidierData.jl?"></a></p>
-<p><a id="What-is-TidierData.jl?-1"></a></p>
-<h2 id="what-is-tidierdatajl">What is TidierData.jl?<a class="headerlink" href="#what-is-tidierdatajl" title="Permanent link">¤</a></h2>
-<p>TidierData.jl is a 100% Julia implementation of the dplyr and tidyr R packages. Powered by the DataFrames.jl package and Julia’s extensive meta-programming capabilities, TidierData.jl is an R user’s love letter to data analysis in Julia.</p>
-<p><code>TidierData.jl</code> has three goals, which differentiate it from other data analysis meta-packages in Julia:</p>
-<details class="tip">
-<summary>Stick as closely to tidyverse syntax as possible.</summary>
-<p>Whereas other meta-packages introduce Julia-centric idioms for working with
-DataFrames, this package’s goal is to reimplement parts of tidyverse
-in Julia. This means that <code>TidierData.jl</code> uses <em>tidy expressions</em> as opposed
-to idiomatic Julia expressions. An example of a tidy expression is
-<code>a = mean(b)</code>. In Julia, <code>a</code> and <code>b</code> are variables and are thus "eagerly"
-evaluated. This means that if <code>b</code> is merely referring to a column in a
-data frame and <em>not</em> an object in the global namespace, then an error
-will be generated because <code>b</code> was not found. In idiomatic Julia, <code>b</code>
-would need to be expressed as a symbol, or <code>:b</code>. Even then,
-<code>a = mean(:b)</code> would generate an error because it's not possible to
-calculate the mean value of a symbol. To handle this using idiomatic
-Julia, <code>DataFrames.jl</code> introduces a mini-language that relies heavily
-on the creation of anonymous functions, with explicit directional
-pairs syntax using a <code>source =&gt; function =&gt; destination</code> syntax. While
-this is quite elegant, it can be verbose. <code>TidierData.jl</code> aims to
-reduce this complexity by exposing an R-like syntax, which is then
-converted into valid <code>DataFrames.jl</code> code. The reason that
-<em>tidy expressions</em> are considered valid by Julia in <code>TidierData.jl</code> is
-because they are implemented using macros. Macros "capture" the
-expressions they are given, and then they can modify those expressions
-before evaluating them. For consistency, all top-level <code>dplyr</code> functions
-are implemented as macros (whether or not a macro is truly needed), and
-all "helper" functions (used inside of those top-level functions) are
-implemented as functions or pseudo-functions (functions which only exist
-through modification of the abstract syntax tree).</p>
-</details>
-<details class="tip">
-<summary>Make broadcasting mostly invisible.</summary>
-<p>Broadcasting trips up many R users switching to Julia because R users are used to most functions being vectorized. <code>TidierData.jl</code> currently uses a lookup table to decide which functions <em>not</em> to vectorize; all other functions are automatically vectorized. Read the documentation page on "Autovectorization" to read about how this works, and how to override the defaults. An example of where this issue commonly causes errors is when centering a variable. To create a new column <code>a</code> that centers the column <code>b</code>, <code>TidierData.jl</code> lets you simply write <code>a = b - mean(b)</code> exactly as you would in R. This works because <code>TidierData.jl</code> knows to <em>not</em> vectorize <code>mean()</code> while also recognizing that <code>-</code> <em>should</em> be vectorized such that this expression is rewritten in <code>DataFrames.jl</code> as <code>:b =&gt; (b -&gt; b .- mean(b)) =&gt; :a</code>. For any user-defined function that you want to "mark" as being non-vectorized, you can prefix it with a <code>~</code>. For example, a function <code>new_mean()</code>, if it had the same functionality as <code>mean()</code> <em>would</em> normally get vectorized by <code>TidierData.jl</code> unless you write it as <code>~new_mean()</code>.</p>
-</details>
-<details class="tip">
-<summary>Make scalars and tuples mostly interchangeable.</summary>
-<p>In Julia, the function <code>across(a, mean)</code> is dispatched differently than <code>across((a, b), mean)</code>. The first argument in the first instance above is treated as a scalar, whereas the second instance is treated as a tuple. This can be very confusing to R users because <code>1 == c(1)</code> is <code>TRUE</code> in R, whereas in Julia <code>1 == (1,)</code> evaluates to <code>false</code>. The design philosophy in <code>TidierData.jl</code> is that the user should feel free to provide a scalar or a tuple as they see fit anytime multiple values are considered valid for a given argument, such as in <code>across()</code>, and <code>TidierData.jl</code> will figure out how to dispatch it.</p>
-</details>
-<p><a id="Installation"></a></p>
-<p><a id="Installation-1"></a></p>
-<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">¤</a></h2>
-<p>For the stable version:</p>
-<div class="highlight"><pre><span></span><code>] add TidierData
-</code></pre></div>
-<p>The <code>]</code> character starts the Julia <a href="https://docs.julialang.org/en/v1/stdlib/Pkg/">package manager</a>. Press the backspace key to return to the Julia prompt.</p>
-<p>or</p>
-<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">Pkg</span>
-<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">"TidierData"</span><span class="p">)</span>
-</code></pre></div>
-<p>For the newest version:</p>
-<div class="highlight"><pre><span></span><code>] add TidierData#main
-</code></pre></div>
-<p>or</p>
-<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">Pkg</span>
-<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">"https://github.com/TidierOrg/TidierData.jl"</span><span class="p">)</span>
-</code></pre></div>
-<p><a id="What-macros-and-functions-does-TidierData.jl-support?"></a></p>
-<p><a id="What-macros-and-functions-does-TidierData.jl-support?-1"></a></p>
-<h2 id="what-macros-and-functions-does-tidierdatajl-support">What macros and functions does TidierData.jl support?<a class="headerlink" href="#what-macros-and-functions-does-tidierdatajl-support" title="Permanent link">¤</a></h2>
-<p>To support R-style programming, <code>TidierData.jl</code> is implemented using macros. This is because macros are able to "capture" the code before executing it, which allows the package to support R-like "tidy expressions" that would otherwise not be considered valid Julia code.</p>
-<p>TidierData.jl currently supports the following top-level macros:</p>
-<div class="admonition example">
-<p class="admonition-title">Top-level macros:</p>
-<ul>
-<li><code>@glimpse()</code></li>
-<li><code>@select()</code>, <code>@rename()</code>, and <code>@distinct()</code></li>
-<li><code>@mutate()</code> and <code>@transmute()</code> </li>
-<li><code>@summarize()</code> and <code>@summarise()</code></li>
-<li><code>@filter()</code></li>
-<li><code>@slice()</code> and <code>@slice_sample()</code></li>
-<li><code>@group_by()</code> and <code>@ungroup()</code></li>
-<li><code>@arrange()</code></li>
-<li><code>@pull()</code></li>
-<li><code>@count()</code> and <code>@tally()</code></li>
-<li><code>@left_join()</code>, <code>@right_join()</code>, <code>@inner_join()</code>, and <code>@full_join()</code></li>
-<li><code>@bind_rows()</code> and <code>@bind_cols()</code></li>
-<li><code>@pivot_wider()</code> and <code>@pivot_longer()</code></li>
-<li><code>@separate()</code> and <code>@unite()</code></li>
-<li><code>@drop_missing()</code> and <code>@fill_missing</code></li>
-<li><code>@clean_names()</code> (as in R's <code>janitor::clean_names()</code> function)</li>
-<li><code>@summary()</code> (as in R's <code>summary()</code> function)</li>
-</ul>
-</div>
-<p>TidierData.jl also supports the following helper functions:</p>
-<div class="admonition example">
-<p class="admonition-title">Helper functions:</p>
-<ul>
-<li><code>across()</code></li>
-<li><code>desc()</code></li>
-<li><code>if_else()</code> and <code>case_when()</code></li>
-<li><code>n()</code> and <code>row_number()</code></li>
-<li><code>ntile()</code></li>
-<li><code>lag()</code> and <code>lead()</code></li>
-<li><code>starts_with()</code>, <code>ends_with()</code>, <code>matches()</code>, and <code>contains()</code></li>
-<li><code>as_float()</code>, <code>as_integer()</code>, and <code>as_string()</code></li>
-<li><code>is_float()</code>, <code>is_integer()</code>, and <code>is_string()</code></li>
-</ul>
-</div>
-<p>See the <a href="https://tidierorg.github.io/TidierData.jl/latest/reference/">Reference</a> page for a detailed guide to each of the macros and functions.</p>
-<p><a id="Example"></a></p>
-<p><a id="Example-1"></a></p>
-<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">¤</a></h2>
-<p>Let's select the first five movies in our dataset whose budget exceeds the mean budget. Unlike in R, where we pass an <code>na.rm = TRUE</code> argument to remove missing values, in Julia we wrap the variable with a <code>skipmissing()</code> to remove the missing values before the <code>mean()</code> is calculated.</p>
+<div><p>The @fill_missing macro is a reimplementation of fill(). To mirror the syntax in R, the methods availble are "up" (fill from bottom up) and "down" fill from top down.</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">TidierData</span>
-<span class="k">using</span><span class="w"> </span><span class="n">RDatasets</span>
 
-<span class="n">movies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataset</span><span class="p">(</span><span class="s">"ggplot2"</span><span class="p">,</span><span class="w"> </span><span class="s">"movies"</span><span class="p">);</span>
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span>
+<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span>
+<span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sc">'a'</span><span class="p">,</span><span class="w"> </span><span class="sc">'b'</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="sc">'d'</span><span class="p">,</span><span class="w"> </span><span class="sc">'e'</span><span class="p">],</span>
+<span class="w">    </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sc">'A'</span><span class="p">,</span><span class="w"> </span><span class="sc">'A'</span><span class="p">,</span><span class="w"> </span><span class="sc">'B'</span><span class="p">,</span><span class="w"> </span><span class="sc">'B'</span><span class="p">,</span><span class="w"> </span><span class="sc">'A'</span><span class="p">]</span>
+<span class="p">);</span>
+</code></pre></div>
+<p><a id="Fill-all-columns"></a></p>
+<p><a id="Fill-all-columns-1"></a></p>
+<h2 id="fill-all-columns">Fill all columns<a class="headerlink" href="#fill-all-columns" title="Permanent link">¤</a></h2>
+<p>Fill missing values for the whole DataFrame using the "down" method (top to bottom)</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@fill_missing</span><span class="p">(</span><span class="s">"down"</span><span class="p">)</span>
+<span class="k">end</span>
 
-<span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">Budget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Budget</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1_000_000</span><span class="p">)</span>
-<span class="w">    </span><span class="nd">@filter</span><span class="p">(</span><span class="n">Budget</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">skipmissing</span><span class="p">(</span><span class="n">Budget</span><span class="p">)))</span>
-<span class="w">    </span><span class="nd">@select</span><span class="p">(</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">Budget</span><span class="p">)</span>
-<span class="w">    </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
+<span class="nd">@fill_missing</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="s">"down"</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>5×4 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">group</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Char}" style="text-align: left;">Char?</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: left;">a</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">1</td><td style="text-align: left;">b</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: right;">1</td><td style="text-align: left;">b</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">3</td><td style="text-align: right;">4</td><td style="text-align: left;">d</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">e</td><td style="text-align: left;">A</td></tr></tbody></table></div>
+
+<p><a id="Fill-specifc-columns"></a></p>
+<p><a id="Fill-specifc-columns-1"></a></p>
+<h2 id="fill-specifc-columns">Fill specifc columns<a class="headerlink" href="#fill-specifc-columns" title="Permanent link">¤</a></h2>
+<p>This fills missing values in columns <code>a</code> and <code>c</code> going from bottom to top.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@fill_missing</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="s">"up"</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>5×2 DataFrame
- Row │ Title                       Budget   
-     │ String                      Float64? 
-─────┼──────────────────────────────────────
-   1 │ 'Til There Was You              23.0
-   2 │ 10 Things I Hate About You      16.0
-   3 │ 102 Dalmatians                  85.0
-   4 │ 13 Going On 30                  37.0
-   5 │ 13th Warrior, The               85.0
+<div><div style="float: left;"><span>5×4 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">group</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Char}" style="text-align: left;">Char?</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">2</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: left;">a</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">1</td><td style="text-align: left;">b</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: left;">d</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">5</td><td style="text-align: right;">4</td><td style="text-align: left;">d</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">e</td><td style="text-align: left;">A</td></tr></tbody></table></div>
+
+<p><a id="Fill-with-Grouped-DataFrames"></a></p>
+<p><a id="Fill-with-Grouped-DataFrames-1"></a></p>
+<h2 id="fill-with-grouped-dataframes">Fill with Grouped DataFrames<a class="headerlink" href="#fill-with-grouped-dataframes" title="Permanent link">¤</a></h2>
+<p>When grouping by the <code>group</code> column, this fills missing values in columns <code>a</code> within each group going from top to bottom within that group</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@group_by</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@fill_missing</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="s">"down"</span><span class="p">)</span>
+<span class="k">end</span>
 </code></pre></div>
-<p><a id="What’s-new"></a></p>
-<p><a id="What’s-new-1"></a></p>
-<h2 id="whats-new">What’s new<a class="headerlink" href="#whats-new" title="Permanent link">¤</a></h2>
-<p>See <a href="https://github.com/TidierOrg/TidierData.jl/blob/main/NEWS.md">NEWS.md</a> for the latest updates.</p>
-<p><a id="What" s-missing></a></p>
-<p><a id="What" s-missing-1></a></p>
-<h2 id="whats-missing">What's missing<a class="headerlink" href="#whats-missing" title="Permanent link">¤</a></h2>
-<p>Is there a tidyverse feature missing that you would like to see in TidierData.jl? Please file a GitHub issue. Because TidierData.jl primarily wraps DataFrames.jl, our decision to integrate a new feature will be guided by how well-supported it is within DataFrames.jl and how likely other users are to benefit from it.</p></div>
+<p><b>GroupedDataFrame with 2 groups based on key: group</b></p>
+<div><div style="float: left;"><span>First Group (3 rows): group = 'A': ASCII/Unicode U+0041 (category Lu: Letter, uppercase)</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">group</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Char}" style="text-align: left;">Char?</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: left;">a</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">1</td><td style="text-align: left;">b</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">e</td><td style="text-align: left;">A</td></tr></tbody></table></div>
+<p>&amp;vellip;</p>
+<div><div style="float: left;"><span>Last Group (2 rows): group = 'B': ASCII/Unicode U+0042 (category Lu: Letter, uppercase)</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">group</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Char}" style="text-align: left;">Char?</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">3</td><td style="text-align: right;">4</td><td style="text-align: left;">d</td><td style="text-align: left;">B</td></tr></tbody></table></div>
+
+<hr>
+<p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></div>
 
 
 
@@ -1018,28 +832,6 @@ through modification of the abstract syntax tree).</p>
       
         <footer class="md-footer">
   
-    
-      
-      <nav class="md-footer__inner md-grid" aria-label="Footer" >
-        
-        
-          
-          <a href="examples/generated/UserGuide/dataset_movies/" class="md-footer__link md-footer__link--next" aria-label="Next: Movies dataset" rel="next">
-            <div class="md-footer__title">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              <div class="md-ellipsis">
-                Movies dataset
-              </div>
-            </div>
-            <div class="md-footer__button md-icon">
-              
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-            </div>
-          </a>
-        
-      </nav>
     
   
   <div class="md-footer-meta md-typeset">
@@ -1089,12 +881,12 @@ through modification of the abstract syntax tree).</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["content.code.copy", "content.code.annotate", "navigation.top", "navigation.footer", "search.highlight", "search.share", "search.suggest", "toc.follow", "header.autohide"], "search": "assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy", "content.code.annotate", "navigation.top", "navigation.footer", "search.highlight", "search.share", "search.suggest", "toc.follow", "header.autohide"], "search": "../../../../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.78eede0e.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.78eede0e.min.js"></script>
       
-        <script src="javascripts/mathjax.js"></script>
+        <script src="../../../../javascripts/mathjax.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       
