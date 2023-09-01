@@ -28,16 +28,23 @@ end
 $docstring_separate
 """
 macro separate(df, from, into, sep)
-    from = QuoteNode(from)
-
-    if @capture(into, (args__,))
-    elseif @capture(into, [args__])
+    from_quoted = QuoteNode(from)
+    
+    if @capture(into, (args__,)) || @capture(into, [args__])
+        args = QuoteNode.(args)
+        into_expr = :[$(args...)]
+    else
+        into_expr = quote
+            if typeof($into) <: Vector{String}
+                Symbol.($into)
+            else
+                $into
+            end
+        end
     end
-
-    args = QuoteNode.(args)
-
-    var_expr = quote
-         separate($(esc(df)), $from, [$(args...)], $sep)
+    
+    return quote
+        separate($(esc(df)), $(from_quoted), $(into_expr), $(esc(sep)))
     end
 end
 

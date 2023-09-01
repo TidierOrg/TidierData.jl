@@ -10,6 +10,12 @@ df = DataFrame(a = ["1-1", "2-2", "3-3-3"]);
     @separate(a, (b, c, d), "-")
 end
 
+# The into columns can also be designated as follows
+
+new_names = ["x$(i)" for i in 1:3]; ### or new_names = ["b", "c", "d"], or new_names = [:b, :c, :d]
+
+@separate(df, a, new_names, "-")
+
 # The `@unite` macro brings together multiple columns into one, separate the characters by a user specified delimiter
 
 # ## Here, the `@unite` macro combines the "b", "c", and "d" columns columns into a single new "new_col" column using the "/" delimiter
