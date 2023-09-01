@@ -30,15 +30,17 @@ $docstring_separate
 macro separate(df, from, into, sep)
     from_quoted = QuoteNode(from)
     
-    if @capture(into, (args__,)) || @capture(into, [args__])
+    interpolated_into, _, _ = parse_interpolation(into)
+    
+    if @capture(interpolated_into, (args__,)) || @capture(interpolated_into, [args__])
         args = QuoteNode.(args)
         into_expr = :[$(args...)]
     else
         into_expr = quote
-            if typeof($into) <: Vector{String}
-                Symbol.($into)
+            if typeof($interpolated_into) <: Vector{String}
+                Symbol.($interpolated_into)
             else
-                $into
+                $interpolated_into
             end
         end
     end
