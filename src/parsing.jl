@@ -361,19 +361,7 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String}; summari
 
   var_expr = MacroTools.postwalk(var_expr) do x
     if @capture(x, !!variable_Symbol)
-      variable = Main.eval(variable)
-      if variable isa AbstractString
-        return variable # Strings are now treated as Strings and not columns
-      elseif variable isa Symbol
-        return variable
-      else # Tuple or Vector of columns
-        if variable[1] isa Symbol
-          variable = QuoteNode.(variable)
-          return :(Cols($(variable...),))
-        else
-          return variable
-        end
-      end
+      return esc(variable)
     # `hello` in Julia is converted to Core.@cmd("hello")
     # Since MacroTools is unable to match this pattern, we can directly
     # evaluate the expression to see if it matches. If it does, the 3rd argument
