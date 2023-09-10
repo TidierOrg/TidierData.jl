@@ -5,7 +5,7 @@ using MacroTools
 using Chain
 using Statistics
 using StatsBase # primarily for `sample()`
-using Cleaner
+import Cleaner # changed from `using Cleaner` because of name conflict with `DataFrames.rename()`
 using Reexport
 
 # Exporting `Cols` because `summarize(!!vars, funs))` with multiple interpolated
@@ -26,7 +26,7 @@ const code = Ref{Bool}(false) # output DataFrames.jl code?
 const log = Ref{Bool}(false) # output tidylog output? (not yet implemented)
 
 # Expose the global do-not-vectorize "list"
-const not_vectorized = Ref{Vector{Symbol}}([:Ref, :Set, :Cols, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :is_float, :is_integer, :is_string, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :as_categorical, :is_categorical])
+const not_vectorized = Ref{Vector{Symbol}}([:esc, :Ref, :Set, :Cols, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :is_float, :is_integer, :is_string, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :as_categorical, :is_categorical])
 
 # Includes
 include("docstrings.jl")
@@ -207,7 +207,7 @@ macro rename(df, exprs...)
         transform!(df_copy, eachindex => :TidierData_row_number; ungroup = false)    
       end
       
-      local df_output = DataFrames.rename(df_copy, $(tidy_exprs...); ungroup = false)
+      local df_output = rename(df_copy, $(tidy_exprs...); ungroup = false)
       
       if $any_found_n || $any_found_row_number
         select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
@@ -220,7 +220,7 @@ macro rename(df, exprs...)
         transform!(df_copy, eachindex => :TidierData_row_number)
       end
       
-      local df_output = DataFrames.rename(df_copy, $(tidy_exprs...))
+      local df_output = rename(df_copy, $(tidy_exprs...))
       
       if $any_found_n || $any_found_row_number
         select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))

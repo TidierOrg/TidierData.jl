@@ -1,5 +1,9 @@
 # TidierData.jl updates
 
+## v0.12.0 - 2023-09-10
+- Fixes `!!` interpolation so that it works using normal Julia scoping rules. It no longer uses `Main.eval()` in the implementation. The way interpolation works contains some breaking changes, and the documentation has been updated accordingly.
+- Fixes name conflict with `Cleaner.rename()` and `DataFrames.rename()`
+
 ## v0.11.0 - 2023-08-22
 - Add `@fill_missing()`, `@slice_sample()`, `is_float()`, `is_integer()`, `is_string()`
 - Rename `@drop_na()` to `@drop_missing()` to be consistent with Julia data types.
