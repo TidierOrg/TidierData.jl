@@ -140,6 +140,10 @@ end
 
 # Note: You can use `!!` interpolation anywhere, including inside of functions and loops.
 
+df = DataFrame(a = string.(repeat('a':'e', inner = 2)),
+               b = [1,1,1,2,2,2,3,3,3,4],
+               c = 11:20)
+
 for col in [:b, :c]
   @chain df begin
     @summarize(across(!!col, mean))
