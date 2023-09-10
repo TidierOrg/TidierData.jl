@@ -99,13 +99,13 @@ function parse_pivot_arg(tidy_expr::Union{Expr,Symbol,Number})
 end
 
 # Not exported
-function parse_function(lhs::Symbol, rhs::Expr; autovec::Bool=true, subset::Bool=false)
+function parse_function(lhs::Union{Symbol, Expr}, rhs::Expr; autovec::Bool=true, subset::Bool=false)
 
   lhs = QuoteNode(lhs)
 
   src = Symbol[]
   MacroTools.postwalk(rhs) do x
-    if @capture(x, (fn_(args__)) | (fn_.(args__)))
+    if @capture(x, (fn_(args__)) | (fn_.(args__))) && fn != :esc
       args = args[isa.(args, Symbol)]
       push!(src, args...)
     end
@@ -226,7 +226,9 @@ function parse_group_by(tidy_expr::Union{Expr,Symbol})
     return :(Cols($(args...),))
   elseif @capture(tidy_expr, lhs_ = rhs_)
     return QuoteNode(lhs)
-  else
+  elseif tidy_expr isa Expr
+    return tidy_expr
+  else # if it's a Symbol
     return QuoteNode(tidy_expr)
   end
 end
@@ -332,7 +334,7 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
     if @capture(x, fn_(args__))
 
       # `in`, `∈`, and `∉` should be vectorized in auto-vec but not escaped
-      if fn in [:in :∈ :∉ :Ref :Set :Cols :(:) :∘ :across :desc :mean :std :var :median :first :last :minimum :maximum :sum :length :skipmissing :quantile :passmissing :startswith :contains :endswith]
+      if fn in [:esc :in :∈ :∉ :Ref :Set :Cols :(:) :∘ :across :desc :mean :std :var :median :first :last :minimum :maximum :sum :length :skipmissing :quantile :passmissing :startswith :contains :endswith]
         return x
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn))($(args...)))
@@ -340,7 +342,7 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
         return x
       end
     elseif @capture(x, fn_.(args__))
-      if fn in [:in :∈ :∉ :Ref :Set :Cols :(:) :∘ :across :desc :mean :std :var :median :first :last :minimum :maximum :sum :length :skipmissing :quantile :passmissing :startswith :contains :endswith]
+      if fn in [:esc :in :∈ :∉ :Ref :Set :Cols :(:) :∘ :across :desc :mean :std :var :median :first :last :minimum :maximum :sum :length :skipmissing :quantile :passmissing :startswith :contains :endswith]
         return x
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn)).($(args...)))
@@ -361,19 +363,7 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String}; summari
 
   var_expr = MacroTools.postwalk(var_expr) do x
     if @capture(x, !!variable_Symbol)
-      variable = Main.eval(variable)
-      if variable isa AbstractString
-        return variable # Strings are now treated as Strings and not columns
-      elseif variable isa Symbol
-        return variable
-      else # Tuple or Vector of columns
-        if variable[1] isa Symbol
-          variable = QuoteNode.(variable)
-          return :(Cols($(variable...),))
-        else
-          return variable
-        end
-      end
+      return esc(variable)
     # `hello` in Julia is converted to Core.@cmd("hello")
     # Since MacroTools is unable to match this pattern, we can directly
     # evaluate the expression to see if it matches. If it does, the 3rd argument
@@ -396,6 +386,8 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String}; summari
       else
         return :($fn())
       end
+    elseif @capture(x, esc(variable_))
+     return esc(variable)
     end
     return x
   end
