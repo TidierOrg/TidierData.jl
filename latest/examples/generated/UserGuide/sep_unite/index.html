@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.8">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.3.1">
     
     
       
@@ -819,6 +819,14 @@
 </code></pre></div>
 <div><div style="float: left;"><span>3×3 DataFrame</span></div><div style="clear: both;"></div></div>
 <div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">d</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="Union{Missing, SubString{String}}" style="text-align: left;">SubStrin…?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">1</td><td style="text-align: left;">1</td><td style="font-style: italic; text-align: left;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">2</td><td style="text-align: left;">2</td><td style="font-style: italic; text-align: left;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td></tr></tbody></table></div>
+
+<p>The into columns can also be designated as follows</p>
+<div class="highlight"><pre><span></span><code><span class="n">new_names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"x</span><span class="si">$</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="s">"</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">3</span><span class="p">];</span><span class="w"> </span><span class="c"># or new_names = ["b", "c", "d"], or new_names = [:b, :c, :d]</span>
+
+<span class="nd">@separate</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="o">!!</span><span class="n">new_names</span><span class="p">,</span><span class="w"> </span><span class="s">"-"</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>3×3 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">x1</th><th style="text-align: left;">x2</th><th style="text-align: left;">x3</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="Union{Missing, SubString{String}}" style="text-align: left;">SubStrin…?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">1</td><td style="text-align: left;">1</td><td style="font-style: italic; text-align: left;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">2</td><td style="text-align: left;">2</td><td style="font-style: italic; text-align: left;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td></tr></tbody></table></div>
 
 <p>The <code>@unite</code> macro brings together multiple columns into one, separate the characters by a user specified delimiter</p>
 <p><a id='Here,-the-@unite-macro-combines-the-"b",-"c",-and-"d"-columns-columns-into-a-single-new-"new_col"-column-using-the-"/"-delimiter'></a></p>
