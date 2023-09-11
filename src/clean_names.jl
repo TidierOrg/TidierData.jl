@@ -11,13 +11,13 @@ macro clean_names(df, case)
       
       @chain $(esc(df)) begin
         DataFrame # remove grouping
-        polish_names(_; style = style)
+        Cleaner.polish_names(_; style = style)
         DataFrame # convert back to DataFrame
         groupby(col_names; sort = true) # regroup
       end
     else
       @chain $(esc(df)) begin
-        polish_names(_; style = style)
+        Cleaner.polish_names(_; style = style)
         DataFrame # convert back to DataFrame
       end
     end
@@ -33,13 +33,13 @@ macro clean_names(df)
       
       @chain $(esc(df)) begin
         DataFrame # remove grouping
-        polish_names
+        Cleaner.polish_names
         DataFrame # convert back to DataFrame
         groupby(col_names; sort = true) # regroup
       end
     else
       @chain $(esc(df)) begin
-        polish_names
+        Cleaner.polish_names
         DataFrame # convert back to DataFrame
       end
     end
