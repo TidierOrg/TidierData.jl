@@ -1,5 +1,8 @@
 # TidierData.jl updates
 
+## v0.12.1 - 2023-09-11
+- Fixes bug in `@separate()` so that the value of `into` supports interpolation.
+
 ## v0.12.0 - 2023-09-10
 - Fixes `!!` interpolation so that it works using normal Julia scoping rules. It no longer uses `Main.eval()` in the implementation. The way interpolation works contains some breaking changes, and the documentation has been updated accordingly.
 - Fixes name conflict with `Cleaner.rename()` and `DataFrames.rename()`
