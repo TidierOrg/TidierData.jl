@@ -12,9 +12,9 @@ end
 
 # The into columns can also be designated as follows
 
-new_names = ["x$(i)" for i in 1:3]; ### or new_names = ["b", "c", "d"], or new_names = [:b, :c, :d]
+new_names = ["x$(i)" for i in 1:3]; # or new_names = ["b", "c", "d"], or new_names = [:b, :c, :d]
 
-@separate(df, a, new_names, "-")
+@separate(df, a, !!new_names, "-")
 
 # The `@unite` macro brings together multiple columns into one, separate the characters by a user specified delimiter
 
