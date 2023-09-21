@@ -2387,7 +2387,7 @@ julia> @chain df begin
    5 │     5     15
 
 julia> @chain df begin 
-       @select(matches(raw"1$"))
+       @select(matches("1\$"))
        end
 5×2 DataFrame
  Row │ a_1    b_1   
