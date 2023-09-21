@@ -1,5 +1,9 @@
 # TidierData.jl updates
 
+## v0.12.2 - 2023-09-20
+- Adds support for `everything()` selection helper.
+- Adds docstrings for `everything()`, `starts_with()`, `ends_with()`, and `matches()`
+
 ## v0.12.1 - 2023-09-11
 - Fixes bug in `@separate()` so that the value of `into` supports interpolation.
 

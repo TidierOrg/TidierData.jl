@@ -2230,7 +2230,7 @@ const docstring_slice_sample =
 """
     @slice_sample(df, [n = 1, prop, replace = false])
 
-Randomly sample rows from a DataFrame `df` or from each group in a GroupedDataFrame. The default is to return 1 row. Either the number of rows (`n`) or the proportion of rows (`prop`) should be provided as a keyword argument
+Randomly sample rows from a DataFrame `df` or from each group in a GroupedDataFrame. The default is to return 1 row. Either the number of rows (`n`) or the proportion of rows (`prop`) should be provided as a keyword argument.
 
 # Arguments
 - `df`: The source data frame or grouped data frame from which to sample rows.
@@ -2299,5 +2299,145 @@ julia> @chain df begin
    3 │     9     19
    4 │     9     19
    5 │     8     18
+```
+"""
+
+const docstring_starts_with =
+"""
+    starts_with(prefix)
+
+Select all columns starting with the `prefix`.
+
+# Arguments
+- `prefix`: A string.
+
+# Examples
+```julia
+julia> df = DataFrame(a_1 = 1:5, a_2 = 11:15, b_1 = 21:25);
+
+julia> @chain df begin 
+       @select(starts_with("a"))
+       end
+5×2 DataFrame
+ Row │ a_1    a_2   
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     1     11
+   2 │     2     12
+   3 │     3     13
+   4 │     4     14
+   5 │     5     15
+```
+"""
+
+const docstring_ends_with =
+"""
+    ends_with(suffix)
+
+Select all columns ending with the `suffix`.
+
+# Arguments
+- `suffix`: A string.
+
+# Examples
+```julia
+julia> df = DataFrame(a_1 = 1:5, a_2 = 11:15, b_1 = 21:25);
+
+julia> @chain df begin 
+       @select(ends_with("1"))
+       end
+5×2 DataFrame
+ Row │ a_1    b_1   
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     1     21
+   2 │     2     22
+   3 │     3     23
+   4 │     4     24
+   5 │     5     25
+```
+"""
+
+const docstring_matches =
+"""
+    matches(pattern, [flags])
+
+Select all columns matching the `pattern`.
+
+# Arguments
+- `pattern`: A string.
+- `flags`: Optional string containing flags. "i" = Do case-insensitive pattern matching. "m" = Treat string as multiple lines. "s" = Treat string as a single line. "x" = Tells the regular expression parser to ignore most whitespace that is neither backslashed nor within a character class. You
+can use this to break up your regular expression into (slightly) more readable parts.
+
+# Examples
+```julia
+julia> df = DataFrame(a_1 = 1:5, a_2 = 11:15, b_1 = 21:25);
+
+julia> @chain df begin 
+       @select(matches("^a"))
+       end
+5×2 DataFrame
+ Row │ a_1    a_2   
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     1     11
+   2 │     2     12
+   3 │     3     13
+   4 │     4     14
+   5 │     5     15
+
+julia> @chain df begin 
+       @select(matches("1\$"))
+       end
+5×2 DataFrame
+ Row │ a_1    b_1   
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     1     21
+   2 │     2     22
+   3 │     3     23
+   4 │     4     24
+   5 │     5     25
+
+julia> @chain df begin 
+       @select(matches("A", "i"))
+       end
+5×2 DataFrame
+ Row │ a_1    a_2   
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     1     11
+   2 │     2     12
+   3 │     3     13
+   4 │     4     14
+   5 │     5     15
+```
+"""
+
+const docstring_everything =
+"""
+    everything()
+
+Select all (remaining) columns.
+
+# Arguments
+- None
+
+# Examples
+```julia
+julia> df = DataFrame(a_1 = 1:5, a_2 = 11:15, b_1 = 21:25);
+
+julia> @chain df begin 
+       @select(b_1, everything())
+       end
+5×3 DataFrame
+ Row │ b_1    a_1    a_2   
+     │ Int64  Int64  Int64 
+─────┼─────────────────────
+   1 │    21      1     11
+   2 │    22      2     12
+   3 │    23      3     13
+   4 │    24      4     14
+   5 │    25      5     15
 ```
 """

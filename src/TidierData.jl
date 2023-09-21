@@ -15,7 +15,7 @@ using Reexport
 @reexport using Statistics
 @reexport using ShiftedArrays: lag, lead
 
-export TidierData_set, across, desc, n, row_number, starts_with, ends_with, matches, if_else, case_when, ntile, 
+export TidierData_set, across, desc, n, row_number, everything, starts_with, ends_with, matches, if_else, case_when, ntile, 
       as_float, as_integer, as_string, is_float, is_integer, is_string, @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
       @group_by, @ungroup, @slice, @arrange, @distinct, @pull, @left_join, @right_join, @inner_join, @full_join,
       @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_missing, @glimpse, @separate,

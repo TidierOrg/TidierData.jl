@@ -117,7 +117,7 @@ TidierData.jl also supports the following helper functions:
     - `n()` and `row_number()`
     - `ntile()`
     - `lag()` and `lead()`
-    - `starts_with()`, `ends_with()`, `matches()`, and `contains()`
+    - `everything()`, `starts_with()`, `ends_with()`, `matches()`, and `contains()`
     - `as_float()`, `as_integer()`, and `as_string()`
     - `is_float()`, `is_integer()`, and `is_string()`
 ```
