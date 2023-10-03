@@ -61,14 +61,24 @@ end
 $docstring_unite
 """
 macro unite(df, new_col, from_cols, sep)
-    new_col = QuoteNode(new_col)
-    
-    if @capture(from_cols, (args__,))
-    elseif @capture(from_cols, [args__])
+    new_col_quoted = QuoteNode(new_col)
+    interpolated_from_cols, _, _ = parse_interpolation(from_cols)
+
+    if @capture(interpolated_from_cols, (args__,)) || @capture(interpolated_from_cols, [args__])
+        args = QuoteNode.(args)
+        from_cols_expr = :[$(args...)]
+    else
+        from_cols_expr = quote
+            if typeof($interpolated_from_cols) <: Tuple
+                collect(Symbol.($interpolated_from_cols))
+
+            else
+                $interpolated_from_cols
+            end
+        end
     end
-   
-    args = QuoteNode.(args)
-    var_expr = quote
-         unite($(esc(df)), $new_col, [$(args...)], $sep)
+    
+    return quote
+        unite($(esc(df)), $new_col_quoted, $(from_cols_expr), $(esc(sep)))
     end
 end

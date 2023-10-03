@@ -34,3 +34,18 @@ end
     @fill_missing(a, "down")
 end
 
+# ## `replace_missing()`
+# The `replace_missing` function facilitates the replacement of `missing` values with a specified replacement. 
+
+@chain df begin
+    @mutate(b = replace_missing(b, 2))
+end 
+
+# ## `missing_if()`
+# The `missing_if` function is used to introduce `missing` values under specific conditions. 
+
+@chain df begin
+    @mutate(b = missing_if(b, 5))
+end 
+
+# Both `missing_if` and `replace_missing` are not type specifc.

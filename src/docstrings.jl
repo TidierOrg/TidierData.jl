@@ -2441,3 +2441,59 @@ julia> @chain df begin
    5 │    25      5     15
 ```
 """
+
+const docstring_missing_if =
+"""
+    missing_if(x, value)
+
+Replace a specific `value` with `missing` in `x`.
+
+## Arguments
+- `x`: The input value which can be of any type. If `x` is already `missing` or equals `value`, the function will return `missing`. Otherwise, it returns `x` unaltered.
+- `value`: The specific value to be checked against. 
+
+## Examples
+```jldoctest
+julia> df = DataFrame(a = [1, missing, 3, 4], b = ["apple", "apple", "banana", "cherry"])
+
+julia> @chain df begin
+       @mutate(a = missing_if(a, 4), b = missing_if(b, "apple"))
+       end
+4×2 DataFrame
+ Row │ a        b       
+     │ Int64?   String? 
+─────┼──────────────────
+   1 │       1  missing 
+   2 │ missing  missing 
+   3 │       3  banana
+   4 │ missing  cherry
+```
+"""
+
+const docstring_replace_missing =
+"""
+    replace_missing(x, replacement)
+
+Replace `missing` values in `x` with a specified `replacement` value.
+
+# Arguments
+- `x`: The input value which can be of any type. If `x` is `missing`, the function will return `replacement`. Otherwise, it returns `x` unaltered.
+- `replacement`: The value to replace `missing` with in `x`.
+
+# Examples
+```jldoctest
+julia> df = DataFrame(a = [1, missing, 3, 4], b = [4, 5, missing, 8]);
+
+julia> @chain df begin
+       @mutate(a = replace_missing(a, 100), b = replace_missing(b, 35))
+       end
+4×2 DataFrame
+ Row │ a      b     
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     1      4
+   2 │   100      5
+   3 │     3     35
+   4 │     4      8
+```
+"""

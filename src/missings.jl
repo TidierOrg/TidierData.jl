@@ -116,3 +116,13 @@ macro fill_missing(df, args...)
       end
   end
 end
+
+"""
+$docstring_missing_if
+"""
+missing_if(x, value) = ismissing(x) ? x : (x == value ? missing : x)
+
+"""
+$docstring_replace_missing
+"""
+replace_missing(x, replacement) = ismissing(x) ? replacement : x
