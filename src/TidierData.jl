@@ -19,7 +19,7 @@ export TidierData_set, across, desc, n, row_number, everything, starts_with, end
       as_float, as_integer, as_string, is_float, is_integer, is_string, missing_if, replace_missing, @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
       @group_by, @ungroup, @slice, @arrange, @distinct, @pull, @left_join, @right_join, @inner_join, @full_join,
       @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_missing, @glimpse, @separate,
-      @unite, @summary, @fill_missing, @slice_sample
+      @unite, @summary, @fill_missing, @slice_sample, @rename_with
 
 # Package global variables
 const code = Ref{Bool}(false) # output DataFrames.jl code?
