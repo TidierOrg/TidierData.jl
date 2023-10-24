@@ -608,4 +608,55 @@ macro glimpse(df, width = 80)
   return df_expr
 end
 
+"""
+$docstring_rename_with
+"""
+macro rename_with(df, fn, exprs...)
+  interpolated_exprs = parse_interpolation.(exprs)
+
+  tidy_exprs = [i[1] for i in interpolated_exprs]
+  any_found_n = any([i[2] for i in interpolated_exprs])
+  any_found_row_number = any([i[3] for i in interpolated_exprs])
+
+  tidy_exprs = parse_tidy.(tidy_exprs)
+  df_expr = quote
+      local df_copy = copy($(esc(df)))
+
+      if $any_found_n
+          if df_copy isa GroupedDataFrame
+              transform!(df_copy, nrow => :TidierData_n; ungroup = false)
+          else
+              transform!(df_copy, nrow => :TidierData_n)
+          end
+      end
+      
+      if $any_found_row_number
+          if df_copy isa GroupedDataFrame
+              transform!(df_copy, eachindex => :TidierData_row_number; ungroup = false)
+          else
+              transform!(df_copy, eachindex => :TidierData_row_number)
+          end
+      end
+
+      local columns_to_rename
+      if isempty($(esc(exprs)))
+          columns_to_rename = names(df_copy)
+      else
+          columns_to_rename = names(select(copy(df_copy), $(tidy_exprs...)))
+      end
+
+      local renames = filter(p -> p.first in columns_to_rename, Pair.(names(df_copy), $(esc(fn)).(names(df_copy))))
+
+      if df_copy isa GroupedDataFrame
+          rename!(df_copy, renames; ungroup = false)
+      else
+          rename!(df_copy, renames)
+      end
+
+      df_copy
+  end
+
+  return df_expr
+end
+
 end
