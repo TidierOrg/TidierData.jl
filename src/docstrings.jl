@@ -2527,7 +2527,7 @@ julia> function str_remove_all(column, pattern::String)
 julia> df = DataFrame(term_a = ["apple", "banana", "cherry"], document_a = ["doc_1", "doc2", "doc3"], _n_ = [1, 2, 3]); 
 
 julia> @rename_with(df, str -> str_remove_all(str, "_a"), !term_a)
-10×3 DataFrame
+3×3 DataFrame
  Row │ term_a  document  _n_   
      │ String  String    Int64 
 ─────┼─────────────────────────
