@@ -2515,19 +2515,14 @@ a range of variables. Variables names can also be chosen with starts with. Defau
 ```jldoctest
 julia> df = DataFrame(term_a = ["apple", "banana", "cherry"], document_a = ["doc_1", "doc2", "doc3"], _n_ = [1, 2, 3]); 
 
-julia> function str_remove_all(column, pattern::Union{String, Regex})
+julia> function str_remove_all(column, pattern::String)
     if ismissing(column)
-        return(column)
-    end 
-    if pattern isa String
-        patterns = split(pattern, '|')
-        for p in patterns
-            column = replace(column, Regex(strip(p)) => "")
-        end
-    else
-        column = replace(column, pattern => "")
+        return column
     end
-    column = replace(column, r"\s+" => " ")
+    patterns = split(pattern, '|')
+    for p in patterns
+        column = replace(column, strip(p) => "")
+    end
     return column
 end;
 
