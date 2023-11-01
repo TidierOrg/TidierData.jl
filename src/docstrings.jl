@@ -2497,3 +2497,47 @@ julia> @chain df begin
    4 │     4      8
 ```
 """
+
+const docstring_rename_with =
+
+"""
+     @rename_with(df, fn, exprs...)
+
+Renames the chosen column names with using a function
+
+# Arguments
+- `df`: a DataFrame
+- `fn`: desired function to (such as str_remove_all from TidierStrings)
+- `exprs`: One or more unquoted variable names separated by commas. Variable names 
+can also be used as their positions in the data, like `x:y`, to select 
+a range of variables. Variables names can also be chosen with starts with. Defaults to all columns if empty.
+
+# Examples
+```jldoctest
+julia> df = DataFrame(term_a = ["apple", "banana", "cherry"], document_a = ["doc_1", "doc2", "doc3"], _n_ = [1, 2, 3]); 
+
+julia> function str_remove_all(column, pattern::Union{String, Regex})
+    if ismissing(column)
+        return(column)
+    end 
+    if pattern isa String
+        patterns = split(pattern, '|')
+        for p in patterns
+            column = replace(column, Regex(strip(p)) => "")
+        end
+    else
+        column = replace(column, pattern => "")
+    end
+    column = replace(column, r"\s+" => " ")
+    return column
+end;
+
+julia> @rename_with(df, str -> str_remove_all(str, "_a"), !term_a)
+10×3 DataFrame
+ Row │ term_a  document  _n_   
+     │ String  String    Int64 
+─────┼─────────────────────────
+   1 │ apple   doc_1         1
+   2 │ banana  doc2          2
+   3 │ cherry  doc3          3
+```
