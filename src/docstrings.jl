@@ -2513,18 +2513,18 @@ a range of variables. Variables names can also be chosen with starts with. Defau
 
 # Examples
 ```jldoctest
-julia> df = DataFrame(term_a = ["apple", "banana", "cherry"], document_a = ["doc_1", "doc2", "doc3"], _n_ = [1, 2, 3]); 
-
 julia> function str_remove_all(column, pattern::String)
-    if ismissing(column)
-        return column
-    end
-    patterns = split(pattern, '|')
-    for p in patterns
-        column = replace(column, strip(p) => "")
-    end
-    return column
-end;
+         if ismissing(column)
+             return column
+         end
+         patterns = split(pattern, '|')
+         for p in patterns
+             column = replace(column, strip(p) => "")
+         end
+         return column
+       end;
+
+julia> df = DataFrame(term_a = ["apple", "banana", "cherry"], document_a = ["doc_1", "doc2", "doc3"], _n_ = [1, 2, 3]); 
 
 julia> @rename_with(df, str -> str_remove_all(str, "_a"), !term_a)
 10×3 DataFrame
