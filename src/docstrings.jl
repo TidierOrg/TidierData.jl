@@ -2540,3 +2540,4 @@ julia> @rename_with(df, str -> str_remove_all(str, "_a"), !term_a)
    2 │ banana  doc2          2
    3 │ cherry  doc3          3
 ```
+"""
