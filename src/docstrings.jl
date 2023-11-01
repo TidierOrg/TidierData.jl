@@ -2499,7 +2499,6 @@ julia> @chain df begin
 """
 
 const docstring_rename_with =
-
 """
      @rename_with(df, fn, exprs...)
 
