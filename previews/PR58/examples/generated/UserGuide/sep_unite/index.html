@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../select/">
+        <link rel="prev" href="../pivots/">
       
       
-        <link rel="next" href="../mutate_transmute/">
+        <link rel="next" href="../summary/">
       
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>@rename - TidierData.jl</title>
+        <title>Separating - TidierData.jl</title>
       
     
     
@@ -83,7 +83,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rename-using-rename" class="md-skip">
+        <a href="#separate-the-a-column-into-b-c-and-d-columns-based-on-the-dash-delimiter" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              @rename
+              Separating
             
           </span>
         </div>
@@ -324,27 +324,9 @@
       
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    @rename
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../rename/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -353,38 +335,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#rename-using-rename" class="md-nav__link">
-    Rename using @rename()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rename-using-select" class="md-nav__link">
-    Rename using @select()
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -621,9 +571,27 @@
       
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../sep_unite/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Separating
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -632,6 +600,38 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#separate-the-a-column-into-b-c-and-d-columns-based-on-the-dash-delimiter" class="md-nav__link">
+    Separate the "a" column into "b", "c", and "d" columns based on the dash delimiter
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#here-the-unite-macro-combines-the-b-c-and-d-columns-columns-into-a-single-new-new_col-column-using-the-delimiter" class="md-nav__link">
+    Here, the @unite macro combines the "b", "c", and "d" columns columns into a single new "new_col" column using the "/" delimiter
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -775,15 +775,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#rename-using-rename" class="md-nav__link">
-    Rename using @rename()
+  <a href="#separate-the-a-column-into-b-c-and-d-columns-based-on-the-dash-delimiter" class="md-nav__link">
+    Separate the "a" column into "b", "c", and "d" columns based on the dash delimiter
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#rename-using-select" class="md-nav__link">
-    Rename using @select()
+  <a href="#here-the-unite-macro-combines-the-b-c-and-d-columns-columns-into-a-single-new-new_col-column-using-the-delimiter" class="md-nav__link">
+    Here, the @unite macro combines the "b", "c", and "d" columns columns into a single new "new_col" column using the "/" delimiter
   </a>
   
 </li>
@@ -803,38 +803,43 @@
                   
 
 
-  <h1>@rename</h1>
+  <h1>Separating</h1>
 
-<div><p>Renaming columns follows the same syntax as in R's <code>tidyverse</code>, where the "tidy expression" is <code>new_name = old_name</code>. While the main function to rename columns is <code>@rename()</code>, you can also use <code>@select()</code> if you additionally plan to select only the renamed columns.</p>
+<div><p>Follwing the tidyverse syntax, the <code>@separate()</code> macro in <code>TidierData.jl</code> separates a single column into multiple columns. This is particularly useful for splitting a column containing delimited values into individual columns.</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">TidierData</span>
-<span class="k">using</span><span class="w"> </span><span class="n">RDatasets</span>
 
-<span class="n">movies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataset</span><span class="p">(</span><span class="s">"ggplot2"</span><span class="p">,</span><span class="w"> </span><span class="s">"movies"</span><span class="p">);</span>
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"1-1"</span><span class="p">,</span><span class="w"> </span><span class="s">"2-2"</span><span class="p">,</span><span class="w"> </span><span class="s">"3-3-3"</span><span class="p">]);</span>
 </code></pre></div>
-<p><a id="Rename-using-@rename()"></a></p>
-<p><a id="Rename-using-@rename()-1"></a></p>
-<h2 id="rename-using-rename">Rename using <code>@rename()</code><a class="headerlink" href="#rename-using-rename" title="Permanent link">¤</a></h2>
-<p>If you only want to rename the columns without selecting them, then this is where <code>@rename()</code> comes in handy. For the sake of brevity, we are selecting the first 5 columns and rows after performing the <code>@rename()</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="nd">@rename</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">Minutes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Length</span><span class="p">)</span>
-<span class="w">    </span><span class="nd">@select</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
-<span class="w">    </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
+<p><a id='Separate-the-"a"-column-into-"b",-"c",-and-"d"-columns-based-on-the-dash-delimiter'></a></p>
+<p><a id='Separate-the-"a"-column-into-"b",-"c",-and-"d"-columns-based-on-the-dash-delimiter-1'></a></p>
+<h2 id="separate-the-a-column-into-b-c-and-d-columns-based-on-the-dash-delimiter">Separate the "a" column into "b", "c", and "d" columns based on the dash delimiter<a class="headerlink" href="#separate-the-a-column-into-b-c-and-d-columns-based-on-the-dash-delimiter" title="Permanent link">¤</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@separate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">),</span><span class="w"> </span><span class="s">"-"</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre></div>
-<div><div style="float: left;"><span>5×5 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">title</th><th style="text-align: left;">Year</th><th style="text-align: left;">Minutes</th><th style="text-align: left;">Budget</th><th style="text-align: left;">Rating</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Int32" style="text-align: left;">Int32</th><th title="Int32" style="text-align: left;">Int32</th><th title="Union{Missing, Int32}" style="text-align: left;">Int32?</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">$</td><td style="text-align: right;">1971</td><td style="text-align: right;">121</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">6.4</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">$1000 a Touchdown</td><td style="text-align: right;">1939</td><td style="text-align: right;">71</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">6.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">$21 a Day Once a Month</td><td style="text-align: right;">1941</td><td style="text-align: right;">7</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">8.2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">$40,000</td><td style="text-align: right;">1996</td><td style="text-align: right;">70</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">8.2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">$50,000 Climax Show, The</td><td style="text-align: right;">1975</td><td style="text-align: right;">71</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">3.4</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>3×3 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">d</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="Union{Missing, SubString{String}}" style="text-align: left;">SubStrin…?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">1</td><td style="text-align: left;">1</td><td style="font-style: italic; text-align: left;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">2</td><td style="text-align: left;">2</td><td style="font-style: italic; text-align: left;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td></tr></tbody></table></div>
 
-<p><a id="Rename-using-@select()"></a></p>
-<p><a id="Rename-using-@select()-1"></a></p>
-<h2 id="rename-using-select">Rename using <code>@select()</code><a class="headerlink" href="#rename-using-select" title="Permanent link">¤</a></h2>
-<p>If you plan to only select those columns that you would like to rename, then you can use <code>@select()</code> to <em>both</em> rename and select the columns of interest.</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@select</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">Minutes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Length</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
+<p>The into columns can also be designated as follows</p>
+<div class="highlight"><pre><span></span><code><span class="n">new_names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"x</span><span class="si">$</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="s">"</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">3</span><span class="p">];</span><span class="w"> </span><span class="c"># or new_names = ["b", "c", "d"], or new_names = [:b, :c, :d]</span>
+
+<span class="nd">@separate</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="o">!!</span><span class="n">new_names</span><span class="p">,</span><span class="w"> </span><span class="s">"-"</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>3×3 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">x1</th><th style="text-align: left;">x2</th><th style="text-align: left;">x3</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="Union{Missing, SubString{String}}" style="text-align: left;">SubStrin…?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">1</td><td style="text-align: left;">1</td><td style="font-style: italic; text-align: left;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">2</td><td style="text-align: left;">2</td><td style="font-style: italic; text-align: left;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td></tr></tbody></table></div>
+
+<p>The <code>@unite</code> macro brings together multiple columns into one, separate the characters by a user specified delimiter</p>
+<p><a id='Here,-the-@unite-macro-combines-the-"b",-"c",-and-"d"-columns-columns-into-a-single-new-"new_col"-column-using-the-"/"-delimiter'></a></p>
+<p><a id='Here,-the-@unite-macro-combines-the-"b",-"c",-and-"d"-columns-columns-into-a-single-new-"new_col"-column-using-the-"/"-delimiter-1'></a></p>
+<h2 id="here-the-unite-macro-combines-the-b-c-and-d-columns-columns-into-a-single-new-new_col-column-using-the-delimiter">Here, the <code>@unite</code> macro combines the "b", "c", and "d" columns columns into a single new "new_col" column using the "/" delimiter<a class="headerlink" href="#here-the-unite-macro-combines-the-b-c-and-d-columns-columns-into-a-single-new-new_col-column-using-the-delimiter" title="Permanent link">¤</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"1"</span><span class="p">,</span><span class="w"> </span><span class="s">"2"</span><span class="p">,</span><span class="w"> </span><span class="s">"3"</span><span class="p">],</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"1"</span><span class="p">,</span><span class="w"> </span><span class="s">"2"</span><span class="p">,</span><span class="w"> </span><span class="s">"3"</span><span class="p">],</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="s">"3"</span><span class="p">]);</span>
+
+<span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@unite</span><span class="p">(</span><span class="n">new_col</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">),</span><span class="w"> </span><span class="s">"/"</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre></div>
-<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">title</th><th style="text-align: left;">Minutes</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Int32" style="text-align: left;">Int32</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">$</td><td style="text-align: right;">121</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">$1000 a Touchdown</td><td style="text-align: right;">71</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">$21 a Day Once a Month</td><td style="text-align: right;">7</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">$40,000</td><td style="text-align: right;">70</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">$50,000 Climax Show, The</td><td style="text-align: right;">71</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>3×4 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">d</th><th style="text-align: left;">new_col</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="String" style="text-align: left;">String</th><th title="Union{Missing, String}" style="text-align: left;">String?</th><th title="String" style="text-align: left;">String</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">1</td><td style="text-align: left;">1</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: left;">1/1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">2</td><td style="text-align: left;">2</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: left;">2/2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3/3/3</td></tr></tbody></table></div>
 
 <hr>
 <p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></div>
@@ -865,7 +870,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../select/" class="md-footer__link md-footer__link--prev" aria-label="Previous: @select">
+          <a href="../pivots/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Pivoting">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
@@ -875,20 +880,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                @select
+                Pivoting
               </div>
             </div>
           </a>
         
         
           
-          <a href="../mutate_transmute/" class="md-footer__link md-footer__link--next" aria-label="Next: @mutate">
+          <a href="../summary/" class="md-footer__link md-footer__link--next" aria-label="Next: @summary">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                @mutate
+                @summary
               </div>
             </div>
             <div class="md-footer__button md-icon">
