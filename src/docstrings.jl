@@ -2453,50 +2453,50 @@ Retrieve rows with the maximum value(s) from the specified column of a DataFrame
 - `column`: The column for which to slice the maximum values.
 - `with_ties`: Whether or not all ties will be shown, defaults to true. When false it will only show the first row. 
 - `prop`: The proportion of rows to slice.
-- `n = integer`: An optional argument to specify the number of maximum rows to retrieve. If with_ties = true, and the ties > n, n will be overridden. 
+- `n`: An optional integer argument to specify the number of maximum rows to retrieve. If with_ties = true, and the ties > n, n will be overridden. 
 - `missing_rm`: Defaults to true, skips the missing values when determining the proportion of the dataframe to slice.
 
 # Examples
 ```jldoctest
 julia> df = DataFrame(
-           dt1 = [missing, 0.2, missing, missing, 1, missing, 5, 6],
-           dt2 = [0.3, 2, missing, 3, 6, 5, 7, 7],
-           dt3 = [0.2, 0.2, 0.2, missing, 1, missing, 5, 6]);
+           a = [missing, 0.2, missing, missing, 1, missing, 5, 6],
+           b = [0.3, 2, missing, 3, 6, 5, 7, 7],
+           c = [0.2, 0.2, 0.2, missing, 1, missing, 5, 6]);
 
 julia> @chain df begin
-       @slice_max(dt2)
+       @slice_max(b)
        end 
 2×3 DataFrame
- Row │ dt1       dt2       dt3      
+ Row │ a         b         c      
      │ Float64?  Float64?  Float64? 
 ─────┼──────────────────────────────
    1 │      5.0       7.0       5.0
    2 │      6.0       7.0       6.0
 
 julia> @chain df begin
-       @slice_max(dt2, with_ties = false)
+       @slice_max(b, with_ties = false)
        end 
 1×3 DataFrame
- Row │ dt1       dt2       dt3      
+ Row │ a         b         c      
      │ Float64?  Float64?  Float64? 
 ─────┼──────────────────────────────
    1 │      5.0       7.0       5.0
 
 julia> @chain df begin
-       @slice_max(dt2, with_ties = false, n=2)
+       @slice_max(dt2, with_ties = false, n = 2)
        end 
 2×3 DataFrame
- Row │ dt1       dt2       dt3      
+ Row │ a         b         c      
      │ Float64?  Float64?  Float64? 
 ─────┼──────────────────────────────
    1 │      5.0       7.0       5.0
    2 │      6.0       7.0       6.0
    
 julia> @chain df begin
-       @slice_max(dt2, prop = .5, missing_rm=true)
+       @slice_max(b, prop = .5, missing_rm = true)
        end
 3×3 DataFrame
- Row │ dt1       dt2       dt3      
+ Row │ a         b         c      
      │ Float64?  Float64?  Float64? 
 ─────┼──────────────────────────────
    1 │      5.0       7.0       5.0
@@ -2516,50 +2516,50 @@ Retrieve rows with the minimum value(s) from the specified column of a DataFrame
 - `column`: The column for which to slice the minimum values.
 - `with_ties`: Whether or not all ties will be shown, defaults to true and shows all ties. When false it will only show the first row. 
 - `prop`: The proportion of rows to slice.
-- `n = integer`: An optional argument to specify the number of minimum rows to retrieve. If with_ties = true, and the ties > n, n will be overridden. 
+- `n`: An optional integer argument to specify the number of minimum rows to retrieve. If with_ties = true, and the ties > n, n will be overridden. 
 - `missing_rm`: Defaults to true, skips the missing values when determining the proportion of the dataframe to slice.
 
 # Examples
 ```jldoctest
 julia> df = DataFrame(
-           dt1 = [missing, 0.2, missing, missing, 1, missing, 5, 6],
-           dt2 = [0.3, 2, missing, 0.3, 6, 5, 7, 7],
-           dt3 = [0.2, 0.2, 0.2, missing, 1, missing, 5, 6]);
+           a = [missing, 0.2, missing, missing, 1, missing, 5, 6],
+           b = [0.3, 2, missing, 0.3, 6, 5, 7, 7],
+           c = [0.2, 0.2, 0.2, missing, 1, missing, 5, 6]);
 
 julia> @chain df begin
-       @slice_min(dt2)
+       @slice_min(b)
        end 
 2×3 DataFrame
- Row │ dt1       dt2       dt3       
+ Row │ a         b         c       
      │ Float64?  Float64?  Float64?  
 ─────┼───────────────────────────────
    1 │  missing       0.3        0.2
    2 │  missing       0.3  missing   
 
 julia> @chain df begin
-       @slice_min(dt2, with_ties = false)
+       @slice_min(b, with_ties = false)
        end 
 1×3 DataFrame
- Row │ dt1       dt2       dt3      
+ Row │ a         b         c      
      │ Float64?  Float64?  Float64? 
 ─────┼──────────────────────────────
    1 │  missing       0.3       0.2
 
 julia> @chain df begin
-       @slice_min(dt2, with_ties = true, n=1)
+       @slice_min(b, with_ties = true, n = 1)
        end 
 2×3 DataFrame
- Row │ dt1       dt2       dt3       
+ Row │ a         b         c       
      │ Float64?  Float64?  Float64?  
 ─────┼───────────────────────────────
    1 │  missing       0.3        0.2
    2 │  missing       0.3  missing   
    
 julia> @chain df begin
-       @slice_min(dt2, prop = .5, missing_rm = true)
+       @slice_min(b, prop = .5, missing_rm = true)
        end
 3×3 DataFrame
- Row │ dt1        dt2       dt3       
+ Row │ a          c         c       
      │ Float64?   Float64?  Float64?  
 ─────┼────────────────────────────────
    1 │ missing         0.3        0.2
