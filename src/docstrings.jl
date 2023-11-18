@@ -2467,7 +2467,7 @@ julia> @chain df begin
        @slice_max(b)
        end 
 2×3 DataFrame
- Row │ a         b         c      
+ Row │ a         b         c        
      │ Float64?  Float64?  Float64? 
 ─────┼──────────────────────────────
    1 │      5.0       7.0       5.0
@@ -2477,26 +2477,26 @@ julia> @chain df begin
        @slice_max(b, with_ties = false)
        end 
 1×3 DataFrame
- Row │ a         b         c      
+ Row │ a         b         c        
      │ Float64?  Float64?  Float64? 
 ─────┼──────────────────────────────
    1 │      5.0       7.0       5.0
 
 julia> @chain df begin
-       @slice_max(dt2, with_ties = false, n = 2)
+       @slice_max(b, with_ties = false, n = 2)
        end 
 2×3 DataFrame
- Row │ a         b         c      
+ Row │ a         b         c        
      │ Float64?  Float64?  Float64? 
 ─────┼──────────────────────────────
    1 │      5.0       7.0       5.0
    2 │      6.0       7.0       6.0
    
 julia> @chain df begin
-       @slice_max(b, prop = .5, missing_rm = true)
+       @slice_max(b, prop = 0.5, missing_rm = true)
        end
 3×3 DataFrame
- Row │ a         b         c      
+ Row │ a         b         c        
      │ Float64?  Float64?  Float64? 
 ─────┼──────────────────────────────
    1 │      5.0       7.0       5.0
@@ -2530,17 +2530,17 @@ julia> @chain df begin
        @slice_min(b)
        end 
 2×3 DataFrame
- Row │ a         b         c       
+ Row │ a         b         c         
      │ Float64?  Float64?  Float64?  
 ─────┼───────────────────────────────
    1 │  missing       0.3        0.2
-   2 │  missing       0.3  missing   
+   2 │  missing       0.3  missing
 
 julia> @chain df begin
        @slice_min(b, with_ties = false)
        end 
 1×3 DataFrame
- Row │ a         b         c      
+ Row │ a         b         c        
      │ Float64?  Float64?  Float64? 
 ─────┼──────────────────────────────
    1 │  missing       0.3       0.2
@@ -2549,17 +2549,18 @@ julia> @chain df begin
        @slice_min(b, with_ties = true, n = 1)
        end 
 2×3 DataFrame
- Row │ a         b         c       
+ Row │ a         b         c         
      │ Float64?  Float64?  Float64?  
 ─────┼───────────────────────────────
    1 │  missing       0.3        0.2
    2 │  missing       0.3  missing   
+  
    
 julia> @chain df begin
-       @slice_min(b, prop = .5, missing_rm = true)
+       @slice_min(b, prop = 0.5, missing_rm = true)
        end
 3×3 DataFrame
- Row │ a          b         c       
+ Row │ a          b         c         
      │ Float64?   Float64?  Float64?  
 ─────┼────────────────────────────────
    1 │ missing         0.3        0.2
