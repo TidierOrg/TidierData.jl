@@ -747,6 +747,24 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#replace_missing" class="md-nav__link">
+    <span class="md-ellipsis">
+      replace_missing()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#missing_if" class="md-nav__link">
+    <span class="md-ellipsis">
+      missing_if()
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -814,6 +832,29 @@
 <div><div style="float: left;"><span>Last Group (2 rows): group = 'B': ASCII/Unicode U+0042 (category Lu: Letter, uppercase)</span></div><div style="clear: both;"></div></div>
 <div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">group</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Char}" style="text-align: left;">Char?</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">3</td><td style="text-align: right;">4</td><td style="text-align: left;">d</td><td style="text-align: left;">B</td></tr></tbody></table></div>
 
+<p><a id="replace_missing()"></a></p>
+<p><a id="replace_missing()-1"></a></p>
+<h2 id="replace_missing"><code>replace_missing()</code><a class="headerlink" href="#replace_missing" title="Permanent link">¤</a></h2>
+<p>The <code>replace_missing</code> function facilitates the replacement of <code>missing</code> values with a specified replacement.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">replace_missing</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span>
+<span class="k">end</span>
+</code></pre></div>
+<div><div style="float: left;"><span>5×4 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">group</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Int64" style="text-align: left;">Int64</th><th title="Union{Missing, Char}" style="text-align: left;">Char?</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">2</td><td style="text-align: left;">a</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">1</td><td style="text-align: left;">b</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: right;">2</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">4</td><td style="text-align: left;">d</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">e</td><td style="text-align: left;">A</td></tr></tbody></table></div>
+
+<p><a id="missing_if()"></a></p>
+<p><a id="missing_if()-1"></a></p>
+<h2 id="missing_if"><code>missing_if()</code><a class="headerlink" href="#missing_if" title="Permanent link">¤</a></h2>
+<p>The <code>missing_if</code> function is used to introduce <code>missing</code> values under specific conditions.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">missing_if</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">))</span>
+<span class="k">end</span>
+</code></pre></div>
+<div><div style="float: left;"><span>5×4 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">group</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Char}" style="text-align: left;">Char?</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: left;">a</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">1</td><td style="text-align: left;">b</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">4</td><td style="text-align: left;">d</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: left;">e</td><td style="text-align: left;">A</td></tr></tbody></table></div>
+
+<p>Both <code>missing_if</code> and <code>replace_missing</code> are not type specifc.</p>
 <hr>
 <p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></div>
 
