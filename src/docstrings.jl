@@ -2559,7 +2559,7 @@ julia> @chain df begin
        @slice_min(b, prop = .5, missing_rm = true)
        end
 3×3 DataFrame
- Row │ a          c         c       
+ Row │ a          b         c       
      │ Float64?   Float64?  Float64?  
 ─────┼────────────────────────────────
    1 │ missing         0.3        0.2
