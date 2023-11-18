@@ -2580,10 +2580,14 @@ Replace a specific `value` with `missing` in `x`.
 
 ## Examples
 ```jldoctest
-julia> df = DataFrame(a = [1, missing, 3, 4], b = ["apple", "apple", "banana", "cherry"]);
+julia> df = DataFrame(
+              a = [1, missing, 3, 4],
+              b = ["apple", "apple", "banana", "cherry"]
+            );
 
 julia> @chain df begin
-       @mutate(a = missing_if(a, 4), b = missing_if(b, "apple"))
+       @mutate(a = missing_if(a, 4), 
+               b = missing_if(b, "apple"))
        end
 4×2 DataFrame
  Row │ a        b       
@@ -2608,10 +2612,14 @@ Replace `missing` values in `x` with a specified `replacement` value.
 
 # Examples
 ```jldoctest
-julia> df = DataFrame(a = [1, missing, 3, 4], b = [4, 5, missing, 8]);
+julia> df = DataFrame(
+              a = [1, missing, 3, 4],
+              b = [4, 5, missing, 8]
+            );
 
 julia> @chain df begin
-       @mutate(a = replace_missing(a, 100), b = replace_missing(b, 35))
+       @mutate(a = replace_missing(a, 100),
+               b = replace_missing(b, 35))
        end
 4×2 DataFrame
  Row │ a      b     
@@ -2628,7 +2636,7 @@ const docstring_rename_with =
 """
      @rename_with(df, fn, exprs...)
 
-Renames the chosen column names with using a function
+Renames the chosen column names using a function
 
 # Arguments
 - `df`: a DataFrame
@@ -2650,7 +2658,11 @@ julia> function str_remove_all(column, pattern::String)
          return column
        end;
 
-julia> df = DataFrame(term_a = ["apple", "banana", "cherry"], document_a = ["doc_1", "doc2", "doc3"], _n_ = [1, 2, 3]); 
+julia> df = DataFrame(
+              term_a = ["apple", "banana", "cherry"],
+              document_a = ["doc_1", "doc2", "doc3"],
+              _n_ = [1, 2, 3]
+            ); 
 
 julia> @rename_with(df, str -> str_remove_all(str, "_a"), !term_a)
 3×3 DataFrame
