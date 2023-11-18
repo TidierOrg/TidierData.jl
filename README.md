@@ -83,7 +83,7 @@ TidierData.jl currently supports the following top-level macros:
 - `@mutate()` and `@transmute()` 
 - `@summarize()` and `@summarise()`
 - `@filter()`
-- `@slice()`, `@slice_sample()`, `@slice_min()`, and `@slice_max()`
+- `@slice()`, `@slice_sample()`, `@slice_min()`, `@slice_max()`, `@slice_head()`, and `@slice_tail()`
 - `@group_by()` and `@ungroup()`
 - `@arrange()`
 - `@pull()`

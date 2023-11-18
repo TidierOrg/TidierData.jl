@@ -240,3 +240,97 @@ macro slice_min(df, exprs...)
       end
   end
 end
+
+"""
+$docstring_slice_head
+"""
+macro slice_head(df, exprs...)
+  expr_dict = :(Dict())
+
+  for expr in exprs
+      if @capture(expr, lhs_ = rhs_)
+          push!(expr_dict.args, :($(QuoteNode(lhs)) => $(esc(rhs))))
+      end
+  end
+  return quote
+      expr_dict = $expr_dict
+      temp_df = $(esc(df))
+      grouping_cols = Symbol[]
+
+      if temp_df isa DataFrames.GroupedDataFrame
+          grouping_cols = DataFrames.groupcols(temp_df)
+      end
+      local n = get(expr_dict, :n, 1)
+      local prop_val = get(expr_dict, :prop, 1.0) 
+      if prop_val < 0.0 || prop_val > 1.0
+          throw(ArgumentError("Prop value should be between 0 and 1"))
+      end
+      if temp_df isa DataFrames.GroupedDataFrame
+          result_dfs = []
+          for sdf in temp_df
+              local group_n = n
+              if prop_val != 1.0
+                  group_n = floor(Int, nrow(sdf) * prop_val)
+              end
+              push!(result_dfs, first(sdf, group_n))
+          end
+          temp_df = vcat(result_dfs...)
+      else
+          if prop_val != 1.0
+              n = floor(Int, nrow(temp_df) * prop_val)
+          end
+          temp_df = first(temp_df, n)
+      end
+
+      if !isempty(grouping_cols)
+          temp_df = DataFrames.groupby(temp_df, grouping_cols)
+      end
+      temp_df
+  end
+end
+
+"""
+$docstring_slice_tail
+"""
+macro slice_tail(df, exprs...)
+  expr_dict = :(Dict())
+  for expr in exprs
+      if @capture(expr, lhs_ = rhs_)
+          push!(expr_dict.args, :($(QuoteNode(lhs)) => $(esc(rhs))))
+      end
+  end
+  return quote
+      expr_dict = $expr_dict
+      temp_df = $(esc(df))
+      grouping_cols = Symbol[]
+      if temp_df isa DataFrames.GroupedDataFrame
+          grouping_cols = DataFrames.groupcols(temp_df)
+      end
+      local n = get(expr_dict, :n, 1) 
+      local prop_val = get(expr_dict, :prop, 1.0) 
+      if prop_val < 0.0 || prop_val > 1.0
+          throw(ArgumentError("Prop value should be between 0 and 1"))
+      end
+      if temp_df isa DataFrames.GroupedDataFrame
+          result_dfs = []
+          for sdf in temp_df
+              local group_n = n
+              if prop_val != 1.0
+                  group_n = floor(Int, nrow(sdf) * prop_val)
+              end
+              push!(result_dfs, last(sdf, group_n))
+          end
+          temp_df = vcat(result_dfs...)
+      else
+          if prop_val != 1.0
+              n = floor(Int, nrow(temp_df) * prop_val)
+          end
+          temp_df = last(temp_df, n)
+      end
+
+      if !isempty(grouping_cols)
+          temp_df = DataFrames.groupby(temp_df, grouping_cols)
+      end
+      temp_df
+  end
+end

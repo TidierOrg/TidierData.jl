@@ -88,3 +88,15 @@ end
 @chain df begin 
   @slice_max(b, prop = .5)
 end
+
+# ## Slice the tail
+
+@chain df begin 
+  @slice_tail(prop = .5)
+end
+
+# ## Slice the head
+
+@chain df begin 
+  @slice_head(n = 3)
+end
