@@ -66,3 +66,25 @@ end
 @chain df begin
   @slice_sample(5)
 end
+
+# ## Slice the min
+
+# This line selects all rows with the the minimum value of the desired column
+
+@chain df begin
+  @slice_min(b)
+end
+
+# This line will only show the first row.
+
+@chain df begin
+  @slice_min(b, with_ties = false)
+end
+
+# ## Slice the max
+
+# The optional prop arguement will slice a proportion of the full dataframe.
+
+@chain df begin 
+  @slice_max(b, prop = .5)
+end
