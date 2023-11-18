@@ -78,7 +78,8 @@ To support R-style programming, TidierData.jl is implemented using macros.
 TidierData.jl currently supports the following top-level macros:
 
 - `@glimpse()`
-- `@select()`, `@rename()`, and `@distinct()`
+- `@select()` and `@distinct()`
+- `@rename()` and `@rename_with()`
 - `@mutate()` and `@transmute()` 
 - `@summarize()` and `@summarise()`
 - `@filter()`
@@ -106,6 +107,7 @@ TidierData.jl also supports the following helper functions:
 - `everything()`, `starts_with()`, `ends_with()`, `matches()`, and `contains()`
 - `as_float()`, `as_integer()`, and `as_string()`
 - `is_float()`, `is_integer()`, and `is_string()`
+- `missing_if()` and `replace_missing()`
 
 See the documentation [Home](https://tidierorg.github.io/TidierData.jl/latest/) page for a guide on how to get started, or the [Reference](https://tidierorg.github.io/TidierData.jl/latest/reference/) page for a detailed guide to each of the macros and functions.
 

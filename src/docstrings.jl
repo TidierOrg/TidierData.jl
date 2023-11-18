@@ -2568,3 +2568,109 @@ julia> @chain df begin
    3 │       0.2       2.0        0.2
 ```
 """
+const docstring_missing_if =
+"""
+    missing_if(x, value)
+
+Replace a specific `value` with `missing` in `x`.
+
+## Arguments
+- `x`: The input value which can be of any type. If `x` is already `missing` or equals `value`, the function will return `missing`. Otherwise, it returns `x` unaltered.
+- `value`: The specific value to be checked against. 
+
+## Examples
+```jldoctest
+julia> df = DataFrame(
+              a = [1, missing, 3, 4],
+              b = ["apple", "apple", "banana", "cherry"]
+            );
+
+julia> @chain df begin
+       @mutate(a = missing_if(a, 4), 
+               b = missing_if(b, "apple"))
+       end
+4×2 DataFrame
+ Row │ a        b       
+     │ Int64?   String? 
+─────┼──────────────────
+   1 │       1  missing 
+   2 │ missing  missing 
+   3 │       3  banana
+   4 │ missing  cherry
+```
+"""
+
+const docstring_replace_missing =
+"""
+    replace_missing(x, replacement)
+
+Replace `missing` values in `x` with a specified `replacement` value.
+
+# Arguments
+- `x`: The input value which can be of any type. If `x` is `missing`, the function will return `replacement`. Otherwise, it returns `x` unaltered.
+- `replacement`: The value to replace `missing` with in `x`.
+
+# Examples
+```jldoctest
+julia> df = DataFrame(
+              a = [1, missing, 3, 4],
+              b = [4, 5, missing, 8]
+            );
+
+julia> @chain df begin
+       @mutate(a = replace_missing(a, 100),
+               b = replace_missing(b, 35))
+       end
+4×2 DataFrame
+ Row │ a      b     
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     1      4
+   2 │   100      5
+   3 │     3     35
+   4 │     4      8
+```
+"""
+
+const docstring_rename_with =
+"""
+     @rename_with(df, fn, exprs...)
+
+Renames the chosen column names using a function
+
+# Arguments
+- `df`: a DataFrame
+- `fn`: desired function to (such as str_remove_all from TidierStrings)
+- `exprs`: One or more unquoted variable names separated by commas. Variable names 
+can also be used as their positions in the data, like `x:y`, to select 
+a range of variables. Variables names can also be chosen with starts with. Defaults to all columns if empty.
+
+# Examples
+```jldoctest
+julia> function str_remove_all(column, pattern::String)
+         if ismissing(column)
+             return column
+         end
+         patterns = split(pattern, '|')
+         for p in patterns
+             column = replace(column, strip(p) => "")
+         end
+         return column
+       end;
+
+julia> df = DataFrame(
+              term_a = ["apple", "banana", "cherry"],
+              document_a = ["doc_1", "doc2", "doc3"],
+              _n_ = [1, 2, 3]
+            ); 
+
+julia> @rename_with(df, str -> str_remove_all(str, "_a"), !term_a)
+3×3 DataFrame
+ Row │ term_a  document  _n_   
+     │ String  String    Int64 
+─────┼─────────────────────────
+   1 │ apple   doc_1         1
+   2 │ banana  doc2          2
+   3 │ cherry  doc3          3
+```
+"""
