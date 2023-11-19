@@ -1,5 +1,8 @@
 # TidierData.jl updates
 
+## v0.13.1 - 2023-11-18
+- Adds `@slice_head()` and `@slice_tail()`
+
 ## v0.13.0 - 2023-11-18
 - Adds `@slice_min()`, `@slice_max()`, and `@rename_with()`
 - Adds `missing_if()` and `replace_missing()`

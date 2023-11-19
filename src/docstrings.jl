@@ -2444,9 +2444,9 @@ julia> @chain df begin
 
 const docstring_slice_max =
 """
-    @slice_max(df, column; with_ties, n, prop, missing_rm)
+    @slice_max(df, column; with_ties = true, n, prop, missing_rm = true)
 
-Retrieve rows with the maximum value(s) from the specified column of a DataFrame.
+Retrieve rows with the maximum value(s) from the specified column of a DataFrame or GroupedDataFrame.
 
 # Arguments
 - `df`: The source data frame or grouped data frame from which to slice rows.
@@ -2507,9 +2507,9 @@ julia> @chain df begin
 
 const docstring_slice_min =
 """
-    @slice_min(df, column; with_ties, n, prop, missing_rm)
+    @slice_min(df, column; with_ties = true, n, prop, missing_rm = true)
 
-Retrieve rows with the minimum value(s) from the specified column of a DataFrame.
+Retrieve rows with the minimum value(s) from the specified column of a DataFrame or GroupedDataFrame.
 
 # Arguments
 - `df`: The source data frame or grouped data frame from which to slice rows.
@@ -2573,7 +2573,7 @@ const docstring_slice_head =
 """
     @slice_head(df; n, prop)
 
-Retrieve rows in the beginning of a DataFrame.
+Retrieve rows from the beginning of a DataFrame or GroupedDataFrame.
 
 # Arguments
 - `df`: The source data frame or grouped data frame from which to slice rows.
@@ -2614,7 +2614,7 @@ const docstring_slice_tail =
 """
     @slice_tail(df; n, prop)
 
-Retrieve rows in the beginning of a DataFrame.
+Retrieve rows from the end of a DataFrame or GroupedDataFrame.
 
 # Arguments
 - `df`: The source data frame or grouped data frame from which to slice rows.
