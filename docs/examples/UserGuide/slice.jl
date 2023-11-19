@@ -86,5 +86,17 @@ end
 # The optional prop arguement will slice a proportion of the full dataframe.
 
 @chain df begin 
-  @slice_max(b, prop = .5)
+  @slice_max(b, prop = 0.5)
+end
+
+# ## Slice the tail
+
+@chain df begin 
+  @slice_tail(prop = 0.5)
+end
+
+# ## Slice the head
+
+@chain df begin 
+  @slice_head(n = 3)
 end
