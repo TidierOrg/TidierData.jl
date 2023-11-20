@@ -88,7 +88,7 @@ TidierData.jl currently supports the following top-level macros:
 - `@arrange()`
 - `@pull()`
 - `@count()` and `@tally()`
-- `@left_join()`, `@right_join()`, `@inner_join()`, and `@full_join()`
+- `@left_join()`, `@right_join()`, `@inner_join()`, `@full_join()`, `@anti_join()`, and `@semi_join()`
 - `@bind_rows()` and `@bind_cols()`
 - `@pivot_wider()` and `@pivot_longer()`
 - `@separate()` and `@unite()`
