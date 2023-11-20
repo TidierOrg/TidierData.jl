@@ -1,5 +1,8 @@
 # TidierData.jl updates
 
+## v0.13.2 - 2023-11-20
+- Adds `@anti_join()` and `@semi_join()`
+
 ## v0.13.1 - 2023-11-18
 - Adds `@slice_head()` and `@slice_tail()`
 
