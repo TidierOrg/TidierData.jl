@@ -53,7 +53,7 @@ macro slice(df, exprs...)
               end
             end
             clean_indices = filter(i -> i <= n_rows_group, clean_indices)
-            sdf[clean_indices, :]
+            sdf[Not(clean_indices), :]
           end
         else
         combine($(esc(df))) do sdf
