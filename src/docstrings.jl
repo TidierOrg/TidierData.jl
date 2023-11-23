@@ -641,6 +641,21 @@ julia> @chain df begin
    3 │ c         3     13
    4 │ d         4     14
    5 │ e         5     15
+
+julia> @chain df begin
+       @group_by(a)
+       @slice(n())
+       @ungroup
+       end
+5×3 DataFrame
+ Row │ a     b      c     
+     │ Char  Int64  Int64 
+─────┼────────────────────
+   1 │ a         1     11
+   2 │ b         2     12
+   3 │ c         3     13
+   4 │ d         4     14
+   5 │ e         5     15
 ```         
 """
 

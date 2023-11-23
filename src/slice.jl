@@ -18,9 +18,21 @@ macro slice(df, exprs...)
     if all(clean_indices .> 0)
       if $(esc(df)) isa GroupedDataFrame
         combine($(esc(df)); ungroup = false) do sdf
-          sdf[clean_indices, :]
-        end
-      else
+            local n_rows_group = nrow(sdf)
+            local interpolated_indices = parse_slice_n.($exprs, n_rows_group)
+            local original_indices = [eval.(interpolated_indices)...]
+            local clean_indices = Int64[]
+            for index in original_indices
+              if index isa Number
+                push!(clean_indices, index)
+              else
+                append!(clean_indices, collect(index))
+              end
+            end
+            clean_indices = filter(i -> i <= n_rows_group, clean_indices)
+            sdf[clean_indices, :]
+          end
+        else
         combine($(esc(df))) do sdf
           sdf[clean_indices, :]
         end
@@ -29,9 +41,21 @@ macro slice(df, exprs...)
       clean_indices = -clean_indices
       if $(esc(df)) isa GroupedDataFrame
         combine($(esc(df)); ungroup = true) do sdf
-          sdf[Not(clean_indices), :]
-        end
-      else
+            local n_rows_group = nrow(sdf)
+            local interpolated_indices = parse_slice_n.($exprs, n_rows_group)
+            local original_indices = [eval.(interpolated_indices)...]
+            local clean_indices = Int64[]
+            for index in original_indices
+              if index isa Number
+                push!(clean_indices, index)
+              else
+                append!(clean_indices, collect(index))
+              end
+            end
+            clean_indices = filter(i -> i <= n_rows_group, clean_indices)
+            sdf[clean_indices, :]
+          end
+        else
         combine($(esc(df))) do sdf
           sdf[Not(clean_indices), :]
         end
