@@ -601,7 +601,7 @@ Select, remove or duplicate rows by indexing their integer positions.
 
 # Examples
 ```jldoctest 
-julia> df = DataFrame(a = repeat('a':'e'), b = 1:5, c = 11:15);
+julia> df = DataFrame(a = repeat('a':'c', inner = 3), b = 1:9, c = 11:19);
 
 julia> @chain df begin
        @slice(1:5)
@@ -611,36 +611,80 @@ julia> @chain df begin
      │ Char  Int64  Int64 
 ─────┼────────────────────
    1 │ a         1     11
-   2 │ b         2     12
-   3 │ c         3     13
-   4 │ d         4     14
-   5 │ e         5     15
+   2 │ a         2     12
+   3 │ a         3     13
+   4 │ b         4     14
+   5 │ b         5     15
 
 julia> @chain df begin
        @slice(-(1:2))
        end
-3×3 DataFrame
+7×3 DataFrame
  Row │ a     b      c     
      │ Char  Int64  Int64 
 ─────┼────────────────────
-   1 │ c         3     13
-   2 │ d         4     14
-   3 │ e         5     15
+   1 │ a         3     13
+   2 │ b         4     14
+   3 │ b         5     15
+   4 │ b         6     16
+   5 │ c         7     17
+   6 │ c         8     18
+   7 │ c         9     19
 
 julia> @chain df begin
        @group_by(a)
        @slice(1)
        @ungroup
        end
-5×3 DataFrame
+3×3 DataFrame
  Row │ a     b      c     
      │ Char  Int64  Int64 
 ─────┼────────────────────
    1 │ a         1     11
-   2 │ b         2     12
-   3 │ c         3     13
-   4 │ d         4     14
-   5 │ e         5     15
+   2 │ b         4     14
+   3 │ c         7     17
+
+julia> @chain df begin
+       @group_by(a)
+       @slice(n())
+       @ungroup
+       end
+3×3 DataFrame
+ Row │ a     b      c     
+     │ Char  Int64  Int64 
+─────┼────────────────────
+   1 │ a         3     13
+   2 │ b         6     16
+   3 │ c         9     19
+
+julia> @chain df begin
+       @group_by(a)
+       @slice(-n())
+       @ungroup
+       end
+6×3 DataFrame
+ Row │ a     b      c     
+     │ Char  Int64  Int64 
+─────┼────────────────────
+   1 │ a         1     11
+   2 │ a         2     12
+   3 │ b         4     14
+   4 │ b         5     15
+   5 │ c         7     17
+   6 │ c         8     18
+
+julia> @chain df begin
+       @group_by(a)
+       @slice(-(2:n()))
+       @ungroup
+       end
+3×3 DataFrame
+ Row │ a     b      c     
+     │ Char  Int64  Int64 
+─────┼────────────────────
+   1 │ a         1     11
+   2 │ b         4     14
+   3 │ c         7     17
 ```         
 """
 

@@ -1,5 +1,8 @@
 # TidierData.jl updates
 
+## v0.13.3 - 2023-11-23
+- `@slice()` now correctly handles `n()` in grouped data frames
+
 ## v0.13.2 - 2023-11-20
 - Adds `@anti_join()` and `@semi_join()`
 
