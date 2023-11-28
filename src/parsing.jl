@@ -349,6 +349,8 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
       else
         return x
       end
+    elseif @capture(x, @mac_(args__))
+      return esc(Expr(:macrocall, mac, LineNumberNode, args...))
     end
     return x
   end

@@ -1,5 +1,8 @@
 # TidierData.jl updates
 
+## v0.13.4 - 2023-11-28
+- Macros used inside of verbs like `@mutate()` are now escaped, making it possible to work with Unitful units (e.g. `u"psi"`)
+
 ## v0.13.3 - 2023-11-23
 - `@slice()` now correctly handles `n()` in grouped data frames
 
