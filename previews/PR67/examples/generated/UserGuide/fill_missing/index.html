@@ -13,10 +13,6 @@
       
       
       
-        <link rel="prev" href="../arrange/">
-      
-      
-        <link rel="next" href="../across/">
       
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
@@ -24,7 +20,7 @@
     
     
       
-        <title>@distinct - TidierData.jl</title>
+        <title>Fill missing - TidierData.jl</title>
       
     
     
@@ -83,7 +79,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#select-distinct-values-overall" class="md-skip">
+        <a href="#fill-all-columns" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              @distinct
+              Fill missing
             
           </span>
         </div>
@@ -467,28 +463,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    @distinct
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../distinct/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -497,42 +475,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#select-distinct-values-overall" class="md-nav__link">
-    <span class="md-ellipsis">
-      Select distinct values overall
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#select-distinct-values-based-on-column-b" class="md-nav__link">
-    <span class="md-ellipsis">
-      Select distinct values based on column b
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -802,18 +744,45 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#select-distinct-values-overall" class="md-nav__link">
+  <a href="#fill-all-columns" class="md-nav__link">
     <span class="md-ellipsis">
-      Select distinct values overall
+      Fill all columns
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#select-distinct-values-based-on-column-b" class="md-nav__link">
+  <a href="#fill-specifc-columns" class="md-nav__link">
     <span class="md-ellipsis">
-      Select distinct values based on column b
+      Fill specifc columns
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fill-with-grouped-dataframes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fill with Grouped DataFrames
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#replace_missing" class="md-nav__link">
+    <span class="md-ellipsis">
+      replace_missing()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#missing_if" class="md-nav__link">
+    <span class="md-ellipsis">
+      missing_if()
     </span>
   </a>
   
@@ -834,39 +803,81 @@
                   
 
 
-  <h1>@distinct</h1>
+  <h1>Fill missing</h1>
 
-<div><p>The <code>@distinct()</code> macro in <code>TidierData.jl</code> is useful to select distinct rows. Like it's R counterpart, it can be used with or without arguments. When arguments are provided, it behaves slightly differently than the R version. Whereas the R function only returns the provided columns, the TidierData.jl version returns all columns, where the first match is returned for the non-selected columns.</p>
+<div><p>The @fill_missing macro is a reimplementation of fill(). To mirror the syntax in R, the methods availble are "up" (fill from bottom up) and "down" fill from top down.</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">TidierData</span>
 
-<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">repeat</span><span class="p">(</span><span class="sc">'a'</span><span class="o">:</span><span class="sc">'e'</span><span class="p">,</span><span class="w"> </span><span class="n">inner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span>
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span>
+<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span>
+<span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sc">'a'</span><span class="p">,</span><span class="w"> </span><span class="sc">'b'</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="sc">'d'</span><span class="p">,</span><span class="w"> </span><span class="sc">'e'</span><span class="p">],</span>
+<span class="w">    </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sc">'A'</span><span class="p">,</span><span class="w"> </span><span class="sc">'A'</span><span class="p">,</span><span class="w"> </span><span class="sc">'B'</span><span class="p">,</span><span class="w"> </span><span class="sc">'B'</span><span class="p">,</span><span class="w"> </span><span class="sc">'A'</span><span class="p">]</span>
+<span class="p">);</span>
 </code></pre></div>
-<div><div style="float: left;"><span>10×2 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">a</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">a</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: left;">b</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: left;">b</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">c</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">6</td><td style="text-align: right;">6</td><td style="text-align: left;">c</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">7</td><td style="text-align: right;">7</td><td style="text-align: left;">d</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">8</td><td style="text-align: right;">8</td><td style="text-align: left;">d</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">9</td><td style="text-align: right;">9</td><td style="text-align: left;">e</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">10</td><td style="text-align: right;">10</td><td style="text-align: left;">e</td></tr></tbody></table></div>
-
-<p><a id="Select-distinct-values-overall"></a></p>
-<p><a id="Select-distinct-values-overall-1"></a></p>
-<h2 id="select-distinct-values-overall">Select distinct values overall<a class="headerlink" href="#select-distinct-values-overall" title="Permanent link">¤</a></h2>
-<p>Since there are no duplicate rows, this will return all rows.</p>
+<p><a id="Fill-all-columns"></a></p>
+<p><a id="Fill-all-columns-1"></a></p>
+<h2 id="fill-all-columns">Fill all columns<a class="headerlink" href="#fill-all-columns" title="Permanent link">¤</a></h2>
+<p>Fill missing values for the whole DataFrame using the "down" method (top to bottom)</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="nd">@distinct</span><span class="p">()</span>
+<span class="w">    </span><span class="nd">@fill_missing</span><span class="p">(</span><span class="s">"down"</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="nd">@fill_missing</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="s">"down"</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>5×4 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">group</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Char}" style="text-align: left;">Char?</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: left;">a</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">1</td><td style="text-align: left;">b</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: right;">1</td><td style="text-align: left;">b</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">3</td><td style="text-align: right;">4</td><td style="text-align: left;">d</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">e</td><td style="text-align: left;">A</td></tr></tbody></table></div>
+
+<p><a id="Fill-specifc-columns"></a></p>
+<p><a id="Fill-specifc-columns-1"></a></p>
+<h2 id="fill-specifc-columns">Fill specifc columns<a class="headerlink" href="#fill-specifc-columns" title="Permanent link">¤</a></h2>
+<p>This fills missing values in columns <code>a</code> and <code>c</code> going from bottom to top.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@fill_missing</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="s">"up"</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre></div>
-<div><div style="float: left;"><span>10×2 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">a</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">a</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: left;">b</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: left;">b</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">c</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">6</td><td style="text-align: right;">6</td><td style="text-align: left;">c</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">7</td><td style="text-align: right;">7</td><td style="text-align: left;">d</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">8</td><td style="text-align: right;">8</td><td style="text-align: left;">d</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">9</td><td style="text-align: right;">9</td><td style="text-align: left;">e</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">10</td><td style="text-align: right;">10</td><td style="text-align: left;">e</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>5×4 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">group</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Char}" style="text-align: left;">Char?</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">2</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: left;">a</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">1</td><td style="text-align: left;">b</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: left;">d</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">5</td><td style="text-align: right;">4</td><td style="text-align: left;">d</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">e</td><td style="text-align: left;">A</td></tr></tbody></table></div>
 
-<p><a id="Select-distinct-values-based-on-column-b"></a></p>
-<p><a id="Select-distinct-values-based-on-column-b-1"></a></p>
-<h2 id="select-distinct-values-based-on-column-b">Select distinct values based on column <code>b</code><a class="headerlink" href="#select-distinct-values-based-on-column-b" title="Permanent link">¤</a></h2>
-<p>Notice that the first matching row for column <code>a</code> is returned for every distinct value of column <code>b</code>. This is slightly different behavior than R's tidyverse, which would have returned only column <code>b</code>.</p>
+<p><a id="Fill-with-Grouped-DataFrames"></a></p>
+<p><a id="Fill-with-Grouped-DataFrames-1"></a></p>
+<h2 id="fill-with-grouped-dataframes">Fill with Grouped DataFrames<a class="headerlink" href="#fill-with-grouped-dataframes" title="Permanent link">¤</a></h2>
+<p>When grouping by the <code>group</code> column, this fills missing values in columns <code>a</code> within each group going from top to bottom within that group</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@distinct</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@group_by</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@fill_missing</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="s">"down"</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre></div>
-<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">a</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">3</td><td style="text-align: left;">b</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">5</td><td style="text-align: left;">c</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">7</td><td style="text-align: left;">d</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">9</td><td style="text-align: left;">e</td></tr></tbody></table></div>
+<p><b>GroupedDataFrame with 2 groups based on key: group</b></p>
+<div><div style="float: left;"><span>First Group (3 rows): group = 'A': ASCII/Unicode U+0041 (category Lu: Letter, uppercase)</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">group</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Char}" style="text-align: left;">Char?</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: left;">a</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">1</td><td style="text-align: left;">b</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">e</td><td style="text-align: left;">A</td></tr></tbody></table></div>
+<p>&amp;vellip;</p>
+<div><div style="float: left;"><span>Last Group (2 rows): group = 'B': ASCII/Unicode U+0042 (category Lu: Letter, uppercase)</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">group</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Char}" style="text-align: left;">Char?</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">3</td><td style="text-align: right;">4</td><td style="text-align: left;">d</td><td style="text-align: left;">B</td></tr></tbody></table></div>
 
-<p>In TidierData.jl, <code>@distinct()</code> works with grouped data frames. If grouped, <code>@distinct()</code> will ignore the grouping when determining distinct values but will return the data frame in grouped form based on the original groupings.</p>
+<p><a id="replace_missing()"></a></p>
+<p><a id="replace_missing()-1"></a></p>
+<h2 id="replace_missing"><code>replace_missing()</code><a class="headerlink" href="#replace_missing" title="Permanent link">¤</a></h2>
+<p>The <code>replace_missing</code> function facilitates the replacement of <code>missing</code> values with a specified replacement.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">replace_missing</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span>
+<span class="k">end</span>
+</code></pre></div>
+<div><div style="float: left;"><span>5×4 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">group</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Int64" style="text-align: left;">Int64</th><th title="Union{Missing, Char}" style="text-align: left;">Char?</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">2</td><td style="text-align: left;">a</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">1</td><td style="text-align: left;">b</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: right;">2</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">4</td><td style="text-align: left;">d</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: left;">e</td><td style="text-align: left;">A</td></tr></tbody></table></div>
+
+<p><a id="missing_if()"></a></p>
+<p><a id="missing_if()-1"></a></p>
+<h2 id="missing_if"><code>missing_if()</code><a class="headerlink" href="#missing_if" title="Permanent link">¤</a></h2>
+<p>The <code>missing_if</code> function is used to introduce <code>missing</code> values under specific conditions.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">missing_if</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">))</span>
+<span class="k">end</span>
+</code></pre></div>
+<div><div style="float: left;"><span>5×4 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">group</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Char}" style="text-align: left;">Char?</th><th title="Char" style="text-align: left;">Char</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: left;">a</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">1</td><td style="text-align: left;">b</td><td style="text-align: left;">A</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">4</td><td style="text-align: left;">d</td><td style="text-align: left;">B</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: left;">e</td><td style="text-align: left;">A</td></tr></tbody></table></div>
+
+<p>Both <code>missing_if</code> and <code>replace_missing</code> are not type specifc.</p>
 <hr>
 <p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></div>
 
@@ -891,44 +902,6 @@
       
         <footer class="md-footer">
   
-    
-      
-      <nav class="md-footer__inner md-grid" aria-label="Footer" >
-        
-          
-          <a href="../arrange/" class="md-footer__link md-footer__link--prev" aria-label="Previous: @arrange">
-            <div class="md-footer__button md-icon">
-              
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-            </div>
-            <div class="md-footer__title">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              <div class="md-ellipsis">
-                @arrange
-              </div>
-            </div>
-          </a>
-        
-        
-          
-          <a href="../across/" class="md-footer__link md-footer__link--next" aria-label="Next: across">
-            <div class="md-footer__title">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              <div class="md-ellipsis">
-                across
-              </div>
-            </div>
-            <div class="md-footer__button md-icon">
-              
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-            </div>
-          </a>
-        
-      </nav>
     
   
   <div class="md-footer-meta md-typeset">
