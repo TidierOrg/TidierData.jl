@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.11">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.14">
     
     
       
@@ -263,6 +263,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href="../../../.." class="md-nav__link">
         
@@ -279,6 +280,7 @@
     
       
       
+  
   
   
   
@@ -301,6 +303,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href="../select/" class="md-nav__link">
         
@@ -317,6 +320,7 @@
     
       
       
+  
   
   
   
@@ -339,6 +343,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href="../mutate_transmute/" class="md-nav__link">
         
@@ -355,6 +360,7 @@
     
       
       
+  
   
   
   
@@ -377,6 +383,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href="../filter/" class="md-nav__link">
         
@@ -393,6 +400,7 @@
     
       
       
+  
   
   
   
@@ -415,6 +423,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href="../group_by/" class="md-nav__link">
         
@@ -431,6 +440,7 @@
     
       
       
+  
   
   
   
@@ -453,6 +463,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href="../distinct/" class="md-nav__link">
         
@@ -469,6 +480,7 @@
     
       
       
+  
   
   
   
@@ -491,6 +503,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href="../conditionals/" class="md-nav__link">
         
@@ -507,6 +520,7 @@
     
       
       
+  
   
   
   
@@ -529,6 +543,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href="../binding/" class="md-nav__link">
         
@@ -545,6 +560,7 @@
     
       
       
+  
   
   
   
@@ -567,6 +583,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href="../sep_unite/" class="md-nav__link">
         
@@ -583,6 +600,7 @@
     
       
       
+  
   
   
   
@@ -605,6 +623,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href="../column_names/" class="md-nav__link">
         
@@ -621,6 +640,7 @@
     
       
       
+  
   
   
   
@@ -643,6 +663,7 @@
   
   
     
+  
   
   
     <li class="md-nav__item md-nav__item--active">
@@ -670,6 +691,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href="../../Contributors/Howto/" class="md-nav__link">
         
@@ -686,6 +708,7 @@
     
       
       
+  
   
   
   
@@ -736,12 +759,16 @@
 
   <h1>Auto-vectorization</h1>
 
-<div><p>In general, TidierData.jl uses a lookup table to decide which functions <em>not</em> to vectorize. For example, <code>mean()</code> is listed as a function that should never be vectorized. Also, any function used inside of <code>@summarize()</code> is also never automatically vectorized. Any function that is not included in this list <em>and</em> is used in a context other than <code>@summarize()</code> is automatically vectorized.</p>
-<p>This "auto-vectorization" makes working with TidierData.jl more R-like and convenient. However, if you ever define your own function and try to use it, TidierData.jl may unintentionally vectorize it for you. To prevent auto-vectorization, you can prefix your function with a <code>~</code>.</p>
+<div><p>TidierData.jl uses a lookup table to decide which functions <em>not</em> to vectorize. For example, <code>mean()</code> is listed as a function that should never be vectorized. Also, any function used inside of <code>across()</code> is also not automatically vectorized. Any function that is not included in this list <em>and</em> is used in a context other than <code>across()</code> is automatically vectorized.</p>
+<p>Which functions are not vectorized? The set of non-vectorized functions is contained in the array <code>TidierData.not_vectorized[]</code>. Let's take a look at this array. We will wrap it in a <code>string()</code> to make the output easier to read.</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">TidierData</span>
-<span class="k">using</span><span class="w"> </span><span class="n">RDatasets</span>
 
-<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">repeat</span><span class="p">(</span><span class="sc">'a'</span><span class="o">:</span><span class="sc">'e'</span><span class="p">,</span><span class="w"> </span><span class="n">inner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">11</span><span class="o">:</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">string</span><span class="p">(</span><span class="n">TidierData</span><span class="o">.</span><span class="n">not_vectorized</span><span class="p">[])</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>"[:esc, :Ref, :Set, :Cols, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :is_float, :is_integer, :is_string, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :categorical, :as_categorical, :is_categorical]"
+</code></pre></div>
+<p>This "auto-vectorization" makes working with TidierData.jl more R-like and convenient. However, if you ever define your own function and try to use it, TidierData.jl may unintentionally vectorize it for you. To prevent auto-vectorization, you can prefix your function with a <code>~</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">repeat</span><span class="p">(</span><span class="sc">'a'</span><span class="o">:</span><span class="sc">'e'</span><span class="p">,</span><span class="w"> </span><span class="n">inner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">11</span><span class="o">:</span><span class="mi">20</span><span class="p">)</span>
 </code></pre></div>
 <div><div style="float: left;"><span>10×3 DataFrame</span></div><div style="clear: both;"></div></div>
 <div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Char" style="text-align: left;">Char</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td><td style="text-align: right;">11</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td><td style="text-align: right;">12</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">b</td><td style="text-align: right;">1</td><td style="text-align: right;">13</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">b</td><td style="text-align: right;">2</td><td style="text-align: right;">14</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td><td style="text-align: right;">15</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">6</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td><td style="text-align: right;">16</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">7</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td><td style="text-align: right;">17</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">8</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td><td style="text-align: right;">18</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">9</td><td style="text-align: left;">e</td><td style="text-align: right;">3</td><td style="text-align: right;">19</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">10</td><td style="text-align: left;">e</td><td style="text-align: right;">4</td><td style="text-align: right;">20</td></tr></tbody></table></div>
@@ -762,6 +789,39 @@
 <p>To prevent <code>new_mean()</code> from being vectorized, we need to prefix it with a <code>~</code> like this:</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">    </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">~</span><span class="n">new_mean</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+<span class="k">end</span>
+</code></pre></div>
+<div><div style="float: left;"><span>10×4 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">d</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Char" style="text-align: left;">Char</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td><td style="text-align: right;">11</td><td style="text-align: right;">-4.5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td><td style="text-align: right;">12</td><td style="text-align: right;">-3.5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">b</td><td style="text-align: right;">1</td><td style="text-align: right;">13</td><td style="text-align: right;">-2.5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">b</td><td style="text-align: right;">2</td><td style="text-align: right;">14</td><td style="text-align: right;">-1.5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td><td style="text-align: right;">15</td><td style="text-align: right;">-0.5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">6</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td><td style="text-align: right;">16</td><td style="text-align: right;">0.5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">7</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td><td style="text-align: right;">17</td><td style="text-align: right;">1.5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">8</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td><td style="text-align: right;">18</td><td style="text-align: right;">2.5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">9</td><td style="text-align: left;">e</td><td style="text-align: right;">3</td><td style="text-align: right;">19</td><td style="text-align: right;">3.5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">10</td><td style="text-align: left;">e</td><td style="text-align: right;">4</td><td style="text-align: right;">20</td><td style="text-align: right;">4.5</td></tr></tbody></table></div>
+
+<p>Or you can modify the do-not-vectorize list like this:</p>
+<div class="highlight"><pre><span></span><code><span class="n">push!</span><span class="p">(</span><span class="n">TidierData</span><span class="o">.</span><span class="n">not_vectorized</span><span class="p">[],</span><span class="w"> </span><span class="ss">:new_mean</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>43-element Vector{Symbol}:
+ :esc
+ :Ref
+ :Set
+ :Cols
+ :(:)
+ :∘
+ :lag
+ :lead
+ :ntile
+ :repeat
+ ⋮
+ :cat_lump
+ :cat_reorder
+ :cat_collapse
+ :cat_lump_min
+ :cat_lump_prop
+ :categorical
+ :as_categorical
+ :is_categorical
+ :new_mean
+</code></pre></div>
+<p>Now <code>new_mean()</code> should behave just like <code>mean()</code> in that it is treated as non-vectorized.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">new_mean</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
 <span class="k">end</span>
 </code></pre></div>
 <div><div style="float: left;"><span>10×4 DataFrame</span></div><div style="clear: both;"></div></div>
@@ -791,7 +851,7 @@
 <div><div style="float: left;"><span>10×4 DataFrame</span></div><div style="clear: both;"></div></div>
 <div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">d</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Char" style="text-align: left;">Char</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td><td style="text-align: right;">11</td><td style="text-align: right;">0.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td><td style="text-align: right;">12</td><td style="text-align: right;">0.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">b</td><td style="text-align: right;">1</td><td style="text-align: right;">13</td><td style="text-align: right;">0.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">b</td><td style="text-align: right;">2</td><td style="text-align: right;">14</td><td style="text-align: right;">0.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td><td style="text-align: right;">15</td><td style="text-align: right;">0.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">6</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td><td style="text-align: right;">16</td><td style="text-align: right;">0.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">7</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td><td style="text-align: right;">17</td><td style="text-align: right;">0.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">8</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td><td style="text-align: right;">18</td><td style="text-align: right;">0.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">9</td><td style="text-align: left;">e</td><td style="text-align: right;">3</td><td style="text-align: right;">19</td><td style="text-align: right;">0.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">10</td><td style="text-align: left;">e</td><td style="text-align: right;">4</td><td style="text-align: right;">20</td><td style="text-align: right;">0.0</td></tr></tbody></table></div>
 
-<p>Note: <code>~</code> also works with operators, so if you want to <em>not</em> vectorize an operator, you can prefix it with <code>~</code>, for example, <code>a ~* b</code> will perform a matrix multiplication rather than element-wise multiplication. Remember that this is only needed outside of <code>@summarize()</code> because <code>@summarize()</code> never performs auto-vectorization.</p>
+<p>Note: <code>~</code> also works with operators, so if you want to <em>not</em> vectorize an operator, you can prefix it with <code>~</code>, for example, <code>a ~* b</code> will perform a matrix multiplication rather than element-wise multiplication.</p>
 <hr>
 <p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></div>
 
@@ -907,7 +967,7 @@
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy", "content.code.annotate", "navigation.top", "navigation.footer", "search.highlight", "search.share", "search.suggest", "toc.follow", "header.autohide"], "search": "../../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.6c14ae12.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.cd18aaf1.min.js"></script>
       
         <script src="../../../../javascripts/mathjax.js"></script>
       
