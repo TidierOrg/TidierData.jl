@@ -303,7 +303,7 @@ macro summarize(df, exprs...)
   any_found_n = any([i[2] for i in interpolated_exprs])
   any_found_row_number = any([i[3] for i in interpolated_exprs])
 
-  tidy_exprs = parse_tidy.(tidy_exprs; autovec=false)
+  tidy_exprs = parse_tidy.(tidy_exprs; autovec=true) # use auto-vectorization inside `@summarize()`
   df_expr = quote
     if $any_found_n || $any_found_row_number
       if $(esc(df)) isa GroupedDataFrame
