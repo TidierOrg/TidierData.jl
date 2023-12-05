@@ -1,5 +1,9 @@
 # TidierData.jl updates
 
+## v0.13.5 - 2023-12-05
+- `@summarize()` and `@summarise()` now perform auto-vectorization in the same way as `@mutate()`, meaning that the top-level macros are now all consistent in their treatment of auto-vectorization.
+- Update documentation to describe new auto-vectorization behavior and give an example of how to modify the `TidierData.not_vectorized[]` array.
+
 ## v0.13.4 - 2023-11-28
 - Macros used inside of verbs like `@mutate()` are now escaped, making it possible to work with Unitful units (e.g. `u"psi"`)
 
