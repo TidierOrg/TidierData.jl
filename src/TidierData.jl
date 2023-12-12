@@ -26,10 +26,11 @@ const code = Ref{Bool}(false) # output DataFrames.jl code?
 const log = Ref{Bool}(false) # output tidylog output? (not yet implemented)
 
 # The global do-not-vectorize "list"
-const not_vectorized = Ref{Vector{Symbol}}([:esc, :Ref, :Set, :Cols, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :is_float, :is_integer, :is_string, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :categorical, :as_categorical, :is_categorical])
+const not_vectorized = Ref{Vector{Symbol}}([:esc, :Ref, :Set, :Cols, :collect, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :is_float, :is_integer, :is_string, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :categorical, :as_categorical, :is_categorical])
 
-# The global set of symbols to escape
-const escaped_symbols = Ref{Vector{Symbol}}([:missing])
+# The global do-not-escape "list"
+# `in`, `∈`, and `∉` should be vectorized in auto-vec but not escaped
+const not_escaped = Ref{Vector{Symbol}}([:esc, :in, :∈, :∉, :Ref, :Set, :Cols, :collect, :(:), :∘, :(=>), :across, :desc, :mean, :std, :var, :median, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :startswith, :contains, :endswith])
 
 # Includes
 include("docstrings.jl")

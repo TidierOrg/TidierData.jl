@@ -1,7 +1,8 @@
 # TidierData.jl updates
 
-## v0.13.6 - 2023-12-12
-- Adds support for auto-escaped symbols. E.g., in `@mutate(b = missing)`, `missing` is now assumed to refer to `missing` values rather than a column named `missing`. We will need to further populate this list.
+## v0.14.0 - 2023-12-12
+- Update parsing engine so that non-function reserved names from the Base and Core modules (like `missing`, `pi`, and `Real`) are auto-escaped now, with the exception of names in the not_escaped[] array, which are never escaped
+- Add `collect()` to not_vectorized[] array
 
 ## v0.13.5 - 2023-12-05
 - `@summarize()` and `@summarise()` now perform auto-vectorization in the same way as `@mutate()`, meaning that the top-level macros are now all consistent in their treatment of auto-vectorization.

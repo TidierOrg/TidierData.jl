@@ -331,10 +331,30 @@ end
 # Not exported
 function parse_escape_function(rhs_expr::Union{Expr,Symbol})
   rhs_expr = MacroTools.postwalk(rhs_expr) do x
-    if @capture(x, fn_(args__))
 
-      # `in`, `∈`, and `∉` should be vectorized in auto-vec but not escaped
-      if fn in [:esc :in :∈ :∉ :Ref :Set :Cols :(:) :∘ :across :desc :mean :std :var :median :first :last :minimum :maximum :sum :length :skipmissing :quantile :passmissing :startswith :contains :endswith]
+    # If it's already escaped, make sure it needs to remain escaped
+    if @capture(x, esc(variable_Symbol))
+      if hasproperty(Base, variable) && !(typeof(getproperty(Base, variable)) <: Function)
+        # Remove the escaping if referring to a constant value like Base.pi
+       return variable
+      elseif @capture(x, variable_Symbol) && hasproperty(Core, variable) && !(typeof(getproperty(Core, variable)) <: Function)
+        # Remove the escaping if referring to a data type like Core.Int64
+       return variable
+      elseif variable in not_escaped[]
+        return variable
+      elseif contains(string(variable), r"[^\W0-9]\w*$") # valid variable name
+        return esc(variable)
+      else
+       return variable
+      end
+    elseif @capture(x, fn_(args__))
+      if hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
+        return x
+      elseif hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Function
+        return x
+      elseif hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
+        return x
+      elseif fn in not_escaped[]
         return x
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn))($(args...)))
@@ -366,6 +386,10 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String}; summari
   var_expr = MacroTools.postwalk(var_expr) do x
     if @capture(x, !!variable_Symbol)
       return esc(variable)
+    # If a variable has already been escaped and marked with a `!!` (e.g., `!!pi`),
+    # then it won't be re-escaped.
+    elseif @capture(x, !!expr_)
+      return expr
     # `hello` in Julia is converted to Core.@cmd("hello")
     # Since MacroTools is unable to match this pattern, we can directly
     # evaluate the expression to see if it matches. If it does, the 3rd argument
@@ -390,8 +414,19 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String}; summari
       end
     elseif @capture(x, esc(variable_))
       return esc(variable)
-    elseif @capture(x, variable_Symbol) && variable in escaped_symbols[]
-      return esc(variable)
+    # Escape any native Julia symbols that come from the Base or Core packages
+    # This includes :missing but also includes all data types (e.g., :Real, :String, etc.)
+    # To refer to a column named String, you can use `String` (in backticks)
+    elseif @capture(x, variable_Symbol)
+      if variable in not_escaped[]
+        return variable
+      elseif hasproperty(Base, variable) && !(typeof(getproperty(Base, variable)) <: Function)
+        return esc(variable)
+      elseif @capture(x, variable_Symbol) && hasproperty(Core, variable) && !(typeof(getproperty(Core, variable)) <: Function)
+        return esc(variable)
+      else
+        return variable
+      end
     end
     return x
   end
