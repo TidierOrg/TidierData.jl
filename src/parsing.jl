@@ -389,7 +389,9 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String}; summari
         return :($fn())
       end
     elseif @capture(x, esc(variable_))
-     return esc(variable)
+      return esc(variable)
+    elseif @capture(x, variable_Symbol) && variable in escaped_symbols[]
+      return esc(variable)
     end
     return x
   end
