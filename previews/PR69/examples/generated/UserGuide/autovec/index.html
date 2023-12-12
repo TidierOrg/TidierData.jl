@@ -765,7 +765,7 @@
 
 <span class="n">string</span><span class="p">(</span><span class="n">TidierData</span><span class="o">.</span><span class="n">not_vectorized</span><span class="p">[])</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>"[:esc, :Ref, :Set, :Cols, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :is_float, :is_integer, :is_string, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :categorical, :as_categorical, :is_categorical]"
+<div class="highlight"><pre><span></span><code>"[:esc, :Ref, :Set, :Cols, :collect, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :is_float, :is_integer, :is_string, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :categorical, :as_categorical, :is_categorical]"
 </code></pre></div>
 <p>This "auto-vectorization" makes working with TidierData.jl more R-like and convenient. However, if you ever define your own function and try to use it, TidierData.jl may unintentionally vectorize it for you. To prevent auto-vectorization, you can prefix your function with a <code>~</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">repeat</span><span class="p">(</span><span class="sc">'a'</span><span class="o">:</span><span class="sc">'e'</span><span class="p">,</span><span class="w"> </span><span class="n">inner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">11</span><span class="o">:</span><span class="mi">20</span><span class="p">)</span>
@@ -797,17 +797,17 @@
 <p>Or you can modify the do-not-vectorize list like this:</p>
 <div class="highlight"><pre><span></span><code><span class="n">push!</span><span class="p">(</span><span class="n">TidierData</span><span class="o">.</span><span class="n">not_vectorized</span><span class="p">[],</span><span class="w"> </span><span class="ss">:new_mean</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>43-element Vector{Symbol}:
+<div class="highlight"><pre><span></span><code>44-element Vector{Symbol}:
  :esc
  :Ref
  :Set
  :Cols
+ :collect
  :(:)
  :∘
  :lag
  :lead
  :ntile
- :repeat
  ⋮
  :cat_lump
  :cat_reorder
