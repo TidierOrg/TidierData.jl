@@ -122,13 +122,13 @@ df = DataFrame(radius = 1:5)
   @mutate(area = !!pi * radius^2)
 end
 
-# ## Alternative interpolation syntax
-
-# While interpolation using `!!` is concise and handy, it's not required. You can also access user-defined globals and global constant variables using the following syntax:
+# As of v0.14.0, global constants defined within the Base or Core modules (like `missing`, `pi`, and `Real` can be directly referenced without any `!!`)
 
 @chain df begin
-  @mutate(area = esc(pi) * radius^2)
+  @mutate(area = pi * radius^2)
 end
+
+# ## Alternative interpolation syntax
 
 # Since we know that `pi` is defined in the `Main` module, we can also access it using `Main.pi`.
 
@@ -136,7 +136,7 @@ end
   @mutate(area = Main.pi * radius^2)
 end
 
-# The key lesson with interpolation is that any bare unquoted variable is assumed to refer to a column name in the DataFrame. If you are referring to any variable outside of the DataFrame, you need to either use `!!variable`, `esc(variable)`, or `[Module_name_here].variable` syntax to refer to this variable.
+# The key lesson with interpolation is that any bare unquoted variable is assumed to refer to a column name in the DataFrame. If you are referring to any variable outside of the DataFrame, you need to either use `!!variable` or `[Module_name_here].variable` syntax to refer to this variable.
 
 # Note: You can use `!!` interpolation anywhere, including inside of functions and loops.
 
