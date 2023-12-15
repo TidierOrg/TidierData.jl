@@ -6,7 +6,7 @@ function safe_getindex(arr, index, default_value="")
     end
 end
 
-function separate(df::DataFrame, col::Symbol, into::Vector{Symbol}, sep::String)
+function separate(df::DataFrame, col::Symbol, into::Vector{Symbol}, sep::Union{Regex, String})
     new_df = df[:, :]
     new_cols = map(x -> split(x, sep), new_df[:, col])
     max_cols = maximum(length.(new_cols))
