@@ -2934,15 +2934,15 @@ julia> df = DataFrame(a = 1:3, b = ["a", "aa;bb;cc", "dd;ee"], c = ["1", "2;3;4"
 
 julia> @separate_rows(df, 2, 3, 5, ";" )
 6×5 DataFrame
- Row │ a      b          c          d          e        
-     │ Int64  SubStrin…  SubStrin…  SubStrin…  String   
-─────┼──────────────────────────────────────────────────
-   1 │     1  a          1          7          11
-   2 │     2  aa         2          8          22;33;44
-   3 │     2  bb         3          9          22;33;44
-   4 │     2  cc         4          10         22;33;44
-   5 │     3  dd         5          11         55;66
-   6 │     3  ee         6          12         55;66
+ Row │ a      b          c          d       e         
+     │ Int64  SubStrin…  SubStrin…  String  SubStrin… 
+─────┼────────────────────────────────────────────────
+   1 │     1  a          1          7       11
+   2 │     2  aa         2          8;9;10  22
+   3 │     2  bb         3          8;9;10  33
+   4 │     2  cc         4          8;9;10  44
+   5 │     3  dd         5          11;12   55
+   6 │     3  ee         6          11;12   66
 
 julia>@separate_rows(df, b:5, ";")
 6×5 DataFrame
