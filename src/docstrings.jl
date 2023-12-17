@@ -2909,3 +2909,51 @@ julia> @rename_with(df, str -> str_remove_all(str, "_a"), !term_a)
    3 │ cherry  doc3          3
 ```
 """
+
+const docstring_separate_rows =
+"""
+    separate_rows(df, column(s), delimiter)
+
+Split the contents of specified columns in a DataFrame into multiple rows based on a given delimiter.
+
+# Arguments
+- `df`: A DataFrame
+- `columns`: A column or collection of columns to be split. Can be a mix of integers  and symbols
+- `delimiter`: The string or character or regular expression used to split the column values.
+
+# Examples
+```jldoctest
+julia> df = DataFrame(a = 1:3, b = ["a", "aa;bb;cc", "dd;ee"], c = ["1", "2;3;4", "5;6"], d = ["7", "8;9;10", "11;12"], e = ["11", "22;33;44", "55;66"])
+3×5 DataFrame
+ Row │ a      b         c       d       e        
+     │ Int64  String    String  String  String   
+─────┼───────────────────────────────────────────
+   1 │     1  a         1       7       11
+   2 │     2  aa;bb;cc  2;3;4   8;9;10  22;33;44
+   3 │     3  dd;ee     5;6     11;12   55;66
+
+julia> @separate_rows(df, 2, 3, 5, ";" )
+6×5 DataFrame
+ Row │ a      b          c          d          e        
+     │ Int64  SubStrin…  SubStrin…  SubStrin…  String   
+─────┼──────────────────────────────────────────────────
+   1 │     1  a          1          7          11
+   2 │     2  aa         2          8          22;33;44
+   3 │     2  bb         3          9          22;33;44
+   4 │     2  cc         4          10         22;33;44
+   5 │     3  dd         5          11         55;66
+   6 │     3  ee         6          12         55;66
+
+julia>@separate_rows(df, b:5, ";")
+6×5 DataFrame
+ Row │ a      b          c          d          e         
+     │ Int64  SubStrin…  SubStrin…  SubStrin…  SubStrin… 
+─────┼───────────────────────────────────────────────────
+   1 │     1  a          1          7          11
+   2 │     2  aa         2          8          22
+   3 │     2  bb         3          9          33
+   4 │     2  cc         4          10         44
+   5 │     3  dd         5          11         55
+   6 │     3  ee         6          12         66
+```
+"""

@@ -82,3 +82,83 @@ macro unite(df, new_col, from_cols, sep)
         unite($(esc(df)), $new_col_quoted, $(from_cols_expr), $(esc(sep)))
     end
 end
+
+
+### separate_rows
+function separate_rows(df::DataFrame, columns, delimiter::Union{Regex, String})
+    temp_df = copy(df)
+  
+    # Convert all references to column symbols
+    column_symbols = []
+    for col in columns
+        if col isa Integer
+            push!(column_symbols, Symbol(names(df)[col]))
+        elseif col isa AbstractRange
+            append!(column_symbols, Symbol.(names(df)[collect(col)]))
+        elseif typeof(col) <: Between
+            # Get the column indices for the Between range
+            col_indices = DataFrames.index(df)[col]
+            append!(column_symbols, Symbol.(names(df)[col_indices]))
+        else
+            push!(column_symbols, Symbol(col))
+        end
+    end
+  
+    # Initialize an array to hold expanded data for each column
+    expanded_data = Dict{Symbol, Vector{Any}}()
+  
+    for column in column_symbols
+        expanded_data[column] = []
+  
+        for row in eachrow(temp_df)
+            value = row[column]
+            # Handle missing values and non-string types
+            if ismissing(value) || typeof(value) != String
+                push!(expanded_data[column], [value])
+            else
+                push!(expanded_data[column], split(value, delimiter))
+            end
+        end
+    end
+  
+    # Replace the columns with expanded data
+    for column in column_symbols
+        temp_df[!, column] = expanded_data[column]
+    end
+  
+    # Flatten the DataFrame only once after all columns have been expanded
+    temp_df = flatten(temp_df, column_symbols)
+  
+    return temp_df
+  end
+
+  """
+  $docstring_separate_rows
+  """
+  macro separate_rows(df, args...)
+    delimiter = esc(last(args))
+    exprs = Base.front(args)
+  
+    interpolated_exprs = parse_interpolation.(exprs)
+  
+    tidy_exprs = [i[1] for i in interpolated_exprs]
+    any_found_n = any([i[2] for i in interpolated_exprs])
+    any_found_row_number = any([i[3] for i in interpolated_exprs])
+  
+    tidy_exprs = parse_tidy.(tidy_exprs)
+    df_expr = quote
+        local df_copy = $(esc(df)) # not a copy
+        if $any_found_n
+                transform!(df_copy, nrow => :TidierData_n)
+        end
+        if $any_found_row_number
+                transform!(df_copy, eachindex => :TidierData_row_number)
+        end
+        local df_output = separate_rows(df_copy, [$(tidy_exprs...)], $delimiter)
+        if $any_found_n || $any_found_row_number
+                select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
+        end
+        df_output
+    end
+    return df_expr
+  end
