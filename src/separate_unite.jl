@@ -85,20 +85,25 @@ end
 
 
 ### separate_rows
-function separate_rows(df::DataFrame, columns, delimiter::Union{Regex, String})
-    temp_df = copy(df)
+function separate_rows(df::Union{DataFrame, GroupedDataFrame}, columns, delimiter::Union{Regex, String})
+    is_grouped = df isa GroupedDataFrame
+    grouping_columns = is_grouped ? groupcols(df) : Symbol[]
+  
+    # Ungroup if necessary
+    temp_df = copy(is_grouped ? parent(df) : df)
+     # temp_df = copy(df)
   
     # Convert all references to column symbols
     column_symbols = []
     for col in columns
         if col isa Integer
-            push!(column_symbols, Symbol(names(df)[col]))
+            push!(column_symbols, Symbol(names(temp_df)[col]))
         elseif col isa AbstractRange
-            append!(column_symbols, Symbol.(names(df)[collect(col)]))
+            append!(column_symbols, Symbol.(names(temp_df)[collect(col)]))
         elseif typeof(col) <: Between
             # Get the column indices for the Between range
-            col_indices = DataFrames.index(df)[col]
-            append!(column_symbols, Symbol.(names(df)[col_indices]))
+            col_indices = DataFrames.index(temp_df)[col]
+            append!(column_symbols, Symbol.(names(temp_df)[col_indices]))
         else
             push!(column_symbols, Symbol(col))
         end
@@ -128,17 +133,18 @@ function separate_rows(df::DataFrame, columns, delimiter::Union{Regex, String})
   
     # Flatten the DataFrame only once after all columns have been expanded
     temp_df = flatten(temp_df, column_symbols)
-  
+    if is_grouped
+      temp_df = groupby(temp_df, grouping_columns)
+     end
     return temp_df
   end
-
+  
   """
   $docstring_separate_rows
   """
-  macro separate_rows(df, args...)
-    delimiter = esc(last(args))
-    exprs = Base.front(args)
-  
+  macro separate_rows(df, exprs...)
+    delimiter = esc(last(exprs))
+    exprs = Base.front(exprs)
     interpolated_exprs = parse_interpolation.(exprs)
   
     tidy_exprs = [i[1] for i in interpolated_exprs]
@@ -147,18 +153,48 @@ function separate_rows(df::DataFrame, columns, delimiter::Union{Regex, String})
   
     tidy_exprs = parse_tidy.(tidy_exprs)
     df_expr = quote
+      if $any_found_n || $any_found_row_number
+        if $(esc(df)) isa GroupedDataFrame
+          local df_copy = transform($(esc(df)); ungroup = false)
+        else
+          local df_copy = copy($(esc(df)))
+        end
+      else
         local df_copy = $(esc(df)) # not a copy
+      end
+      
+      if $(esc(df)) isa GroupedDataFrame
         if $any_found_n
-                transform!(df_copy, nrow => :TidierData_n)
+          transform!(df_copy, nrow => :TidierData_n; ungroup = false)
         end
         if $any_found_row_number
-                transform!(df_copy, eachindex => :TidierData_row_number)
-        end
+          transform!(df_copy, eachindex => :TidierData_row_number; ungroup = false)
+        end    
+        
         local df_output = separate_rows(df_copy, [$(tidy_exprs...)], $delimiter)
+        
         if $any_found_n || $any_found_row_number
-                select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
+          select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
         end
-        df_output
+      else
+        if $any_found_n
+          transform!(df_copy, nrow => :TidierData_n)
+        end
+        if $any_found_row_number
+          transform!(df_copy, eachindex => :TidierData_row_number)
+        end
+          
+        local df_output = separate_rows(df_copy, [$(tidy_exprs...)], $delimiter)
+  
+        if $any_found_n || $any_found_row_number
+          select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
+        end
+      end
+  
+      df_output
+    end
+    if code[]
+      @info MacroTools.prettify(df_expr)
     end
     return df_expr
   end

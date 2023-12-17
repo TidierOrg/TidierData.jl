@@ -2944,8 +2944,8 @@ julia> @separate_rows(df, 2, 4, ";" )
    5 │     3  dd         5;6     11
    6 │     3  ee         5;6     12
 
-julia> @separate_rows(df, b:d, ";")
-6×4 DataFrame
+   local df_output = separate_rows2(df_copy, [$(exprs...)], $delimiter)
+   6×4 DataFrame
  Row │ a      b          c          d         
      │ Int64  SubStrin…  SubStrin…  SubStrin… 
 ─────┼────────────────────────────────────────
