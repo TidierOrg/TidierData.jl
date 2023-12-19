@@ -2912,18 +2912,21 @@ julia> @rename_with(df, str -> str_remove_all(str, "_a"), !term_a)
 
 const docstring_separate_rows =
 """
-    separate_rows(df, column(s), delimiter)
+    separate_rows(df, columns..., delimiter)
 
 Split the contents of specified columns in a DataFrame into multiple rows based on a given delimiter.
 
 # Arguments
 - `df`: A DataFrame
-- `columns`: A column or collection of columns to be split. Can be a mix of integers  and symbols
+- `columns`: A column or multiple columns to be split. Can be a mix of integers and column names.
 - `delimiter`: The string or character or regular expression used to split the column values.
 
 # Examples
 ```jldoctest
-julia> df = DataFrame(a = 1:3, b = ["a", "aa;bb;cc", "dd;ee"], c = ["1", "2;3;4", "5;6"], d = ["7", "8;9;10", "11;12"])
+julia> df = DataFrame(a = 1:3,
+                      b = ["a", "aa;bb;cc", "dd;ee"],
+                      c = ["1", "2;3;4", "5;6"],
+                      d = ["7", "8;9;10", "11;12"])
 3×4 DataFrame
  Row │ a      b         c       d      
      │ Int64  String    String  String 
