@@ -151,21 +151,8 @@ function separate_rows(df::Union{DataFrame, GroupedDataFrame}, columns, delimite
   temp_df = copy(is_grouped ? parent(df) : df)
    # temp_df = copy(df)
 
-  # Convert all references to column symbols
-  column_symbols = []
-  for col in columns
-      if col isa Integer
-          push!(column_symbols, Symbol(names(temp_df)[col]))
-      elseif col isa AbstractRange
-          append!(column_symbols, Symbol.(names(temp_df)[collect(col)]))
-      elseif typeof(col) <: Between
-          # Get the column indices for the Between range
-          col_indices = DataFrames.index(temp_df)[col]
-          append!(column_symbols, Symbol.(names(temp_df)[col_indices]))
-      else
-          push!(column_symbols, Symbol(col))
-      end
-  end
+  # parse what comes from parse_tidy enable negation, negated ranges, ranges etc.
+  column_symbols = from_parse_tidy(temp_df, columns)
 
   # Initialize an array to hold expanded data for each column
   expanded_data = Dict{Symbol, Vector{Any}}()

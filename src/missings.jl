@@ -42,44 +42,25 @@ end
 
 function fill_missing(df::DataFrame, columns, method::String)
   new_df = copy(df)
-  column_symbols = []
-    ### this section here allow it to handle : as a between identifier with columns, as well as negated numbers -3 for columns. 
+  column_symbols = from_parse_tidy(new_df, columns)
 
-    for col in columns
-      if col isa Integer
-          push!(column_symbols, Symbol(names(new_df)[col]))
-      elseif col isa AbstractRange
-          append!(column_symbols, Symbol.(names(new_df)[collect(col)]))
-      elseif typeof(col) <: Between
-          # Get the column indices for the Between range
-          col_indices = DataFrames.index(new_df)[col]
-          append!(column_symbols, Symbol.(names(new_df)[col_indices]))
-        elseif col isa InvertedIndex
-          # Handle InvertedIndex (negative indexing)
-          excluded_col = names(new_df)[col.skip]
-          append!(column_symbols, setdiff(names(new_df), [excluded_col]))
-      else
-          push!(column_symbols, Symbol(col))
-      end
-  end
-
-  for col_syl in column_symbols
+  for col_sym in column_symbols
       if method == "down"
-          last_observation = new_df[1, col_syl]
+          last_observation = new_df[1, col_sym]
           for i in 1:nrow(new_df)
-              if ismissing(new_df[i, col_syl])
-                  new_df[i, col_syl] = last_observation
+              if ismissing(new_df[i, col_sym])
+                  new_df[i, col_sym] = last_observation
               else
-                  last_observation = new_df[i, col_syl]
+                  last_observation = new_df[i, col_sym]
               end
           end
       elseif method == "up"
-          next_observation = new_df[end, col_syl]
+          next_observation = new_df[end, col_sym]
           for i in nrow(new_df):-1:1
-              if ismissing(new_df[i, col_syl])
-                  new_df[i, col_syl] = next_observation
+              if ismissing(new_df[i, col_sym])
+                  new_df[i, col_sym] = next_observation
               else
-                  next_observation = new_df[i, col_syl]
+                  next_observation = new_df[i, col_sym]
               end
           end
       else

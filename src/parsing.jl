@@ -466,3 +466,38 @@ function parse_bind_args(tidy_expr::Union{Expr,Symbol})
   end
   return esc(tidy_expr), found_id
 end
+
+# Not exported
+# allows from tidy selectors from parse_tidy in non dataframe.jl functions (aka functions made from df.jl functions)
+function from_parse_tidy(df::DataFrame, columns)
+  all_cols = names(df) 
+  all_col_indices = 1:length(all_cols)  # Get all column indices
+  column_symbols = []
+
+  for col in columns
+      if col isa Integer
+          push!(column_symbols, Symbol(all_cols[col]))
+      elseif col isa AbstractRange
+          append!(column_symbols, Symbol.(all_cols[collect(col)]))
+      elseif typeof(col) <: Between
+          # Get the column indices for the Between range
+          col_indices = DataFrames.index(df)[col]
+          append!(column_symbols, Symbol.(all_cols[col_indices]))
+      elseif col isa InvertedIndex && typeof(col.skip) <: Between
+          # Handle inverted Between range
+          between_indices = DataFrames.index(df)[col.skip]
+          non_between_indices = setdiff(all_col_indices, between_indices)
+          non_between_cols = Symbol.(all_cols[non_between_indices])
+          append!(column_symbols, non_between_cols)
+      elseif col isa InvertedIndex
+          # Handle regular InvertedIndex (negative indexing)
+          excluded_col = all_cols[col.skip]
+          non_excluded_cols = [col for col in all_cols if col != excluded_col]
+          append!(column_symbols, non_excluded_cols)
+      else
+          push!(column_symbols, Symbol(col))
+      end
+  end
+
+  return column_symbols
+end
