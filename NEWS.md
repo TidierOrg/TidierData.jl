@@ -1,5 +1,9 @@
 # TidierData.jl updates
 
+## v0.14.1 - 2023-12-19
+- `@separate()` now supports regular expressions
+- Adds `@separate_rows()`
+
 ## v0.14.0 - 2023-12-12
 - Update parsing engine so that non-function reserved names from the Base and Core modules (like `missing`, `pi`, and `Real`) are auto-escaped now, with the exception of names in the not_escaped[] array, which are never escaped
 - Add `collect()` to not_vectorized[] array
