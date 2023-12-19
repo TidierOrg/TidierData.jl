@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#separate-the-a-column-into-b-c-and-d-columns-based-on-the-dash-delimiter" class="md-skip">
+        <a href="#separate" class="md-skip">
           Skip to content
         </a>
       
@@ -632,18 +632,27 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#separate-the-a-column-into-b-c-and-d-columns-based-on-the-dash-delimiter" class="md-nav__link">
+  <a href="#separate" class="md-nav__link">
     <span class="md-ellipsis">
-      Separate the "a" column into "b", "c", and "d" columns based on the dash delimiter
+      @separate
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#here-the-unite-macro-combines-the-b-c-and-d-columns-columns-into-a-single-new-new_col-column-using-the-delimiter" class="md-nav__link">
+  <a href="#unite" class="md-nav__link">
     <span class="md-ellipsis">
-      Here, the @unite macro combines the "b", "c", and "d" columns columns into a single new "new_col" column using the "/" delimiter
+      @unite
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#separate_rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      @separate_rows
     </span>
   </a>
   
@@ -802,18 +811,27 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#separate-the-a-column-into-b-c-and-d-columns-based-on-the-dash-delimiter" class="md-nav__link">
+  <a href="#separate" class="md-nav__link">
     <span class="md-ellipsis">
-      Separate the "a" column into "b", "c", and "d" columns based on the dash delimiter
+      @separate
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#here-the-unite-macro-combines-the-b-c-and-d-columns-columns-into-a-single-new-new_col-column-using-the-delimiter" class="md-nav__link">
+  <a href="#unite" class="md-nav__link">
     <span class="md-ellipsis">
-      Here, the @unite macro combines the "b", "c", and "d" columns columns into a single new "new_col" column using the "/" delimiter
+      @unite
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#separate_rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      @separate_rows
     </span>
   </a>
   
@@ -841,9 +859,10 @@
 
 <span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"1-1"</span><span class="p">,</span><span class="w"> </span><span class="s">"2-2"</span><span class="p">,</span><span class="w"> </span><span class="s">"3-3-3"</span><span class="p">]);</span>
 </code></pre></div>
-<p><a id='Separate-the-"a"-column-into-"b",-"c",-and-"d"-columns-based-on-the-dash-delimiter'></a></p>
-<p><a id='Separate-the-"a"-column-into-"b",-"c",-and-"d"-columns-based-on-the-dash-delimiter-1'></a></p>
-<h2 id="separate-the-a-column-into-b-c-and-d-columns-based-on-the-dash-delimiter">Separate the "a" column into "b", "c", and "d" columns based on the dash delimiter<a class="headerlink" href="#separate-the-a-column-into-b-c-and-d-columns-based-on-the-dash-delimiter" title="Permanent link">¤</a></h2>
+<p><a id="@separate"></a></p>
+<p><a id="@separate-1"></a></p>
+<h2 id="separate"><code>@separate</code><a class="headerlink" href="#separate" title="Permanent link">¤</a></h2>
+<p>Separate the "a" column into "b", "c", and "d" columns based on the dash delimiter</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">    </span><span class="nd">@separate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">),</span><span class="w"> </span><span class="s">"-"</span><span class="p">)</span>
 <span class="k">end</span>
@@ -851,7 +870,7 @@
 <div><div style="float: left;"><span>3×3 DataFrame</span></div><div style="clear: both;"></div></div>
 <div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">d</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="Union{Missing, SubString{String}}" style="text-align: left;">SubStrin…?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">1</td><td style="text-align: left;">1</td><td style="font-style: italic; text-align: left;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">2</td><td style="text-align: left;">2</td><td style="font-style: italic; text-align: left;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td></tr></tbody></table></div>
 
-<p>The into columns can also be designated as follows</p>
+<p>The <code>into</code> columns can also be designated as follows:</p>
 <div class="highlight"><pre><span></span><code><span class="n">new_names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"x</span><span class="si">$</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="s">"</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">3</span><span class="p">];</span><span class="w"> </span><span class="c"># or new_names = ["b", "c", "d"], or new_names = [:b, :c, :d]</span>
 
 <span class="nd">@separate</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="o">!!</span><span class="n">new_names</span><span class="p">,</span><span class="w"> </span><span class="s">"-"</span><span class="p">)</span>
@@ -859,11 +878,14 @@
 <div><div style="float: left;"><span>3×3 DataFrame</span></div><div style="clear: both;"></div></div>
 <div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">x1</th><th style="text-align: left;">x2</th><th style="text-align: left;">x3</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="Union{Missing, SubString{String}}" style="text-align: left;">SubStrin…?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">1</td><td style="text-align: left;">1</td><td style="font-style: italic; text-align: left;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">2</td><td style="text-align: left;">2</td><td style="font-style: italic; text-align: left;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td></tr></tbody></table></div>
 
-<p>The <code>@unite</code> macro brings together multiple columns into one, separate the characters by a user specified delimiter</p>
-<p><a id='Here,-the-@unite-macro-combines-the-"b",-"c",-and-"d"-columns-columns-into-a-single-new-"new_col"-column-using-the-"/"-delimiter'></a></p>
-<p><a id='Here,-the-@unite-macro-combines-the-"b",-"c",-and-"d"-columns-columns-into-a-single-new-"new_col"-column-using-the-"/"-delimiter-1'></a></p>
-<h2 id="here-the-unite-macro-combines-the-b-c-and-d-columns-columns-into-a-single-new-new_col-column-using-the-delimiter">Here, the <code>@unite</code> macro combines the "b", "c", and "d" columns columns into a single new "new_col" column using the "/" delimiter<a class="headerlink" href="#here-the-unite-macro-combines-the-b-c-and-d-columns-columns-into-a-single-new-new_col-column-using-the-delimiter" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"1"</span><span class="p">,</span><span class="w"> </span><span class="s">"2"</span><span class="p">,</span><span class="w"> </span><span class="s">"3"</span><span class="p">],</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"1"</span><span class="p">,</span><span class="w"> </span><span class="s">"2"</span><span class="p">,</span><span class="w"> </span><span class="s">"3"</span><span class="p">],</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="s">"3"</span><span class="p">]);</span>
+<p><a id="@unite"></a></p>
+<p><a id="@unite-1"></a></p>
+<h2 id="unite"><code>@unite</code><a class="headerlink" href="#unite" title="Permanent link">¤</a></h2>
+<p>The <code>@unite</code> macro brings together multiple columns into one, separate the characters by a user specified delimiter Here, the <code>@unite</code> macro combines the "b", "c", and "d" columns columns into a single new "new_col" column using the "/" delimiter</p>
+<div class="highlight"><pre><span></span><code><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span>
+<span class="w">       </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"1"</span><span class="p">,</span><span class="w"> </span><span class="s">"2"</span><span class="p">,</span><span class="w"> </span><span class="s">"3"</span><span class="p">],</span>
+<span class="w">       </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"1"</span><span class="p">,</span><span class="w"> </span><span class="s">"2"</span><span class="p">,</span><span class="w"> </span><span class="s">"3"</span><span class="p">],</span>
+<span class="w">       </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="s">"3"</span><span class="p">]);</span>
 
 <span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">    </span><span class="nd">@unite</span><span class="p">(</span><span class="n">new_col</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">),</span><span class="w"> </span><span class="s">"/"</span><span class="p">)</span>
@@ -871,6 +893,22 @@
 </code></pre></div>
 <div><div style="float: left;"><span>3×4 DataFrame</span></div><div style="clear: both;"></div></div>
 <div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">d</th><th style="text-align: left;">new_col</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="String" style="text-align: left;">String</th><th title="Union{Missing, String}" style="text-align: left;">String?</th><th title="String" style="text-align: left;">String</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">1</td><td style="text-align: left;">1</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: left;">1/1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">2</td><td style="text-align: left;">2</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: left;">2/2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3</td><td style="text-align: left;">3/3/3</td></tr></tbody></table></div>
+
+<p><a id="@separate_rows"></a></p>
+<p><a id="@separate_rows-1"></a></p>
+<h2 id="separate_rows"><code>@separate_rows</code><a class="headerlink" href="#separate_rows" title="Permanent link">¤</a></h2>
+<p>Separate rows into multiple rows based on a chosen delimiter.</p>
+<div class="highlight"><pre><span></span><code><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span>
+<span class="w">       </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">3</span><span class="p">,</span>
+<span class="w">       </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"a"</span><span class="p">,</span><span class="w"> </span><span class="s">"aa;bb;cc"</span><span class="p">,</span><span class="w"> </span><span class="s">"dd;ee"</span><span class="p">],</span>
+<span class="w">       </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"1"</span><span class="p">,</span><span class="w"> </span><span class="s">"2;3;4"</span><span class="p">,</span><span class="w"> </span><span class="s">"5;6"</span><span class="p">],</span>
+<span class="w">       </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"7"</span><span class="p">,</span><span class="w"> </span><span class="s">"8;9;10"</span><span class="p">,</span><span class="w"> </span><span class="s">"11;12"</span><span class="p">],</span>
+<span class="w">       </span><span class="n">e</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"11"</span><span class="p">,</span><span class="w"> </span><span class="s">"22;33;44"</span><span class="p">,</span><span class="w"> </span><span class="s">"55;66"</span><span class="p">]);</span>
+
+<span class="nd">@separate_rows</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="o">:</span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="s">";"</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>6×5 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">d</th><th style="text-align: left;">e</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="SubString{String}" style="text-align: left;">SubStrin…</th><th title="SubString{String}" style="text-align: left;">SubStrin…</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: left;">a</td><td style="text-align: left;">1</td><td style="text-align: left;">7</td><td style="text-align: left;">11</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">aa</td><td style="text-align: left;">2</td><td style="text-align: left;">8</td><td style="text-align: left;">22</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">2</td><td style="text-align: left;">bb</td><td style="text-align: left;">3</td><td style="text-align: left;">9</td><td style="text-align: left;">33</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">2</td><td style="text-align: left;">cc</td><td style="text-align: left;">4</td><td style="text-align: left;">10</td><td style="text-align: left;">44</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">3</td><td style="text-align: left;">dd</td><td style="text-align: left;">5</td><td style="text-align: left;">11</td><td style="text-align: left;">55</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">6</td><td style="text-align: right;">3</td><td style="text-align: left;">ee</td><td style="text-align: left;">6</td><td style="text-align: left;">12</td><td style="text-align: left;">66</td></tr></tbody></table></div>
 
 <hr>
 <p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></div>
