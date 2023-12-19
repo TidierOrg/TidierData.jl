@@ -40,26 +40,46 @@ function fill_missing(df::DataFrame, method::String)
   return fill_missing(df, Symbol.(names(df)), method)
 end
 
-function fill_missing(df::DataFrame, cols::Vector{Symbol}, method::String)
+function fill_missing(df::DataFrame, columns, method::String)
   new_df = copy(df)
-  
-  for col in cols
+  column_symbols = []
+    ### this section here allow it to handle : as a between identifier with columns, as well as negated numbers -3 for columns. 
+
+    for col in columns
+      if col isa Integer
+          push!(column_symbols, Symbol(names(new_df)[col]))
+      elseif col isa AbstractRange
+          append!(column_symbols, Symbol.(names(new_df)[collect(col)]))
+      elseif typeof(col) <: Between
+          # Get the column indices for the Between range
+          col_indices = DataFrames.index(new_df)[col]
+          append!(column_symbols, Symbol.(names(new_df)[col_indices]))
+        elseif col isa InvertedIndex
+          # Handle InvertedIndex (negative indexing)
+          excluded_col = names(new_df)[col.skip]
+          append!(column_symbols, setdiff(names(new_df), [excluded_col]))
+      else
+          push!(column_symbols, Symbol(col))
+      end
+  end
+
+  for col_syl in column_symbols
       if method == "down"
-          last_observation = new_df[1, col]
+          last_observation = new_df[1, col_syl]
           for i in 1:nrow(new_df)
-              if ismissing(new_df[i, col])
-                  new_df[i, col] = last_observation
+              if ismissing(new_df[i, col_syl])
+                  new_df[i, col_syl] = last_observation
               else
-                  last_observation = new_df[i, col]
+                  last_observation = new_df[i, col_syl]
               end
           end
       elseif method == "up"
-          next_observation = new_df[end, col]
+          next_observation = new_df[end, col_syl]
           for i in nrow(new_df):-1:1
-              if ismissing(new_df[i, col])
-                  new_df[i, col] = next_observation
+              if ismissing(new_df[i, col_syl])
+                  new_df[i, col_syl] = next_observation
               else
-                  next_observation = new_df[i, col]
+                  next_observation = new_df[i, col_syl]
               end
           end
       else
@@ -70,7 +90,7 @@ function fill_missing(df::DataFrame, cols::Vector{Symbol}, method::String)
   return new_df
 end
 
-function fill_missing(gdf::GroupedDataFrame, cols::Vector{Symbol}, method::String)
+function fill_missing(gdf::GroupedDataFrame, cols, method::String)
   group_cols = groupcols(gdf)
   results = []
   for group in gdf
@@ -100,13 +120,12 @@ macro fill_missing(df, args...)
       end
   end
 
-  cols = args[1:(length(args)-1)]
-  method = args[length(args)]
-  
-  # Requires Julia 1.9
-  # cols..., method = args
+interpolated_exprs = parse_interpolation.(args[1:(length(args)-1)])
+tidy_exprs = [i[1] for i in interpolated_exprs]
+tidy_exprs = parse_tidy.(tidy_exprs)
 
-  cols_quoted = QuoteNode.(cols)
+method = esc(last(args))
+cols_quoted = tidy_exprs
 
   return quote
       if $(esc(df)) isa GroupedDataFrame
