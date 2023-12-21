@@ -146,26 +146,12 @@ end
 function separate_rows(df::Union{DataFrame, GroupedDataFrame}, columns, delimiter::Union{Regex, String})
   is_grouped = df isa GroupedDataFrame
   grouping_columns = is_grouped ? groupcols(df) : Symbol[]
-
   # Ungroup if necessary
   temp_df = copy(is_grouped ? parent(df) : df)
-   # temp_df = copy(df)
 
-  # Convert all references to column symbols
-  column_symbols = []
-  for col in columns
-      if col isa Integer
-          push!(column_symbols, Symbol(names(temp_df)[col]))
-      elseif col isa AbstractRange
-          append!(column_symbols, Symbol.(names(temp_df)[collect(col)]))
-      elseif typeof(col) <: Between
-          # Get the column indices for the Between range
-          col_indices = DataFrames.index(temp_df)[col]
-          append!(column_symbols, Symbol.(names(temp_df)[col_indices]))
-      else
-          push!(column_symbols, Symbol(col))
-      end
-  end
+  cols_expr = columns isa Expr ? (columns,) : columns
+  column_symbols = names(df, Cols(cols_expr...)) 
+  column_symbols = Symbol.(column_symbols) 
 
   # Initialize an array to hold expanded data for each column
   expanded_data = Dict{Symbol, Vector{Any}}()
