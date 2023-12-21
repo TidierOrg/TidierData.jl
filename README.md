@@ -99,6 +99,7 @@ TidierData.jl currently supports the following top-level macros:
 TidierData.jl also supports the following helper functions:
 
 - `across()`
+- `where()`
 - `desc()`
 - `if_else()` and `case_when()`
 - `n()` and `row_number()`
@@ -106,7 +107,7 @@ TidierData.jl also supports the following helper functions:
 - `lag()` and `lead()`
 - `everything()`, `starts_with()`, `ends_with()`, `matches()`, and `contains()`
 - `as_float()`, `as_integer()`, and `as_string()`
-- `is_float()`, `is_integer()`, and `is_string()`
+- `is_number()`, `is_float()`, `is_integer()`, and `is_string()`
 - `missing_if()` and `replace_missing()`
 
 See the documentation [Home](https://tidierorg.github.io/TidierData.jl/latest/) page for a guide on how to get started, or the [Reference](https://tidierorg.github.io/TidierData.jl/latest/reference/) page for a detailed guide to each of the macros and functions.

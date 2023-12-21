@@ -16,7 +16,8 @@ using Reexport
 @reexport using ShiftedArrays: lag, lead
 
 export TidierData_set, across, desc, n, row_number, everything, starts_with, ends_with, matches, if_else, case_when, ntile, 
-      as_float, as_integer, as_string, is_float, is_integer, is_string, missing_if, replace_missing, @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
+      as_float, as_integer, as_string, is_number, is_float, is_integer, is_string, missing_if, replace_missing, where,
+      @select, @transmute, @rename, @mutate, @summarize, @summarise, @filter,
       @group_by, @ungroup, @slice, @arrange, @distinct, @pull, @left_join, @right_join, @inner_join, @full_join, @anti_join, @semi_join,
       @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_missing, @glimpse, @separate,
       @unite, @summary, @fill_missing, @slice_sample, @slice_min, @slice_max, @slice_head, @slice_tail, @rename_with, @separate_rows
@@ -30,7 +31,7 @@ const not_vectorized = Ref{Vector{Symbol}}([:esc, :Ref, :Set, :Cols, :collect, :
 
 # The global do-not-escape "list"
 # `in`, `∈`, and `∉` should be vectorized in auto-vec but not escaped
-const not_escaped = Ref{Vector{Symbol}}([:esc, :in, :∈, :∉, :Ref, :Set, :Cols, :collect, :(:), :∘, :(=>), :across, :desc, :mean, :std, :var, :median, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :startswith, :contains, :endswith])
+const not_escaped = Ref{Vector{Symbol}}([:where, :esc, :in, :∈, :∉, :Ref, :Set, :Cols, :collect, :(:), :∘, :(=>), :across, :desc, :mean, :std, :var, :median, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :startswith, :contains, :endswith])
 
 # Includes
 include("docstrings.jl")
@@ -301,7 +302,7 @@ end
 $docstring_summarize
 """
 macro summarize(df, exprs...)
-  interpolated_exprs = parse_interpolation.(exprs; summarize = true)
+  interpolated_exprs = parse_interpolation.(exprs; from_summarize = true)
 
   tidy_exprs = [i[1] for i in interpolated_exprs]
   any_found_n = any([i[2] for i in interpolated_exprs])
