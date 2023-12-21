@@ -31,7 +31,7 @@ This function should only be called inside of TidierData.jl macros.
 julia> df = DataFrame(a = repeat('a':'e'), b = 1:5, c = 11:15);
 
 julia> @chain df begin
-       @summarize(across(b, minimum))
+         @summarize(across(b, minimum))
        end
 1×1 DataFrame
  Row │ b_minimum 
@@ -40,7 +40,16 @@ julia> @chain df begin
    1 │         1
 
 julia> @chain df begin
-       @summarize(across((b,c), (minimum, maximum)))
+         @summarize(across(where(is_number), minimum))
+       end
+1×2 DataFrame
+ Row │ b_minimum  c_minimum 
+     │ Int64      Int64     
+─────┼──────────────────────
+   1 │         1         11
+
+julia> @chain df begin
+         @summarize(across((b,c), (minimum, maximum)))
        end
 1×4 DataFrame
  Row │ b_minimum  c_minimum  b_maximum  c_maximum 
@@ -49,7 +58,7 @@ julia> @chain df begin
    1 │         1         11          5         15
 
 julia> @chain df begin
-       @mutate(across((b,c), (minimum, maximum)))
+         @mutate(across((b,c), (minimum, maximum)))
        end
 5×7 DataFrame
  Row │ a     b      c      b_minimum  c_minimum  b_maximum  c_maximum 
@@ -62,7 +71,7 @@ julia> @chain df begin
    5 │ e         5     15          1         11          5         15
 
 julia> @chain df begin
-       @mutate(across((b, starts_with("c")), (minimum, maximum)))
+         @mutate(across((b, starts_with("c")), (minimum, maximum)))
        end
 5×7 DataFrame
  Row │ a     b      c      b_minimum  c_minimum  b_maximum  c_maximum 
@@ -73,7 +82,77 @@ julia> @chain df begin
    3 │ c         3     13          1         11          5         15
    4 │ d         4     14          1         11          5         15
    5 │ e         5     15          1         11          5         15
+```
+"""
 
+const docstring_where =
+"""
+    where(function)
+
+Selects columns on which a function returns `true` for all values of the column.
+
+This function should only be called inside of TidierData.jl macros.
+
+# Arguments
+- `function`: A predicate function (one that returns `true` or `false`).
+
+# Examples
+```jldoctest
+julia> df = DataFrame(a = repeat('a':'e'), b = 1:5, c = 11:15);
+
+julia> @chain df begin
+         @select(where(is_number))
+       end
+5×2 DataFrame
+ Row │ b      c     
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     1     11
+   2 │     2     12
+   3 │     3     13
+   4 │     4     14
+   5 │     5     15
+
+julia> @chain df begin
+         @summarize(across(where(is_number), minimum))
+       end
+1×2 DataFrame
+ Row │ b_minimum  c_minimum 
+     │ Int64      Int64     
+─────┼──────────────────────
+   1 │         1         11
+
+julia> @chain df begin
+         @mutate(across(where(is_number), minimum))
+       end
+5×5 DataFrame
+ Row │ a     b      c      b_minimum  c_minimum 
+     │ Char  Int64  Int64  Int64      Int64     
+─────┼──────────────────────────────────────────
+   1 │ a         1     11          1         11
+   2 │ b         2     12          1         11
+   3 │ c         3     13          1         11
+   4 │ d         4     14          1         11
+   5 │ e         5     15          1         11
+
+julia> df = DataFrame(a = repeat('a':'e', inner = 3),
+                      b = 1:15,
+                      c = 16:30,
+                      d = 31:45);
+
+julia> @chain df begin
+         @group_by(a)
+         @summarize(across(where(is_number), mean))
+       end
+5×4 DataFrame
+ Row │ a     b_mean   c_mean   d_mean  
+     │ Char  Float64  Float64  Float64 
+─────┼─────────────────────────────────
+   1 │ a         2.0     17.0     32.0
+   2 │ b         5.0     20.0     35.0
+   3 │ c         8.0     23.0     38.0
+   4 │ d        11.0     26.0     41.0
+   5 │ e        14.0     29.0     44.0
 ```
 """
 
@@ -91,7 +170,7 @@ Orders the rows of a DataFrame column in descending order when used inside of `@
 julia> df = DataFrame(a = repeat('a':'e', inner = 2), b = 1:10, c = 11:20);
   
 julia> @chain df begin
-       @arrange(a, desc(b))
+         @arrange(a, desc(b))
        end
 10×3 DataFrame
  Row │ a     b      c     
@@ -126,9 +205,7 @@ Select variables in a DataFrame.
 ```jldoctest 
 julia> df = DataFrame(a = repeat('a':'e'), b = 1:5, c = 11:15);
 
-julia> @chain df begin
-       @select(a, b, c)
-       end
+julia> @chain df @select(a, b, c)
 5×3 DataFrame
  Row │ a     b      c     
      │ Char  Int64  Int64 
@@ -139,9 +216,7 @@ julia> @chain df begin
    4 │ d         4     14
    5 │ e         5     15
 
-julia> @chain df begin
-       @select(a:b)
-       end
+julia> @chain df @select(a:b)
 5×2 DataFrame
  Row │ a     b     
      │ Char  Int64 
@@ -152,9 +227,7 @@ julia> @chain df begin
    4 │ d         4
    5 │ e         5
 
-julia> @chain df begin
-       @select(1:2)
-       end
+julia> @chain df @select(1:2)
 5×2 DataFrame
  Row │ a     b     
      │ Char  Int64 
@@ -165,9 +238,18 @@ julia> @chain df begin
    4 │ d         4
    5 │ e         5
 
-julia> @chain df begin
-       @select(-(a:b))
-       end
+julia> @chain df @select(-(a:b))
+5×1 DataFrame
+ Row │ c     
+     │ Int64 
+─────┼───────
+   1 │    11
+   2 │    12
+   3 │    13
+   4 │    14
+   5 │    15
+
+julia> @chain df @select(!(a:b))
 5×1 DataFrame
  Row │ c     
      │ Int64 
@@ -179,20 +261,7 @@ julia> @chain df begin
    5 │    15
 
 julia> @chain df begin
-       @select(!(a:b))
-       end
-5×1 DataFrame
- Row │ c     
-     │ Int64 
-─────┼───────
-   1 │    11
-   2 │    12
-   3 │    13
-   4 │    14
-   5 │    15
-
-julia> @chain df begin
-       @select(contains("b"), starts_with("c"))
+         @select(contains("b"), starts_with("c"))
        end
 5×2 DataFrame
  Row │ b      c     
@@ -204,9 +273,7 @@ julia> @chain df begin
    4 │     4     14
    5 │     5     15
 
-julia> @chain df begin
-       @select(-(1:2))
-       end
+julia> @chain df @select(-(1:2))
 5×1 DataFrame
  Row │ c     
      │ Int64 
@@ -217,9 +284,7 @@ julia> @chain df begin
    4 │    14
    5 │    15
 
-julia> @chain df begin
-       @select(!(1:2))
-       end
+julia> @chain df @select(!(1:2))
 5×1 DataFrame
  Row │ c     
      │ Int64 
@@ -230,9 +295,7 @@ julia> @chain df begin
    4 │    14
    5 │    15
 
-julia> @chain df begin
-       @select(-c)
-       end
+julia> @chain df @select(-c)
 5×2 DataFrame
  Row │ a     b     
      │ Char  Int64 
@@ -244,7 +307,7 @@ julia> @chain df begin
    5 │ e         5
 
 julia> @chain df begin
-       @select(-contains("a"))
+         @select(-contains("a"))
        end
 5×2 DataFrame
  Row │ b      c     
@@ -257,7 +320,20 @@ julia> @chain df begin
    5 │     5     15
    
 julia> @chain df begin
-       @select(!contains("a"))
+         @select(!contains("a"))
+       end
+5×2 DataFrame
+ Row │ b      c     
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     1     11
+   2 │     2     12
+   3 │     3     13
+   4 │     4     14
+   5 │     5     15
+
+julia> @chain df begin
+         @select(where(is_number))
        end
 5×2 DataFrame
  Row │ b      c     
@@ -287,7 +363,7 @@ Create a new DataFrame with only computed columns.
 julia> df = DataFrame(a = repeat('a':'e'), b = 1:5, c = 11:15);
 
 julia> @chain df begin
-       @transmute(d = b + c)
+         @transmute(d = b + c)
        end
 5×1 DataFrame
  Row │ d     
@@ -317,7 +393,7 @@ to rename and select columns.
 julia> df = DataFrame(a = repeat('a':'e'), b = 1:5, c = 11:15);
 
 julia> @chain df begin
-       @rename(d = b, e = c)
+         @rename(d = b, e = c)
        end
 5×3 DataFrame
  Row │ a     d      e     
@@ -348,7 +424,7 @@ rows as `df`.
 julia> df = DataFrame(a = repeat('a':'e'), b = 1:5, c = 11:15);
 
 julia> @chain df begin
-       @mutate(d = b + c, b_minus_mean_b = b - mean(b))
+         @mutate(d = b + c, b_minus_mean_b = b - mean(b))
        end
 5×5 DataFrame
  Row │ a     b      c      d      b_minus_mean_b 
@@ -361,7 +437,7 @@ julia> @chain df begin
    5 │ e         5     15     20             2.0
 
 julia> @chain df begin
-       @mutate(d = b in (1,3))
+         @mutate(d = b in (1,3))
        end
 5×4 DataFrame
  Row │ a     b      c      d     
@@ -374,7 +450,7 @@ julia> @chain df begin
    5 │ e         5     15  false
 
 julia> @chain df begin
-       @mutate(across((b, c), mean))
+         @mutate(across((b, c), mean))
        end
 5×5 DataFrame
  Row │ a     b      c      b_mean   c_mean  
@@ -387,7 +463,7 @@ julia> @chain df begin
    5 │ e         5     15      3.0     13.0
 
 julia> @chain df begin
-       @summarize(across(contains("b"), mean))
+         @summarize(across(contains("b"), mean))
        end
 1×1 DataFrame
  Row │ b_mean  
@@ -396,13 +472,26 @@ julia> @chain df begin
    1 │     3.0
 
 julia> @chain df begin
-       @summarize(across(-contains("a"), mean))
+         @summarize(across(-contains("a"), mean))
        end
 1×2 DataFrame
  Row │ b_mean   c_mean  
      │ Float64  Float64 
 ─────┼──────────────────
    1 │     3.0     13.0
+
+julia> @chain df begin
+         @mutate(across(where(is_number), minimum))
+       end
+5×5 DataFrame
+ Row │ a     b      c      b_minimum  c_minimum 
+     │ Char  Int64  Int64  Int64      Int64     
+─────┼──────────────────────────────────────────
+   1 │ a         1     11          1         11
+   2 │ b         2     12          1         11
+   3 │ c         3     13          1         11
+   4 │ d         4     14          1         11
+   5 │ e         5     15          1         11
 ```
 """
 
@@ -422,7 +511,7 @@ Create a new DataFrame with one row that aggregating all observations from the i
 julia> df = DataFrame(a = repeat('a':'e'), b = 1:5, c = 11:15);
 
 julia> @chain df begin
-       @summarize(mean_b = mean(b), median_b = median(b))
+         @summarize(mean_b = mean(b), median_b = median(b))
        end
 1×2 DataFrame
  Row │ mean_b   median_b 
@@ -431,7 +520,7 @@ julia> @chain df begin
    1 │     3.0       3.0
   
 julia> @chain df begin
-       @summarise(mean_b = mean(b), median_b = median(b))
+         @summarise(mean_b = mean(b), median_b = median(b))
        end
 1×2 DataFrame
  Row │ mean_b   median_b 
@@ -440,13 +529,22 @@ julia> @chain df begin
    1 │     3.0       3.0
    
 julia> @chain df begin
-       @summarize(across((b,c), (minimum, maximum)))
+         @summarize(across((b,c), (minimum, maximum)))
        end
 1×4 DataFrame
  Row │ b_minimum  c_minimum  b_maximum  c_maximum 
      │ Int64      Int64      Int64      Int64     
 ─────┼────────────────────────────────────────────
    1 │         1         11          5         15
+
+julia> @chain df begin
+         @summarize(across(where(is_number), minimum))
+       end
+1×2 DataFrame
+ Row │ b_minimum  c_minimum 
+     │ Int64      Int64     
+─────┼──────────────────────
+   1 │         1         11
 ```
 """
 
@@ -465,7 +563,7 @@ Subset a DataFrame and return a copy of DataFrame where specified conditions are
 julia> df = DataFrame(a = repeat('a':'e'), b = 1:5, c = 11:15);
 
 julia> @chain df begin
-       @filter(b >= mean(b))
+         @filter(b >= mean(b))
        end
 3×3 DataFrame
  Row │ a     b      c     
@@ -476,7 +574,7 @@ julia> @chain df begin
    3 │ e         5     15
 
 julia> @chain df begin
-       @filter(b >= 3 && c >= 14)
+         @filter(b >= 3 && c >= 14)
        end
 2×3 DataFrame
  Row │ a     b      c     
@@ -486,7 +584,7 @@ julia> @chain df begin
    2 │ e         5     15
 
 julia> @chain df begin
-       @filter(b in (1, 3))
+         @filter(b in (1, 3))
        end
 2×3 DataFrame
  Row │ a     b      c     
@@ -513,8 +611,8 @@ sets of `cols`.
 julia> df = DataFrame(a = repeat('a':'e'), b = 1:5, c = 11:15);
 
 julia> @chain df begin
-       @group_by(a)
-       @summarize(b = mean(b))
+         @group_by(a)
+         @summarize(b = mean(b))
        end
 5×2 DataFrame
  Row │ a     b       
@@ -527,8 +625,8 @@ julia> @chain df begin
    5 │ e         5.0  
 
 julia> @chain df begin
-       @group_by(d = uppercase(a))
-       @summarize(b = mean(b))
+         @group_by(d = uppercase(a))
+         @summarize(b = mean(b))
        end
 5×2 DataFrame
  Row │ d     b       
@@ -558,7 +656,7 @@ If this is applied to a `GroupedDataFrame`, then it removes the grouping. If thi
 julia> df = DataFrame(a = repeat('a':'e'), b = 1:5, c = 11:15);
 
 julia> @chain df begin
-       @group_by(a)
+         @group_by(a)
        end
 GroupedDataFrame with 5 groups based on key: a
 First Group (1 row): a = 'a': ASCII/Unicode U+0061 (category Ll: Letter, lowercase)
@@ -574,8 +672,8 @@ Last Group (1 row): a = 'e': ASCII/Unicode U+0065 (category Ll: Letter, lowercas
    1 │ e         5     15
 
 julia> @chain df begin
-       @group_by(a)
-       @ungroup
+         @group_by(a)
+         @ungroup
        end
 5×3 DataFrame
  Row │ a     b      c     
@@ -603,9 +701,7 @@ Select, remove or duplicate rows by indexing their integer positions.
 ```jldoctest 
 julia> df = DataFrame(a = repeat('a':'c', inner = 3), b = 1:9, c = 11:19);
 
-julia> @chain df begin
-       @slice(1:5)
-       end
+julia> @chain df @slice(1:5)
 5×3 DataFrame
  Row │ a     b      c     
      │ Char  Int64  Int64 
@@ -616,9 +712,7 @@ julia> @chain df begin
    4 │ b         4     14
    5 │ b         5     15
 
-julia> @chain df begin
-       @slice(-(1:2))
-       end
+julia> @chain df @slice(-(1:2))
 7×3 DataFrame
  Row │ a     b      c     
      │ Char  Int64  Int64 
@@ -632,9 +726,9 @@ julia> @chain df begin
    7 │ c         9     19
 
 julia> @chain df begin
-       @group_by(a)
-       @slice(1)
-       @ungroup
+         @group_by(a)
+         @slice(1)
+         @ungroup
        end
 3×3 DataFrame
  Row │ a     b      c     
@@ -645,9 +739,9 @@ julia> @chain df begin
    3 │ c         7     17
 
 julia> @chain df begin
-       @group_by(a)
-       @slice(n())
-       @ungroup
+         @group_by(a)
+         @slice(n())
+         @ungroup
        end
 3×3 DataFrame
  Row │ a     b      c     
@@ -658,9 +752,9 @@ julia> @chain df begin
    3 │ c         9     19
 
 julia> @chain df begin
-       @group_by(a)
-       @slice(-n())
-       @ungroup
+         @group_by(a)
+         @slice(-n())
+         @ungroup
        end
 6×3 DataFrame
  Row │ a     b      c     
@@ -674,9 +768,9 @@ julia> @chain df begin
    6 │ c         8     18
 
 julia> @chain df begin
-       @group_by(a)
-       @slice(-(2:n()))
-       @ungroup
+         @group_by(a)
+         @slice(-(2:n()))
+         @ungroup
        end
 3×3 DataFrame
  Row │ a     b      c     
@@ -703,7 +797,7 @@ Order the rows of a DataFrame by the values of specified columns.
 julia> df = DataFrame(a = repeat('a':'e', inner = 2), b = 1:10, c = 11:20);
   
 julia> @chain df begin
-       @arrange(a)
+         @arrange(a)
        end
 10×3 DataFrame
  Row │ a     b      c     
@@ -721,7 +815,7 @@ julia> @chain df begin
   10 │ e        10     20
 
 julia> @chain df begin
-       @arrange(a, desc(b))
+         @arrange(a, desc(b))
        end
 10×3 DataFrame
  Row │ a     b      c     
@@ -758,9 +852,7 @@ If no columns or expressions are provided, then unique rows across all columns a
 ```jldoctest
 julia> df = DataFrame(a = repeat('a':'e', inner = 2), b = repeat(1:5, 2), c = 11:20);
   
-julia> @chain df begin
-       @distinct()
-       end
+julia> @chain df @distinct()
 10×3 DataFrame
  Row │ a     b      c     
      │ Char  Int64  Int64 
@@ -776,8 +868,19 @@ julia> @chain df begin
    9 │ e         4     19
   10 │ e         5     20
 
+julia> @chain df @distinct(a)
+5×3 DataFrame
+ Row │ a     b      c     
+     │ Char  Int64  Int64 
+─────┼────────────────────
+   1 │ a         1     11
+   2 │ b         3     13
+   3 │ c         5     15
+   4 │ d         2     17
+   5 │ e         4     19
+
 julia> @chain df begin
-       @distinct(a)
+         @distinct(starts_with("a"))
        end
 5×3 DataFrame
  Row │ a     b      c     
@@ -790,20 +893,7 @@ julia> @chain df begin
    5 │ e         4     19
 
 julia> @chain df begin
-       @distinct(starts_with("a"))
-       end
-5×3 DataFrame
- Row │ a     b      c     
-     │ Char  Int64  Int64 
-─────┼────────────────────
-   1 │ a         1     11
-   2 │ b         3     13
-   3 │ c         5     15
-   4 │ d         2     17
-   5 │ e         4     19
-
-julia> @chain df begin
-       @distinct(a, b)
+         @distinct(a, b)
        end
 10×3 DataFrame
  Row │ a     b      c     
@@ -836,9 +926,7 @@ Pull (or extract) a column as a vector.
 ```jldoctest
 julia> df = DataFrame(a = 'a':'e', b = 1:5, c = 11:15);
   
-julia> @chain df begin
-       @pull(a)
-       end
+julia> @chain df @pull(a)
 5-element Vector{Char}:
  'a': ASCII/Unicode U+0061 (category Ll: Letter, lowercase)
  'b': ASCII/Unicode U+0062 (category Ll: Letter, lowercase)
@@ -846,9 +934,7 @@ julia> @chain df begin
  'd': ASCII/Unicode U+0064 (category Ll: Letter, lowercase)
  'e': ASCII/Unicode U+0065 (category Ll: Letter, lowercase)
 
-julia> @chain df begin
-       @pull(2)
-       end
+julia> @chain df @pull(2)
 5-element Vector{Int64}:
  1
  2
@@ -1335,7 +1421,7 @@ Return the `yes` value if the `condition` is `true` and the `no` value if the `c
 julia> df = DataFrame(a = [1, 2, missing, 4, 5]);
 
 julia> @chain df begin
-       @mutate(b = if_else(a >= 3, "yes", "no"))
+         @mutate(b = if_else(a >= 3, "yes", "no"))
        end
 5×2 DataFrame
  Row │ a        b       
@@ -1348,7 +1434,7 @@ julia> @chain df begin
    5 │       5  yes
 
 julia> @chain df begin
-       @mutate(b = if_else(a >= 3, "yes", "no", "unknown"))
+         @mutate(b = if_else(a >= 3, "yes", "no", "unknown"))
        end
 5×2 DataFrame
  Row │ a        b       
@@ -1361,7 +1447,7 @@ julia> @chain df begin
    5 │       5  yes
 
 julia> @chain df begin
-       @mutate(b = if_else(a >= 3, 3, a))
+         @mutate(b = if_else(a >= 3, 3, a))
        end
 5×2 DataFrame
  Row │ a        b       
@@ -1374,7 +1460,7 @@ julia> @chain df begin
    5 │       5        3
 
 julia> @chain df begin
-       @mutate(b = if_else(a >= 3, 3, a, 0))
+         @mutate(b = if_else(a >= 3, 3, a, 0))
        end
 5×2 DataFrame
  Row │ a        b     
@@ -1406,9 +1492,9 @@ The most specific condition should be listed first and most general condition sh
 julia> df = DataFrame(a = [1, 2, missing, 4, 5]);
 
 julia> @chain df begin
-       @mutate(b = case_when(a > 4  =>  "hi",
-                             a > 2  =>  "medium",
-                             a > 0  =>  "low"))
+         @mutate(b = case_when(a > 4  =>  "hi",
+                               a > 2  =>  "medium",
+                               a > 0  =>  "low"))
        end
 5×2 DataFrame
  Row │ a        b       
@@ -1421,10 +1507,10 @@ julia> @chain df begin
    5 │       5  hi
 
 julia> @chain df begin
-       @mutate(b = case_when(a > 4  =>  "hi",
-                             a > 2  =>  "medium",
-                             a > 0  =>  "low",
-                             true   =>  "unknown"))
+         @mutate(b = case_when(a > 4  =>  "hi",
+                               a > 2  =>  "medium",
+                               a > 0  =>  "low",
+                               true   =>  "unknown"))
        end
 5×2 DataFrame
  Row │ a        b       
@@ -1437,8 +1523,8 @@ julia> @chain df begin
    5 │       5  hi
 
 julia> @chain df begin
-       @mutate(b = case_when(a >= 3  =>  3,
-                             true    =>  a))
+         @mutate(b = case_when(a >= 3  =>  3,
+                               true    =>  a))
        end
 5×2 DataFrame
  Row │ a        b       
@@ -1451,9 +1537,9 @@ julia> @chain df begin
    5 │       5        3
 
 julia> @chain df begin
-       @mutate(b = case_when(a >= 3        =>  3,
-                             ismissing(a)  =>  0,
-                             true          =>  a))
+         @mutate(b = case_when(a >= 3        =>  3,
+                               ismissing(a)  =>  0,
+                               true          =>  a))
        end
 5×2 DataFrame
  Row │ a        b     
@@ -1481,7 +1567,7 @@ Return the number of rows in the DataFrame or in the group if used in the contex
 julia> df = DataFrame(a = repeat('a':'e', inner = 2), b = 1:10, c = 11:20);
 
 julia> @chain df begin
-       @summarize(n = n())
+         @summarize(n = n())
        end
 1×1 DataFrame
  Row │ n     
@@ -1490,8 +1576,8 @@ julia> @chain df begin
    1 │    10
 
 julia> @chain df begin
-       @group_by(a)
-       @summarize(n = n())
+         @group_by(a)
+         @summarize(n = n())
        end
 5×2 DataFrame
  Row │ a     n     
@@ -1519,7 +1605,7 @@ Return each row's number in a DataFrame or in the group if used in the context o
 julia> df = DataFrame(a = repeat('a':'e', inner = 2));
 
 julia> @chain df begin
-       @mutate(row_num = row_number())
+         @mutate(row_num = row_number())
        end
 10×2 DataFrame
  Row │ a     row_num 
@@ -1537,7 +1623,7 @@ julia> @chain df begin
   10 │ e          10
 
 julia> @chain df begin
-       @mutate(row_num = row_number() + 1)
+         @mutate(row_num = row_number() + 1)
        end
 10×2 DataFrame
  Row │ a     row_num 
@@ -1555,7 +1641,7 @@ julia> @chain df begin
   10 │ e          11
 
 julia> @chain df begin
-       @filter(row_number() <= 5)
+         @filter(row_number() <= 5)
        end
 5×1 DataFrame
  Row │ a    
@@ -1590,7 +1676,7 @@ julia> df2 = DataFrame(a=4:6, b=4:6);
 julia> df3 = DataFrame(a=7:9, c=7:9);
 
 julia> @chain df1 begin
-       @bind_rows(df2)
+         @bind_rows(df2)
        end
 6×2 DataFrame
  Row │ a      b     
@@ -1607,7 +1693,7 @@ When columns are not present in some DataFrames, they are filled with missing va
 
 ```jldoctest bind_rows
 julia> @chain df1 begin
-       @bind_rows(df2, df3)
+         @bind_rows(df2, df3)
        end
 9×3 DataFrame
  Row │ a      b        c       
@@ -1624,7 +1710,7 @@ julia> @chain df1 begin
    9 │     9  missing        9
 
 julia> @chain df1 begin
-       @bind_rows(df2, df3, id = "id")
+         @bind_rows(df2, df3, id = "id")
        end
 9×4 DataFrame
  Row │ a      b        c        id    
@@ -1660,7 +1746,7 @@ julia> df2 = DataFrame(a=4:6, b=4:6);
 julia> df3 = DataFrame(a=7:9, c=7:9);
 
 julia> @chain df1 begin
-       @bind_cols(df2, df3)
+         @bind_cols(df2, df3)
        end
 3×6 DataFrame
  Row │ a      b      a_1    b_1    a_2    c     
@@ -1695,9 +1781,7 @@ julia> df = DataFrame(var" A bad column name " = 1:5)
    4 │                   4
    5 │                   5
 
-julia> @chain df begin
-       @clean_names
-       end
+julia> @chain df @clean_names
 5×1 DataFrame
  Row │ a_bad_column_name 
      │ Int64             
@@ -1709,7 +1793,7 @@ julia> @chain df begin
    5 │                 5
   
 julia> @chain df begin
-       @clean_names(case = "camelCase")
+         @clean_names(case = "camelCase")
        end
 5×1 DataFrame
  Row │ aBadColumnName 
@@ -1831,9 +1915,7 @@ julia> df = DataFrame(a = vcat(repeat(["a"], inner = 3),
    7 │ c            7
    8 │ missing      8
 
-julia> @chain df begin
-       @count()
-       end
+julia> @chain df @count()
 1×1 DataFrame
  Row │ n     
      │ Int64 
@@ -1841,7 +1923,7 @@ julia> @chain df begin
    1 │     8
 
 julia> @chain df begin
-       @count(a)
+         @count(a)
        end
 4×2 DataFrame
  Row │ a        n     
@@ -1853,7 +1935,7 @@ julia> @chain df begin
    4 │ missing      1
 
 julia> @chain df begin
-       @count(a, wt = b)
+         @count(a, wt = b)
        end
 4×2 DataFrame
  Row │ a        n     
@@ -1865,7 +1947,7 @@ julia> @chain df begin
    4 │ missing      8
 
 julia> @chain df begin
-       @count(a, wt = b, sort = true)
+         @count(a, wt = b, sort = true)
        end
 4×2 DataFrame
  Row │ a        n     
@@ -1911,9 +1993,7 @@ julia> df = DataFrame(a = vcat(repeat(["a"], inner = 3),
    7 │ c            7
    8 │ missing      8
 
-julia> @chain df begin
-       @tally()
-       end
+julia> @chain df @tally()
 1×1 DataFrame
  Row │ n     
      │ Int64 
@@ -1921,8 +2001,8 @@ julia> @chain df begin
    1 │     8
 
 julia> @chain df begin
-       @group_by(a)
-       @tally()
+         @group_by(a)
+         @tally()
        end
 4×2 DataFrame
  Row │ a        n     
@@ -1934,8 +2014,8 @@ julia> @chain df begin
    4 │ missing      1
 
 julia> @chain df begin
-       @group_by(a)
-       @tally(wt = b)
+         @group_by(a)
+         @tally(wt = b)
        end
 4×2 DataFrame
  Row │ a        n     
@@ -1947,8 +2027,8 @@ julia> @chain df begin
    4 │ missing      8
 
 julia> @chain df begin
-       @group_by(a)
-       @tally(wt = b, sort = true)
+         @group_by(a)
+         @tally(wt = b, sort = true)
        end
 4×2 DataFrame
  Row │ a        n     
@@ -2168,7 +2248,7 @@ julia> @separate(df, a, [b, c, d], "-")
    3 │ 3          3          3
 
 julia> @chain df begin
-       @separate(a, (b, c, d), "-")
+         @separate(a, (b, c, d), "-")
        end
 3×3 DataFrame
  Row │ b          c          d          
@@ -2219,14 +2299,17 @@ For numerical columns, returns a dataframe with the Q1,Q3, min, max, mean, media
 
 # Examples
 ```jldoctest 
-julia> df = DataFrame( A = [1, 2, 3, 4, 5], B = [missing, 7, 8, 9, 10], C = [11, missing, 13, 14, missing], D = [16, 17, 18, 19, 20]);
+julia> df = DataFrame(a = [1, 2, 3, 4, 5],
+                      b = [missing, 7, 8, 9, 10],
+                      c = [11, missing, 13, 14, missing],
+                      d = [16, 17, 18, 19, 20]);
 
 julia> @summary(df);
 
-julia> @summary(df, (B:D));
+julia> @summary(df, (b:d));
 
 julia> @chain df begin
-       @summary(B:D)
+         @summary(b:d)
        end;
 ```
 """
@@ -2266,7 +2349,7 @@ julia> @fill_missing(df, dt2, dt4, "down")
    8 │       6.0       6.0        6.0       6.0  b
 
 julia> @chain df begin
-       @fill_missing("up")
+         @fill_missing("up")
        end
 8×5 DataFrame
  Row │ dt1       dt2        dt3       dt4        dt5  
@@ -2282,8 +2365,8 @@ julia> @chain df begin
    8 │      6.0  missing         6.0  missing    b 
 
 julia> @chain df begin
-       @group_by(dt5)
-       @fill_missing(dt1, "up")
+         @group_by(dt5)
+         @fill_missing(dt1, "up")
        end
 GroupedDataFrame with 2 groups based on key: dt5
 First Group (5 rows): dt5 = 'a': ASCII/Unicode U+0061 (category Ll: Letter, lowercase)
@@ -2306,6 +2389,35 @@ Last Group (3 rows): dt5 = 'b': ASCII/Unicode U+0062 (category Ll: Letter, lower
 ```
 """
 
+const docstring_is_number = 
+"""
+    is_number(column::AbstractVector)
+
+Determine if the given column contains numbers.
+
+# Arguments
+- `column::AbstractVector`: The column whose data type needs to be checked.
+
+# Returns
+- `Bool`: `true` if the column contains numbers, `false` otherwise.
+
+# Examples
+```jldoctest
+julia> df = DataFrame(b = [missing, 2, 3],
+                      c = [missing, 2.2, 34],
+                      d = [missing, missing, "A"]);
+
+julia> is_number(df.b)
+true
+
+julia> is_number(df.c)
+true
+
+julia> is_number(df.d)
+false
+```
+"""
+
 const docstring_is_float = 
 """
     is_float(column::AbstractVector)
@@ -2320,7 +2432,9 @@ Determine if the given column contains floating-point numbers.
 
 # Examples
 ```jldoctest
-julia> df = DataFrame( b = [missing, 2, 3], c = [missing, 2.2, 34], d = [missing, missing, "A"]);
+julia> df = DataFrame(b = [missing, 2, 3],
+                      c = [missing, 2.2, 34],
+                      d = [missing, missing, "A"]);
 
 julia> is_float(df.c)
 true
@@ -2344,7 +2458,9 @@ Determine if the given column contains strings.
 
 # Examples
 ```jldoctest
-julia> df = DataFrame( b = [missing, 2, 3], c = [missing, 2.2, 34], d = [missing, missing, "A"]);
+julia> df = DataFrame(b = [missing, 2, 3],
+                      c = [missing, 2.2, 34],
+                      d = [missing, missing, "A"]);
 
 julia> is_string(df.d)
 true
@@ -2368,7 +2484,9 @@ Determine if the given column contains integers.
 
 # Examples
 ```jldoctest
-julia> df = DataFrame( b = [missing, 2, 3], c = [missing, 2.2, 34], d = [missing, missing, "A"]);
+julia> df = DataFrame(b = [missing, 2, 3],
+                      c = [missing, 2.2, 34],
+                      d = [missing, missing, "A"]);
 
 julia> is_integer(df.b)
 true
@@ -2401,7 +2519,7 @@ julia> rng = StableRNG(1);
 julia> Random.seed!(rng, 1);
 
 julia> @chain df begin 
-       @slice_sample(n = 5)
+         @slice_sample(n = 5)
        end
 5×2 DataFrame
  Row │ a      b     
@@ -2414,7 +2532,7 @@ julia> @chain df begin
    5 │     8     18
 
 julia> @chain df begin 
-       @slice_sample(n = 5, replace = true)
+         @slice_sample(n = 5, replace = true)
        end
 5×2 DataFrame
  Row │ a      b     
@@ -2427,7 +2545,7 @@ julia> @chain df begin
    5 │     2     12
 
 julia> @chain df begin 
-       @slice_sample(prop = 0.5)
+         @slice_sample(prop = 0.5)
        end
 5×2 DataFrame
  Row │ a      b     
@@ -2440,7 +2558,7 @@ julia> @chain df begin
    5 │     2     12
 
 julia> @chain df begin 
-       @slice_sample(prop = 0.5, replace = true)
+         @slice_sample(prop = 0.5, replace = true)
        end
 5×2 DataFrame
  Row │ a      b     
@@ -2468,7 +2586,7 @@ Select all columns starting with the `prefix`.
 julia> df = DataFrame(a_1 = 1:5, a_2 = 11:15, b_1 = 21:25);
 
 julia> @chain df begin 
-       @select(starts_with("a"))
+         @select(starts_with("a"))
        end
 5×2 DataFrame
  Row │ a_1    a_2   
@@ -2496,7 +2614,7 @@ Select all columns ending with the `suffix`.
 julia> df = DataFrame(a_1 = 1:5, a_2 = 11:15, b_1 = 21:25);
 
 julia> @chain df begin 
-       @select(ends_with("1"))
+         @select(ends_with("1"))
        end
 5×2 DataFrame
  Row │ a_1    b_1   
@@ -2526,7 +2644,7 @@ can use this to break up your regular expression into (slightly) more readable p
 julia> df = DataFrame(a_1 = 1:5, a_2 = 11:15, b_1 = 21:25);
 
 julia> @chain df begin 
-       @select(matches("^a"))
+         @select(matches("^a"))
        end
 5×2 DataFrame
  Row │ a_1    a_2   
@@ -2539,7 +2657,7 @@ julia> @chain df begin
    5 │     5     15
 
 julia> @chain df begin 
-       @select(matches("1\$"))
+         @select(matches("1\$"))
        end
 5×2 DataFrame
  Row │ a_1    b_1   
@@ -2552,7 +2670,7 @@ julia> @chain df begin
    5 │     5     25
 
 julia> @chain df begin 
-       @select(matches("A", "i"))
+         @select(matches("A", "i"))
        end
 5×2 DataFrame
  Row │ a_1    a_2   
@@ -2580,7 +2698,7 @@ Select all (remaining) columns.
 julia> df = DataFrame(a_1 = 1:5, a_2 = 11:15, b_1 = 21:25);
 
 julia> @chain df begin 
-       @select(b_1, everything())
+         @select(b_1, everything())
        end
 5×3 DataFrame
  Row │ b_1    a_1    a_2   
@@ -2616,7 +2734,7 @@ julia> df = DataFrame(
            c = [0.2, 0.2, 0.2, missing, 1, missing, 5, 6]);
 
 julia> @chain df begin
-       @slice_max(b)
+         @slice_max(b)
        end 
 2×3 DataFrame
  Row │ a         b         c        
@@ -2626,7 +2744,7 @@ julia> @chain df begin
    2 │      6.0       7.0       6.0
 
 julia> @chain df begin
-       @slice_max(b, with_ties = false)
+         @slice_max(b, with_ties = false)
        end 
 1×3 DataFrame
  Row │ a         b         c        
@@ -2635,7 +2753,7 @@ julia> @chain df begin
    1 │      5.0       7.0       5.0
 
 julia> @chain df begin
-       @slice_max(b, with_ties = false, n = 2)
+         @slice_max(b, with_ties = false, n = 2)
        end 
 2×3 DataFrame
  Row │ a         b         c        
@@ -2645,7 +2763,7 @@ julia> @chain df begin
    2 │      6.0       7.0       6.0
    
 julia> @chain df begin
-       @slice_max(b, prop = 0.5, missing_rm = true)
+         @slice_max(b, prop = 0.5, missing_rm = true)
        end
 3×3 DataFrame
  Row │ a         b         c        
@@ -2679,7 +2797,7 @@ julia> df = DataFrame(
            c = [0.2, 0.2, 0.2, missing, 1, missing, 5, 6]);
 
 julia> @chain df begin
-       @slice_min(b)
+         @slice_min(b)
        end 
 2×3 DataFrame
  Row │ a         b         c         
@@ -2689,7 +2807,7 @@ julia> @chain df begin
    2 │  missing       0.3  missing
 
 julia> @chain df begin
-       @slice_min(b, with_ties = false)
+         @slice_min(b, with_ties = false)
        end 
 1×3 DataFrame
  Row │ a         b         c        
@@ -2698,7 +2816,7 @@ julia> @chain df begin
    1 │  missing       0.3       0.2
 
 julia> @chain df begin
-       @slice_min(b, with_ties = true, n = 1)
+         @slice_min(b, with_ties = true, n = 1)
        end 
 2×3 DataFrame
  Row │ a         b         c         
@@ -2709,7 +2827,7 @@ julia> @chain df begin
   
    
 julia> @chain df begin
-       @slice_min(b, prop = 0.5, missing_rm = true)
+         @slice_min(b, prop = 0.5, missing_rm = true)
        end
 3×3 DataFrame
  Row │ a          b         c         
@@ -2740,7 +2858,7 @@ julia> df = DataFrame(
            c = [0.2, 0.2, 0.2, missing, 1, missing, 5, 6]);
 
 julia> @chain df begin
-       @slice_head(n = 3)
+         @slice_head(n = 3)
        end 
 3×3 DataFrame
  Row │ a          b          c        
@@ -2751,7 +2869,7 @@ julia> @chain df begin
    3 │ missing    missing         0.2
 
 julia> @chain df begin
-       @slice_head(prop = .25)
+         @slice_head(prop = .25)
        end 
 2×3 DataFrame
  Row │ a          b         c        
@@ -2781,7 +2899,7 @@ julia> df = DataFrame(
            c = [0.2, 0.2, 0.2, missing, 1, missing, 5, 6]);
 
 julia> @chain df begin
-       @slice_tail(n = 3)
+         @slice_tail(n = 3)
        end 
 3×3 DataFrame
  Row │ a          b         c         
@@ -2792,7 +2910,7 @@ julia> @chain df begin
    3 │       6.0       7.0        6.0
 
 julia> @chain df begin
-       @slice_tail(prop = .25)
+         @slice_tail(prop = .25)
        end 
 2×3 DataFrame
  Row │ a         b         c        
@@ -2821,8 +2939,8 @@ julia> df = DataFrame(
             );
 
 julia> @chain df begin
-       @mutate(a = missing_if(a, 4), 
-               b = missing_if(b, "apple"))
+         @mutate(a = missing_if(a, 4), 
+                 b = missing_if(b, "apple"))
        end
 4×2 DataFrame
  Row │ a        b       
@@ -2853,8 +2971,8 @@ julia> df = DataFrame(
             );
 
 julia> @chain df begin
-       @mutate(a = replace_missing(a, 100),
-               b = replace_missing(b, 35))
+         @mutate(a = replace_missing(a, 100),
+                 b = replace_missing(b, 35))
        end
 4×2 DataFrame
  Row │ a      b     

@@ -1,5 +1,10 @@
 # TidierData.jl updates
 
+## v0.14.2 - 2023-12-21
+- `@slice()` now supports interpolation and user-defined functions
+- Adds `where()`
+- Adds `is_number()`
+
 ## v0.14.1 - 2023-12-19
 - `@separate()` now supports regular expressions
 - Adds `@separate_rows()`

@@ -113,6 +113,7 @@ TidierData.jl also supports the following helper functions:
 ```@raw html
 !!! example "Helper functions:"
     - `across()`
+    - `where()`
     - `desc()`
     - `if_else()` and `case_when()`
     - `n()` and `row_number()`
@@ -120,7 +121,7 @@ TidierData.jl also supports the following helper functions:
     - `lag()` and `lead()`
     - `everything()`, `starts_with()`, `ends_with()`, `matches()`, and `contains()`
     - `as_float()`, `as_integer()`, and `as_string()`
-    - `is_float()`, `is_integer()`, and `is_string()`
+    - `is_number()`, `is_float()`, `is_integer()`, and `is_string()`
     - `missing_if()` and `replace_missing()`
 ```
 

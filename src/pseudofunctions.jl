@@ -6,6 +6,13 @@ function across(args...)
 end
 
 """
+$docstring_where
+"""
+function where(args...)
+  throw("This function should only be called inside of TidierData.jl macros.")
+end
+
+"""
 $docstring_desc
 """
 function desc(args...)

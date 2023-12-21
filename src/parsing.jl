@@ -1,7 +1,21 @@
 # Not exported
-function parse_tidy(tidy_expr::Union{Expr,Symbol,Number}; autovec::Bool=true, subset::Bool=false, from_across::Bool=false) # Can be symbol or expression
+function parse_tidy(tidy_expr::Union{Expr,Symbol,Number}; # Can be symbol or expression
+                    autovec::Bool=true, subset::Bool=false, from_across::Bool=false,
+                    from_slice::Bool = false)
   if @capture(tidy_expr, across(vars_, funcs_))
     return parse_across(vars, funcs)
+  elseif from_slice && @capture(tidy_expr, -var_)
+    return :($var), true # true = negated
+  elseif from_slice && @capture(tidy_expr, var_Number)
+    if var > 0
+      return tidy_expr, false # false = not negated
+    elseif var < 0
+      return -tidy_expr, true # true = negated
+    else
+      throw("Numeric selections cannot be zero.")
+    end
+  elseif from_slice
+    return tidy_expr, false
   elseif @capture(tidy_expr, -(startindex_:endindex_) | !(startindex_:endindex_))
     if startindex isa Symbol
       startindex = QuoteNode(startindex)
@@ -58,6 +72,8 @@ function parse_tidy(tidy_expr::Union{Expr,Symbol,Number}; autovec::Bool=true, su
   elseif !subset & @capture(tidy_expr, fn_(args__)) # selection helpers
     if from_across || fn == :Cols # fn == :Cols is to deal with interpolated columns
       return tidy_expr
+    elseif fn == :where
+      return :(Cols(all.(broadcast($(esc(args...)), eachcol(DataFrame(df_copy))))))
     else
       return :(Cols($(esc(tidy_expr))))
     end
@@ -379,7 +395,8 @@ end
 
 # Not exported
 # String is for parse_join_by
-function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String}; summarize::Bool = false)
+function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String};
+  from_summarize::Bool = false, from_slice::Bool = false)
   found_n = false
   found_row_number = false
 
@@ -400,10 +417,12 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String}; summari
       return Symbol(x.args[3])
     elseif @capture(x, fn_())
       if fn == :n
-        if summarize
+        if from_summarize
           return :(nrow())
+        elseif from_slice
+          return :end
         else
-          found_n = true
+          found_n = true # do not move this -- this leads to creation of new column
           return :TidierData_n
         end
       elseif fn == :row_number
@@ -431,25 +450,6 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String}; summari
     return x
   end
   return var_expr, found_n, found_row_number
-end
-
-# Simply to convert n() to a number
-function parse_slice_n(var_expr::Union{Expr,Symbol,Number,String}, n::Integer)
-  var_expr = MacroTools.postwalk(var_expr) do x
-    if @capture(x, fn_(args__))
-      if fn == :n && length(args) == 0
-        return n
-      else
-        # While this doesn't quite work, we may be able to do something like this in the future
-        # to enable arbitrary user-provided functions within `@slice()`:
-        # parse_escape_function(:($fn($(args...))))
-        # In the meantime:
-        return x 
-      end
-    end
-    return x
-  end
-  return var_expr
 end
 
 # Not export
