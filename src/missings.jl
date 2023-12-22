@@ -40,26 +40,27 @@ function fill_missing(df::DataFrame, method::String)
   return fill_missing(df, Symbol.(names(df)), method)
 end
 
-function fill_missing(df::DataFrame, cols::Vector{Symbol}, method::String)
+function fill_missing(df::DataFrame, columns, method::String)
   new_df = copy(df)
-  
-  for col in cols
+  cols_expr = columns isa Expr ? (columns,) : columns
+  column_symbols = names(df, Cols(cols_expr...)) 
+  for col_sym in column_symbols
       if method == "down"
-          last_observation = new_df[1, col]
+          last_observation = new_df[1, col_sym]
           for i in 1:nrow(new_df)
-              if ismissing(new_df[i, col])
-                  new_df[i, col] = last_observation
+              if ismissing(new_df[i, col_sym])
+                  new_df[i, col_sym] = last_observation
               else
-                  last_observation = new_df[i, col]
+                  last_observation = new_df[i, col_sym]
               end
           end
       elseif method == "up"
-          next_observation = new_df[end, col]
+          next_observation = new_df[end, col_sym]
           for i in nrow(new_df):-1:1
-              if ismissing(new_df[i, col])
-                  new_df[i, col] = next_observation
+              if ismissing(new_df[i, col_sym])
+                  new_df[i, col_sym] = next_observation
               else
-                  next_observation = new_df[i, col]
+                  next_observation = new_df[i, col_sym]
               end
           end
       else
@@ -70,12 +71,14 @@ function fill_missing(df::DataFrame, cols::Vector{Symbol}, method::String)
   return new_df
 end
 
-function fill_missing(gdf::GroupedDataFrame, cols::Vector{Symbol}, method::String)
+function fill_missing(gdf::GroupedDataFrame, columns, method::String)
   group_cols = groupcols(gdf)
   results = []
+  cols_expr = columns isa Expr ? (columns,) : columns
+  column_symbols = names(gdf, Cols(cols_expr...)) 
   for group in gdf
       # call the DataFrame version of fill_missing on the SubDataFrame
-      processed_group = fill_missing(DataFrame(group), cols, method)
+      processed_group = fill_missing(DataFrame(group), column_symbols, method)
       push!(results, processed_group)
   end
   combined_df = vcat(results...)
@@ -100,13 +103,12 @@ macro fill_missing(df, args...)
       end
   end
 
-  cols = args[1:(length(args)-1)]
-  method = args[length(args)]
+  interpolated_exprs = parse_interpolation.(args[1:(length(args)-1)])
+  tidy_exprs = [i[1] for i in interpolated_exprs]
+  tidy_exprs = parse_tidy.(tidy_exprs)
   
-  # Requires Julia 1.9
-  # cols..., method = args
-
-  cols_quoted = QuoteNode.(cols)
+  method = esc(last(args))
+  cols_quoted = tidy_exprs
 
   return quote
       if $(esc(df)) isa GroupedDataFrame

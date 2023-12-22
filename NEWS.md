@@ -1,5 +1,9 @@
 # TidierData.jl updates
 
+## v0.14.3 - 2023-12-22
+- Adds support for interpolation and tidy selection in `@fill_missing`
+- Fixes tidy selection in `@separate_rows()`
+
 ## v0.14.2 - 2023-12-21
 - `@slice()` now supports interpolation and user-defined functions
 - Adds `where()`
