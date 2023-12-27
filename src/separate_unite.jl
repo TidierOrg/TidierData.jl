@@ -56,29 +56,32 @@ $docstring_unite
 macro unite(df, new_col, from_cols, sep)
     new_col_quoted = QuoteNode(new_col)
     interpolated_from_cols, _, _ = parse_interpolation(from_cols)
+    interpolated_from_cols = parse_tidy(interpolated_from_cols)
 
-    if @capture(interpolated_from_cols, (args__,)) || @capture(interpolated_from_cols, [args__])
-        args = QuoteNode.(args)
-        from_cols_expr = :[$(args...)]
+    if @capture(interpolated_from_cols, (first_col:last_col))
+      from_cols_expr = :($(first_col):$(last_col))
+    elseif @capture(interpolated_from_cols, (args__,)) || @capture(interpolated_from_cols, [args__])
+      args = QuoteNode.(args)
+      from_cols_expr = :[$(args...)]
     else
-        from_cols_expr = quote
-            if typeof($interpolated_from_cols) <: Tuple
-                collect(Symbol.($interpolated_from_cols))
-
-            else
-                $interpolated_from_cols
-            end
-        end
+      from_cols_expr = quote
+          if typeof($interpolated_from_cols) <: Tuple
+              collect(Symbol.($interpolated_from_cols))
+          else
+            $interpolated_from_cols
+          end
+      end
     end
-    
     return quote
-        unite($(esc(df)), $new_col_quoted, $(from_cols_expr), $(esc(sep)))
+        unite($(esc(df)), $new_col_quoted, [$(from_cols_expr)], $(esc(sep)))
     end
 end
 
-function unite(df::DataFrame, new_col_name::Symbol, cols::Vector{Symbol}, sep::String="_")
+function unite(df::DataFrame, new_col_name::Symbol, columns, sep::String="_")
   new_df = df[:, :]
-  new_df[:, new_col_name] = [join(skipmissing(row), sep) for row in eachrow(df[:, cols])]
+  cols_expr = columns isa Expr ? (columns,) : columns
+  column_symbols = names(df, Cols(cols_expr...)) 
+  new_df[:, new_col_name] = [join(skipmissing(row), sep) for row in eachrow(df[:, column_symbols])]
   return new_df
 end
 

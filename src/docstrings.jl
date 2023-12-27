@@ -3078,3 +3078,180 @@ julia> @separate_rows(df, b:d, ";" )
    6 │     3  ee         6          12
 ```
 """
+
+const docstring_unnest_wider =
+"""
+    @unnest_wider(df, columns, names_sep=)
+
+Unnest specified columns of arrays or dictionaries into wider format dataframe with individual columns.
+
+# Arguments
+- `df`: A DataFrame.
+- `columns`: Columns to be unnested. These columns should contain arrays or dictionaries. Dictionarys headings will be converted to column names.
+- `names_sep`: An optional string to specify the separator for creating new column names. If not provided, defaults to no separator.
+
+# Examples
+```jldoctest
+julia> df = DataFrame(name = ["Zaki", "Farida"], attributes = [
+               Dict("age" => 25, "city" => "New York"),
+               Dict("age" => 30, "city" => "Los Angeles")]);
+
+julia> @unnest_wider(df, attributes)
+2×3 DataFrame
+ Row │ name    city         age   
+     │ String  String       Int64 
+─────┼────────────────────────────
+   1 │ Zaki    New York        25
+   2 │ Farida  Los Angeles     30
+
+julia> df2 = DataFrame(a=[1, 2], b=[[1, 2], [3, 4]], c=[[5, 6], [7, 8]])
+2×3 DataFrame
+ Row │ a      b       c      
+     │ Int64  Array…  Array… 
+─────┼───────────────────────
+   1 │     1  [1, 2]  [5, 6]
+   2 │     2  [3, 4]  [7, 8]
+
+julia> @unnest_wider(df1, b:c, names_sep = "_")
+2×5 DataFrame
+ Row │ a      b_1    b_2    c_1    c_2   
+     │ Int64  Int64  Int64  Int64  Int64 
+─────┼───────────────────────────────────
+   1 │     1      1      2      5      6
+   2 │     2      3      4      7      8
+```
+"""
+
+const docstring_unnest_longer =
+"""
+    @unnest_longer(df, columns, indices_include=false)
+
+Unnest arrays in columns from a DataFrame to create a longer DataFrame with one row for each entry of the array.
+
+# Arguments
+- `df`: A DataFrame.
+- `columnss`: Columns to unnest. Can be a column symbols or a range. 
+- `indices_include`: Optional. When set to `true`, adds an index column for each unnested column, which logs the position of each array entry.
+- `keep_empty`: Optional. When set to `true`, rows with empty arrays are kept, not skipped, and unnested as missing. 
+
+# Examples
+```jldoctest
+julia> df = DataFrame(a=[1, 2], b=[[1, 2], [3, 4]], c=[[5, 6], [7, 8]])
+2×3 DataFrame
+ Row │ a      b       c      
+     │ Int64  Array…  Array… 
+─────┼───────────────────────
+   1 │     1  [1, 2]  [5, 6]
+   2 │     2  [3, 4]  [7, 8]
+
+julia> @unnest_longer(df, 2)
+4×3 DataFrame
+ Row │ a      b      c      
+     │ Int64  Int64  Array… 
+─────┼──────────────────────
+   1 │     1      1  [5, 6]
+   2 │     1      2  [5, 6]
+   3 │     2      3  [7, 8]
+   4 │     2      4  [7, 8]
+
+julia> @unnest_longer(df, b:c, indices_include=true)
+6×5 DataFrame
+ Row │ a     b      c      b_id  c_id 
+     │ Int64 Int64  Int64  Int64 Int64
+─────┼────────────────────────────────
+   1 │     1     1      5      1     1
+   2 │     1     2      6      2     2
+   3 │     2     3      7      1     1
+   4 │     2     4      8      2     2
+
+julia> df2 = DataFrame(x = 1:4, y = [[], [1, 2, 3], [4, 5], Int[]])
+4×2 DataFrame
+ Row │ x      y            
+     │ Int64  Array…       
+─────┼─────────────────────
+   1 │     1  Any[]
+   2 │     2  Any[1, 2, 3]
+   3 │     3  Any[4, 5]
+   4 │     4  Any[]
+
+julia> @unnest_longer(df2, y, keep_empty = true)
+7×2 DataFrame
+ Row │ x      y       
+     │ Int64  Any     
+─────┼────────────────
+   1 │     1  missing 
+   2 │     2  1
+   3 │     2  2
+   4 │     2  3
+   5 │     3  4
+   6 │     3  5
+   7 │     4  missing 
+```
+"""
+
+const docstring_nest =
+"""
+    @nest(df, new_column = nesting_columns)
+
+Multiple columns are nested into one or more new columns in a DataFrame. 
+# Arguments
+- `df`: A DataFrame 
+- `new_column`: New column name 
+- `nesting_columns`: Columns to be nested into the new_column  
+# Examples
+```jldoctest
+julia> df = DataFrame(x = [1, 1, 1, 2, 2, 3], y = 1:6, z = 13:18, a = 7:12, ab = 12:-1:7);
+
+julia> @nest(df, n2 = starts_with("a"), n3 = (x:z))
+6×2 DataFrame
+ Row │ n2       n3         
+     │ Array…   Array…     
+─────┼─────────────────────
+   1 │ [7, 12]  [1, 1, 13]
+   2 │ [8, 11]  [1, 2, 14]
+   3 │ [9, 10]  [1, 3, 15]
+   4 │ [10, 9]  [2, 4, 16]
+   5 │ [11, 8]  [2, 5, 17]
+   6 │ [12, 7]  [3, 6, 18]
+```
+"""
+
+const docstring_nest_by =
+"""
+   @nest_by(df, by; key)
+
+Nest by a column or set of columns, meaning all columns not selected in the `by` argument are nested into one column. This is not a group_by and then nest.
+# Arguments
+- `df`: A DataFrame 
+- `by`: column or columns to remain in the outer dataframe, while the others are nested into one column
+- `key`: optional argument to determine new column name when using `by`
+
+# Examples
+```jldoctest
+julia> df = DataFrame(x = [1, 1, 1, 2, 2, 3], y = 1:6, z = 13:18, a = 7:12, b = 12:-1:7);
+
+julia> @nest_by(df, z)
+6×2 DataFrame
+ Row │ z      data          
+     │ Int64  Array…        
+─────┼──────────────────────
+   1 │    13  [1, 1, 7, 12]
+   2 │    14  [1, 2, 8, 11]
+   3 │    15  [1, 3, 9, 10]
+   4 │    16  [2, 4, 10, 9]
+   5 │    17  [2, 5, 11, 8]
+   6 │    18  [3, 6, 12, 7]
+
+julia> @nest_by(df, (a,z), new_column)
+6×3 DataFrame
+ Row │ a      z      new_column 
+     │ Int64  Int64  Array…     
+─────┼──────────────────────────
+   1 │     7     13  [1, 1, 12]
+   2 │     8     14  [1, 2, 11]
+   3 │     9     15  [1, 3, 10]
+   4 │    10     16  [2, 4, 9]
+   5 │    11     17  [2, 5, 8]
+   6 │    12     18  [3, 6, 7]
+```
+"""
