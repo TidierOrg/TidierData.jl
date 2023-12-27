@@ -3112,7 +3112,7 @@ julia> df2 = DataFrame(a=[1, 2], b=[[1, 2], [3, 4]], c=[[5, 6], [7, 8]])
    1 │     1  [1, 2]  [5, 6]
    2 │     2  [3, 4]  [7, 8]
 
-julia> @unnest_wider(df1, b:c, names_sep = "_")
+julia> @unnest_wider(df2, b:c, names_sep = "_")
 2×5 DataFrame
  Row │ a      b_1    b_2    c_1    c_2   
      │ Int64  Int64  Int64  Int64  Int64 
@@ -3155,14 +3155,14 @@ julia> @unnest_longer(df, 2)
    4 │     2      4  [7, 8]
 
 julia> @unnest_longer(df, b:c, indices_include=true)
-6×5 DataFrame
- Row │ a     b      c      b_id  c_id 
-     │ Int64 Int64  Int64  Int64 Int64
-─────┼────────────────────────────────
-   1 │     1     1      5      1     1
-   2 │     1     2      6      2     2
-   3 │     2     3      7      1     1
-   4 │     2     4      8      2     2
+4×5 DataFrame
+ Row │ a      b      c      b_id   c_id  
+     │ Int64  Int64  Int64  Int64  Int64 
+─────┼───────────────────────────────────
+   1 │     1      1      5      1      1
+   2 │     1      2      6      2      2
+   3 │     2      3      7      1      1
+   4 │     2      4      8      2      2
 
 julia> df2 = DataFrame(x = 1:4, y = [[], [1, 2, 3], [4, 5], Int[]])
 4×2 DataFrame
