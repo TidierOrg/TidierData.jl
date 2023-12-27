@@ -2,6 +2,7 @@
 
 # `@unnest_longer` adds one row per entry of an array, lengthening dataframe by flattening the column or columns. 
 
+using TidierData
 df = DataFrame(x = 1:4, y = [[], [1, 2, 3], [4, 5], Int[]]);
 
 @chain df begin
