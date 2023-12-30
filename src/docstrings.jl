@@ -3202,16 +3202,16 @@ Multiple columns are nested into one or more new columns in a DataFrame.
 ```jldoctest
 julia> df = DataFrame(x = [1, 1, 1, 2, 2, 3], y = 1:6, z = 13:18, a = 7:12, ab = 12:-1:7);
 
-julia> @nest(df, n2 = starts_with("a"), n3 = (x:z))
-6×2 DataFrame
- Row │ n2       n3         
-     │ Array…   Array…     
-─────┼─────────────────────
-   1 │ [7, 12]  [1, 1, 13]
-   2 │ [8, 11]  [1, 2, 14]
-   3 │ [9, 10]  [1, 3, 15]
-   4 │ [10, 9]  [2, 4, 16]
-   5 │ [11, 8]  [2, 5, 17]
-   6 │ [12, 7]  [3, 6, 18]
+julia> @nest(df, n2 = starts_with("a"), n3 = (y:z))
+6×3 DataFrame
+ Row │ x      n2             n3            
+     │ Int64  DataFrame      DataFrame     
+─────┼─────────────────────────────────────
+   1 │     1  1×2 DataFrame  1×2 DataFrame 
+   2 │     1  1×2 DataFrame  1×2 DataFrame 
+   3 │     1  1×2 DataFrame  1×2 DataFrame 
+   4 │     2  1×2 DataFrame  1×2 DataFrame 
+   5 │     2  1×2 DataFrame  1×2 DataFrame 
+   6 │     3  1×2 DataFrame  1×2 DataFrame 
 ```
 """
