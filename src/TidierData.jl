@@ -21,7 +21,7 @@ export TidierData_set, across, desc, n, row_number, everything, starts_with, end
       @group_by, @ungroup, @slice, @arrange, @distinct, @pull, @left_join, @right_join, @inner_join, @full_join, @anti_join, @semi_join,
       @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_missing, @glimpse, @separate,
       @unite, @summary, @fill_missing, @slice_sample, @slice_min, @slice_max, @slice_head, @slice_tail, @rename_with, @separate_rows,
-      @unnest_longer, @unnest_wider, @nest, @nest_by
+      @unnest_longer, @unnest_wider, @nest
 
 # Package global variables
 const code = Ref{Bool}(false) # output DataFrames.jl code?

@@ -1,39 +1,79 @@
 function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::Union{String, Nothing}=nothing)
-  is_grouped = df isa GroupedDataFrame
-  grouping_columns = is_grouped ? groupcols(df) : Symbol[]
-  # Ungroup if necessary
-  df_copy = copy(is_grouped ? parent(df) : df)
-  # getting column names from parse tidy
-  cols_expr = cols isa Expr ? (cols,) : cols
-  column_symbols = names(df_copy, Cols(cols_expr...)) 
-
-  for col in column_symbols
-      col_type = typeof(df_copy[1, col])
-      if col_type <: Dict
-          keys_set = Set{String}()
+    is_grouped = df isa GroupedDataFrame
+    grouping_columns = is_grouped ? groupcols(df) : Symbol[]
+    df_copy = copy(is_grouped ? parent(df) : df)
+  
+    cols_expr = cols isa Expr ? (cols,) : cols
+    column_symbols = names(df_copy, Cols(cols_expr...))
+  
+    for col in column_symbols
+        col_type = typeof(df_copy[1, col])
+    
+        if col_type <: DataFrame
+          # Handling DataFrames
+          nested_col_names = unique([name for i in 1:nrow(df_copy) for name in names(df_copy[i, col])])
+    
+          for nested_col in nested_col_names
+              new_col_name = names_sep === nothing ? nested_col : Symbol(string(col, names_sep, nested_col))
+              combined_nested_col = Any[missing for _ in 1:nrow(df_copy)]
+    
+              for row in 1:nrow(df_copy)
+                  nested_df = df_copy[row, col]
+                  if ncol(nested_df) > 0 && haskey(nested_df[1, :], nested_col)
+                      combined_nested_col[row] = nested_df[!, nested_col]
+                      # Extract single value if there's only one element
+                      if length(combined_nested_col[row]) == 1
+                          combined_nested_col[row] = combined_nested_col[row][1]
+                      end
+                  end
+              end
+              df_copy[!, new_col_name] = combined_nested_col
+          end
+      elseif col_type <: NamedTuple || col_type <: Union{NamedTuple, Missing}
+          # Handling NamedTuples and missing values
+          keys_set = Set{Symbol}()
           for item in df_copy[!, col]
-              union!(keys_set, keys(item))
+              if item !== missing
+                  union!(keys_set, keys(item))
+              end
           end
-
+    
           for key in keys_set
-              new_col_name = names_sep === nothing ? Symbol(key) : Symbol(string(col, names_sep, key))
-              df_copy[!, new_col_name] = getindex.(df_copy[!, col], key)
+              new_col_name = names_sep === nothing ? key : Symbol(string(col, names_sep, key))
+              df_copy[!, new_col_name] = [item !== missing ? get(item, key, missing) : missing for item in df_copy[!, col]]
           end
-      elseif col_type <: Array
-          n = length(first(df_copy[!, col]))
-          for i in 1:n
-              new_col_name = names_sep === nothing ? Symbol(string(col, i)) : Symbol(string(col, names_sep, i))
-              df_copy[!, new_col_name] = getindex.(df_copy[!, col], i)
-          end
-      else
-          error("Column $col contains neither dictionaries nor arrays")
-      end
-      select!(df_copy, Not(col))
-  end
-   if is_grouped
-    df_copy = groupby(df_copy, grouping_columns)
-   end
-  return df_copy
+      
+  
+        elseif col_type <: Dict
+            keys_set = Set{String}()
+            for item in df_copy[!, col]
+                union!(keys_set, keys(item))
+            end
+  
+            for key in keys_set
+                new_col_name = names_sep === nothing ? Symbol(key) : Symbol(string(col, names_sep, key))
+                df_copy[!, new_col_name] = getindex.(df_copy[!, col], key)
+            end
+  
+        elseif col_type <: Array
+            n = length(first(df_copy[!, col]))
+            for i in 1:n
+                new_col_name = names_sep === nothing ? Symbol(string(col, i)) : Symbol(string(col, names_sep, i))
+                df_copy[!, new_col_name] = getindex.(df_copy[!, col], i)
+            end
+  
+        else
+            error("Column $col contains neither dictionaries nor arrays nor DataFrames")
+        end
+  
+        select!(df_copy, Not(col))
+    end
+  
+    if is_grouped
+        df_copy = groupby(df_copy, grouping_columns)
+    end
+  
+    return df_copy
 end
 
 """
@@ -57,35 +97,40 @@ macro unnest_wider(df, exprs...)
 end
 
 function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols; indices_include::Union{Nothing, Bool}=nothing, keep_empty::Bool=false)
-  is_grouped = df isa GroupedDataFrame
-  grouping_columns = is_grouped ? groupcols(df) : Symbol[]
-  df_copy = copy(is_grouped ? parent(df) : df)
+    is_grouped = df isa GroupedDataFrame
+    grouping_columns = is_grouped ? groupcols(df) : Symbol[]
+    df_copy = copy(is_grouped ? parent(df) : df)
   
-  cols_expr = cols isa Expr ? (cols,) : cols 
-  column_symbols = names(df_copy, Cols(cols_expr...))
-
-  # Handle empty arrays if keep_empty is true
-    if keep_empty && keep_empty === true
-        for col in column_symbols
-         df_copy[!, col] = [isempty(arr) || arr === nothing ? [missing] : arr for arr in df_copy[!, col]]
-        end
-         flattened_df = flatten(df_copy, column_symbols, scalar=Missing)
-        else
-         flattened_df = flatten(df_copy, column_symbols)
-    end 
-
+    cols_expr = cols isa Expr ? (cols,) : cols 
+    column_symbols = names(df_copy, Cols(cols_expr...))
+  
+    # Preprocess columns
+    for col in column_symbols
+        df_copy[!, col] = [ismissing(x) ? (keep_empty ? [missing] : missing) :
+                           isa(x, DataFrame) ? (nrow(x) > 0 ? Tables.rowtable(x) : (keep_empty ? [missing] : [])) :
+                           isempty(x) ? (keep_empty ? [missing] : x) : 
+                           x for x in df_copy[!, col]]
+    end
+  
+    # Apply filter if keep_empty is false
+    if !keep_empty
+      df_copy = filter(row -> !any(ismissing, [row[col] for col in column_symbols]), df_copy)
+    end
+    # Flatten the dataframe
+    flattened_df = flatten(df_copy, column_symbols)
+  
     if indices_include === true
         for col in column_symbols
             col_indices = Symbol(string(col), "_id")
-            indices = [j for sublist in df_copy[!, col] for j in 1:length(sublist)]
+            indices = [j for i in 1:nrow(df_copy) for j in 1:length(df_copy[i, col])]
             flattened_df[!, col_indices] = indices
         end
     end
-
+  
     if is_grouped
         flattened_df = groupby(flattened_df, grouping_columns)
     end
-
+  
     return flattened_df
 end
   
@@ -117,66 +162,12 @@ macro unnest_longer(df, exprs...)
 end
 
 
-function nest_by(df::DataFrame; by, key = :data)
-    by_expr = by isa Expr ? (by,) : (by,)
-    by_symbols = names(df, Cols(by_expr...))
+function nest_pairs(df; kwargs...) 
+    df_copy = copy(df)
   
-    cols_to_nest = setdiff(names(df), by_symbols)
-  
-    nested_data = map(eachrow(df)) do row
-        [row[c] for c in cols_to_nest]
-    end
-  
-    nested_df = DataFrame()
-    for sym in by_symbols
-        nested_df[!, sym] = df[!, sym]
-    end
-    nested_df[!, key] = nested_data
-  
-    return nested_df
-end
-  
-"""
-$docstring_nest_by
-"""
-macro nest_by(df, args...)
-    if length(args) == 2
-        by_cols, new_col = args
-        new_col_quoted = QuoteNode(new_col)
-    elseif length(args) == 1
-        by_cols = args[1]
-        new_col_quoted = :(:data)  
-    else
-        error("Incorrect number of arguments provided to @nest")
-    end
-  
-    interpolated_by_cols, _, _ = parse_interpolation(by_cols)
-    interpolated_by_cols = parse_tidy(interpolated_by_cols)
-  
-    if @capture(interpolated_by_cols, (first_col:last_col))
-        by_cols_expr = :($(first_col):$(last_col))
-    elseif @capture(interpolated_by_cols, (args__,)) || @capture(interpolated_by_cols, [args__])
-        args = QuoteNode.(args)
-        by_cols_expr = :[$(args...)]
-    else
-        by_cols_expr = quote
-            if typeof($interpolated_by_cols) <: Tuple
-                collect(Symbol.($interpolated_by_cols))
-            else
-                $interpolated_by_cols
-            end
-        end
-    end
-  
-    return quote
-        nest_by($(esc(df)), by = $by_cols_expr, key = $new_col_quoted)
-    end
-end
-
-function nest_pairs(df::DataFrame; kwargs...)
-  result_df = copy(df)
-
-  for (new_col_name, cols) in kwargs
+    for (new_col_name, cols) in kwargs
+      # This section here was unavoidable to maintain tidy selection
+      # Check if cols is a range expression (e.g., :z:b)
       if isa(cols, Expr) && cols.head == :(:) && length(cols.args) == 2
           start_col, end_col = cols.args
           # Get index range of columns
@@ -190,24 +181,40 @@ function nest_pairs(df::DataFrame; kwargs...)
       elseif isa(cols, Symbol)
           cols = [cols]  # Convert single column name into a list
       end
-
+  
       # Get the column symbols
       column_symbols = names(df, Cols(cols))
-
+  
       # Nest the specified columns into an array
       nested_column = map(eachrow(df)) do row
-          [row[c] for c in column_symbols]
+        DataFrame(Dict(c => [row[c]] for c in column_symbols))
       end
-
+  
       # Add the new nested column
-      result_df[!, new_col_name] = nested_column
-
-      # Optionally remove the original columns that were nested
-       select!(result_df, Not(column_symbols))
-  end
-
-  return result_df
+      df_copy[!, new_col_name] = nested_column
+  
+       select!(df_copy, Not(column_symbols))
+    end
+  
+    return df_copy
 end
+
+# For groups. Its a little bit slow i think but it works. 
+# I am not sure if this is something that could ungroup -> regroup
+# so for now I have opted for the safer strategy
+function nest_pairs(gdf::GroupedDataFrame; kwargs...)
+    group_cols = groupcols(gdf)
+    results = []
+    for group in gdf
+        # Convert the group to a DataFrame
+        df_group = DataFrame(group)
+        processed_group = nest_pairs(df_group; kwargs...)
+        push!(results, processed_group)
+    end
+    combined_df = vcat(results...)
+    return groupby(combined_df, group_cols)
+end
+
 
 """
 $docstring_nest
@@ -218,7 +225,7 @@ macro nest(df, args...)
   for arg in args
       if isa(arg, Expr) && arg.head == :(=)
           key = esc(arg.args[1])  # Extract and escape the key
-
+          # this extra processing was unavoidable for some reason to enable tidy selection
           # Check if the argument is a range expression
           if isa(arg.args[2], Expr) && arg.args[2].head == :(:) && length(arg.args[2].args) == 2
               # Handle range expressions as Between selectors
@@ -250,3 +257,60 @@ macro nest(df, args...)
     nest_pairs($(esc(df)), $(kwargs_exprs...))
   end
 end
+
+
+#function nest_by(df::DataFrame; by, key = :data)
+#    by_expr = by isa Expr ? (by,) : (by,)
+#    by_symbols = names(df, Cols(by_expr...))
+  
+#    cols_to_nest = setdiff(names(df), by_symbols)
+  
+#    nested_data = map(eachrow(df)) do row
+#        [row[c] for c in cols_to_nest]
+#    end
+  
+#    nested_df = DataFrame()
+#    for sym in by_symbols
+#        nested_df[!, sym] = df[!, sym]
+#    end
+#    nested_df[!, key] = nested_data
+#  
+#    return nested_df
+#end
+  
+#"""
+#$docstring_nest_by
+#"""
+#macro nest_by(df, args...)
+#    if length(args) == 2
+#        by_cols, new_col = args
+#        new_col_quoted = QuoteNode(new_col)
+#    elseif length(args) == 1
+#        by_cols = args[1]
+#        new_col_quoted = :(:data)  
+#    else
+#        error("Incorrect number of arguments provided to @nest")
+#    end
+#  
+#    interpolated_by_cols, _, _ = parse_interpolation(by_cols)
+#    interpolated_by_cols = parse_tidy(interpolated_by_cols)
+#  
+#    if @capture(interpolated_by_cols, (first_col:last_col))
+#        by_cols_expr = :($(first_col):$(last_col))
+#    elseif @capture(interpolated_by_cols, (args__,)) || @capture(interpolated_by_cols, [args__])
+#        args = QuoteNode.(args)
+#        by_cols_expr = :[$(args...)]
+#    else
+#        by_cols_expr = quote
+#            if typeof($interpolated_by_cols) <: Tuple
+#                collect(Symbol.($interpolated_by_cols))
+#            else
+#                $interpolated_by_cols
+#            end
+#        end
+#    end
+#  
+#    return quote
+#        nest_by($(esc(df)), by = $by_cols_expr, key = $new_col_quoted)
+#    end
+#end

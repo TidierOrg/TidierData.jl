@@ -3087,7 +3087,7 @@ Unnest specified columns of arrays or dictionaries into wider format dataframe w
 
 # Arguments
 - `df`: A DataFrame.
-- `columns`: Columns to be unnested. These columns should contain arrays or dictionaries. Dictionarys headings will be converted to column names.
+- `columns`: Columns to be unnested. These columns should contain arrays, dictionaries, dataframes, or tuples. Dictionarys headings will be converted to column names.
 - `names_sep`: An optional string to specify the separator for creating new column names. If not provided, defaults to no separator.
 
 # Examples
@@ -3130,7 +3130,7 @@ Unnest arrays in columns from a DataFrame to create a longer DataFrame with one 
 
 # Arguments
 - `df`: A DataFrame.
-- `columnss`: Columns to unnest. Can be a column symbols or a range. 
+- `columns`: Columns to unnest. Can be a column symbols or a range of columns if they align for number of values.
 - `indices_include`: Optional. When set to `true`, adds an index column for each unnested column, which logs the position of each array entry.
 - `keep_empty`: Optional. When set to `true`, rows with empty arrays are kept, not skipped, and unnested as missing. 
 
@@ -3213,45 +3213,5 @@ julia> @nest(df, n2 = starts_with("a"), n3 = (x:z))
    4 │ [10, 9]  [2, 4, 16]
    5 │ [11, 8]  [2, 5, 17]
    6 │ [12, 7]  [3, 6, 18]
-```
-"""
-
-const docstring_nest_by =
-"""
-   @nest_by(df, by; key)
-
-Nest by a column or set of columns, meaning all columns not selected in the `by` argument are nested into one column. This is not a group_by and then nest.
-# Arguments
-- `df`: A DataFrame 
-- `by`: column or columns to remain in the outer dataframe, while the others are nested into one column
-- `key`: optional argument to determine new column name when using `by`
-
-# Examples
-```jldoctest
-julia> df = DataFrame(x = [1, 1, 1, 2, 2, 3], y = 1:6, z = 13:18, a = 7:12, b = 12:-1:7);
-
-julia> @nest_by(df, z)
-6×2 DataFrame
- Row │ z      data          
-     │ Int64  Array…        
-─────┼──────────────────────
-   1 │    13  [1, 1, 7, 12]
-   2 │    14  [1, 2, 8, 11]
-   3 │    15  [1, 3, 9, 10]
-   4 │    16  [2, 4, 10, 9]
-   5 │    17  [2, 5, 11, 8]
-   6 │    18  [3, 6, 12, 7]
-
-julia> @nest_by(df, (a,z), new_column)
-6×3 DataFrame
- Row │ a      z      new_column 
-     │ Int64  Int64  Array…     
-─────┼──────────────────────────
-   1 │     7     13  [1, 1, 12]
-   2 │     8     14  [1, 2, 11]
-   3 │     9     15  [1, 3, 10]
-   4 │    10     16  [2, 4, 9]
-   5 │    11     17  [2, 5, 8]
-   6 │    12     18  [3, 6, 7]
 ```
 """
