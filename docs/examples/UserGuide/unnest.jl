@@ -54,4 +54,4 @@ end
 
 df4 = DataFrame(x = ["a", "b", "a", "b", "C", "a"], y = 1:6, yz = 13:18, a = 7:12, ab = 12:-1:7)
 
-@nest(df4, n2 = starts_with("y"), n3 = a:ab)
+@nest(df4, n2 = starts_with("b"))

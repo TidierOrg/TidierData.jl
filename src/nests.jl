@@ -162,42 +162,43 @@ macro unnest_longer(df, exprs...)
 end
 
 
-function nest_pairs(df; kwargs...) 
+function nest_pairs(df; kwargs...)
     df_copy = copy(df)
+    nested_dataframes = Dict()
+    grouping_columns = names(df)
   
     for (new_col_name, cols) in kwargs
-      # This section here was unavoidable to maintain tidy selection
-      # Check if cols is a range expression (e.g., :z:b)
-      if isa(cols, Expr) && cols.head == :(:) && length(cols.args) == 2
-          start_col, end_col = cols.args
-          # Get index range of columns
-          start_idx = findfirst(==(start_col), names(df))
-          end_idx = findfirst(==(end_col), names(df))
-          if isnothing(start_idx) || isnothing(end_idx)
-              throw(ArgumentError("Column range $cols is invalid"))
-          end
-          # Convert range into a list of column names
-          cols = names(df)[start_idx:end_idx]
-      elseif isa(cols, Symbol)
-          cols = [cols]  # Convert single column name into a list
-      end
+        if isa(cols, Expr) && cols.head == :(:) && length(cols.args) == 2
+            start_col, end_col = cols.args
+            start_idx = findfirst(==(start_col), names(df))
+            end_idx = findfirst(==(end_col), names(df))
+            if isnothing(start_idx) || isnothing(end_idx)
+                throw(ArgumentError("Column range $cols is invalid"))
+            end
+            cols = names(df)[start_idx:end_idx]
+        elseif isa(cols, Symbol)
+            cols = [cols]  
+        end
   
-      # Get the column symbols
-      column_symbols = names(df, Cols(cols))
+        column_symbols = names(df, Cols(cols))
+        grouping_columns = setdiff(grouping_columns, column_symbols)
+        grouped_df = groupby(df, grouping_columns)
   
-      # Nest the specified columns into an array
-      nested_column = map(eachrow(df)) do row
-        DataFrame(Dict(c => [row[c]] for c in column_symbols))
-      end
-  
-      # Add the new nested column
-      df_copy[!, new_col_name] = nested_column
-  
-       select!(df_copy, Not(column_symbols))
+        nested_dataframes[new_col_name] = [DataFrame(select(sub_df, column_symbols)) for sub_df in grouped_df]
     end
   
-    return df_copy
-end
+    # Creating a new DataFrame with all grouping columns
+    unique_groups = unique(df[:, grouping_columns])
+    new_df = DataFrame(unique_groups)
+  
+    # Aligning and adding the nested DataFrame columns
+    for (new_col_name, nested_df_list) in nested_dataframes
+        aligned_nested_df = [nested_df_list[i] for i in 1:nrow(new_df)]
+        new_df[!, new_col_name] = aligned_nested_df
+    end
+  
+    return new_df
+  end
 
 # For groups. Its a little bit slow i think but it works. 
 # I am not sure if this is something that could ungroup -> regroup
