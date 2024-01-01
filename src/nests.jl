@@ -68,7 +68,11 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
   
         select!(df_copy, Not(col))
     end
-  
+    # if there are arrays of obersvations following a nest and now they are being unnested, 
+    # this will flatten them to the original dataframe. 
+    new_cols = setdiff(names(df_copy), names(df))
+    df_copy = flatten(df_copy, new_cols)
+
     if is_grouped
         df_copy = groupby(df_copy, grouping_columns)
     end
