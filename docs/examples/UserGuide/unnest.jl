@@ -54,4 +54,11 @@ end
 
 df4 = DataFrame(x = ["a", "b", "a", "b", "C", "a"], y = 1:6, yz = 13:18, a = 7:12, ab = 12:-1:7)
 
-@nest(df4, n2 = starts_with("b"))
+nested_df = @nest(df4, n2 = starts_with("a"), n3 = y:yz)
+
+# To return to the original dataframe
+
+@chain nested_df begin
+    @unnest_wider(n3:n2)
+    @unnest_longer(y:ab)
+  end

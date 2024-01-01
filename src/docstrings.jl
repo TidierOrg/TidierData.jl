@@ -3204,11 +3204,11 @@ julia> df = DataFrame(x = [1, 1, 1, 2, 2, 3], y = 1:6, z = 13:18, a = 7:12, ab =
 
 julia> @nest(df, n2 = starts_with("a"), n3 = (y:z))
 3×3 DataFrame
- Row │ x      n3             n2            
-     │ Int64  DataFrame      DataFrame     
-─────┼─────────────────────────────────────
-   1 │     1  3×2 DataFrame  1×2 DataFrame 
-   2 │     2  2×2 DataFrame  1×2 DataFrame 
-   3 │     3  1×2 DataFrame  1×2 DataFrame 
+ Row │ x       n3             n2            
+     │ String  DataFrame      DataFrame     
+─────┼──────────────────────────────────────
+   1 │ a       3×2 DataFrame  3×2 DataFrame 
+   2 │ b       2×2 DataFrame  2×2 DataFrame 
+   3 │ C       1×2 DataFrame  1×2 DataFrame 
 ```
 """

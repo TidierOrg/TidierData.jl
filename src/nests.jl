@@ -68,16 +68,7 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
   
         select!(df_copy, Not(col))
     end
-    # if there are arrays of obersvations following a nest and now they are being unnested, 
-    # this will flatten them to the original dataframe. 
-      new_cols = setdiff(names(df_copy), names(df))
-     # df_copy = flatten(df_copy, new_cols)
-     cols_to_flatten = [col for col in new_cols if any(cell -> cell isa Array, df_copy[!, col])]
 
-     # Apply flatten selectively
-     if !isempty(cols_to_flatten)
-       df_copy = flatten(df_copy, cols_to_flatten)
-    end
     if is_grouped
         df_copy = groupby(df_copy, grouping_columns)
     end
@@ -176,7 +167,8 @@ function nest_pairs(df; kwargs...)
     nested_dataframes = Dict()
     grouping_columns = names(df)
   
-    for (new_col_name, cols) in kwargs
+    # Determine grouping columns based on all specified column sets
+    for (_, cols) in kwargs
         if isa(cols, Expr) && cols.head == :(:) && length(cols.args) == 2
             start_col, end_col = cols.args
             start_idx = findfirst(==(start_col), names(df))
@@ -186,13 +178,28 @@ function nest_pairs(df; kwargs...)
             end
             cols = names(df)[start_idx:end_idx]
         elseif isa(cols, Symbol)
-            cols = [cols]  
+            cols = [cols]
         end
   
         column_symbols = names(df, Cols(cols))
         grouping_columns = setdiff(grouping_columns, column_symbols)
-        grouped_df = groupby(df, grouping_columns)
+    end
   
+    # Group the DataFrame once using these grouping columns
+    grouped_df = groupby(df_copy, grouping_columns)
+  
+    # Nest each specified set of columns based on the single grouped DataFrame
+    for (new_col_name, cols) in kwargs
+        if isa(cols, Expr) && cols.head == :(:) && length(cols.args) == 2
+            start_col, end_col = cols.args
+            start_idx = findfirst(==(start_col), names(df))
+            end_idx = findfirst(==(end_col), names(df))
+            cols = names(df)[start_idx:end_idx]
+        elseif isa(cols, Symbol)
+            cols = [cols]
+        end
+  
+        column_symbols = names(df, Cols(cols))
         nested_dataframes[new_col_name] = [DataFrame(select(sub_df, column_symbols)) for sub_df in grouped_df]
     end
   
@@ -207,7 +214,7 @@ function nest_pairs(df; kwargs...)
     end
   
     return new_df
-  end
+end
 
 # For groups. Its a little bit slow i think but it works. 
 # I am not sure if this is something that could ungroup -> regroup
