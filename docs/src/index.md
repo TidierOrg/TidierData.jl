@@ -104,7 +104,8 @@ TidierData.jl currently supports the following top-level macros:
     - `@bind_rows()` and `@bind_cols()`
     - `@pivot_wider()` and `@pivot_longer()`
     - `@separate()`, `@separate_rows()`, and `@unite()`
-    - `@drop_missing()` and `@fill_missing`
+    - `@drop_missing()` and `@fill_missing()`
+    - `@unnest_longer()`, `@unnest_wider()`, and `@nest()`
     - `@clean_names()` (as in R's `janitor::clean_names()` function)
     - `@summary()` (as in R's `summary()` function)
 ```
