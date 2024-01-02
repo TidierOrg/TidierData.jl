@@ -2,6 +2,8 @@
 
 # Nest columns into a dataframe nested into a new column
 
+using TidierData
+
 df4 = DataFrame(x = ["a", "b", "a", "b", "C", "a"], y = 1:6, yz = 13:18, a = 7:12, ab = 12:-1:7)
 
 nested_df = @nest(df4, n2 = starts_with("a"), n3 = y:yz)
@@ -24,7 +26,6 @@ end
 
 # `@unnest_longer` adds one row per entry of an array or dataframe, lengthening dataframe by flattening the column or columns. 
 
-using TidierData
 df = DataFrame(x = 1:4, y = [[], [1, 2, 3], [4, 5], Int[]]);
 
 @chain df begin
