@@ -1,3 +1,25 @@
+# ## `@nest`
+
+# Nest columns into a dataframe nested into a new column
+
+df4 = DataFrame(x = ["a", "b", "a", "b", "C", "a"], y = 1:6, yz = 13:18, a = 7:12, ab = 12:-1:7)
+
+nested_df = @nest(df4, n2 = starts_with("a"), n3 = y:yz)
+
+# To return to the original dataframe, you can unnest wider and then longer.
+
+@chain nested_df begin
+    @unnest_wider(n3:n2)
+    @unnest_longer(y:ab)
+end
+
+# Or you can unnest longer and then wider.
+
+@chain nested_df begin
+  @unnest_longer(n3:n2)
+  @unnest_wider(n3:n2)
+end
+
 # ## `@unnest_longer`
 
 # `@unnest_longer` adds one row per entry of an array or dataframe, lengthening dataframe by flattening the column or columns. 
@@ -46,19 +68,3 @@ df3 = DataFrame(
     @unnest_wider(y)
     @unnest_longer(a:c, keep_empty = true)
 end
-
-
-# ## `@nest`
-
-# Nest columns into a dataframe nested into a new column
-
-df4 = DataFrame(x = ["a", "b", "a", "b", "C", "a"], y = 1:6, yz = 13:18, a = 7:12, ab = 12:-1:7)
-
-nested_df = @nest(df4, n2 = starts_with("a"), n3 = y:yz)
-
-# To return to the original dataframe
-
-@chain nested_df begin
-    @unnest_wider(n3:n2)
-    @unnest_longer(y:ab)
-  end
