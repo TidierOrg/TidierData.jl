@@ -3332,7 +3332,7 @@ Rearranges the columns of a DataFrame. This function allows for moving specified
 # Examples
 ```jldoctest
 julia> df = DataFrame(A = 1:5, B = 6:10, C = ["A", "b", "C", "D", "E"], D = ['A', 'B','A', 'B','C'],
-E = 1:5,  F = ["A", "b", "C", "D", "E"]);
+                      E = 1:5, F = ["A", "b", "C", "D", "E"]);
 
 julia> @relocate(df, where(is_string), before = where(is_integer))
 5×6 DataFrame
