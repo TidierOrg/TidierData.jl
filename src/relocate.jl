@@ -49,7 +49,7 @@ macro relocate(df, args...)
         elseif last_arg.args[1] == :before || last_arg.args[1] == :before_column
             before_col_expr = last_arg.args[2]
         end
-        col_exprs = args[1:end-1] # Exclude the last argument
+        col_exprs = args[1:end-1]
         else
         col_exprs = args
     end
