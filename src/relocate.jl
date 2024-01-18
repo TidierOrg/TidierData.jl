@@ -44,15 +44,24 @@ macro relocate(df, args...)
     last_arg = args[end] 
     # Check if the last argument is a keyword argument
     if last_arg isa Expr && last_arg.head == :(=)
-        if last_arg.args[1] == :after || last_arg.args[1] == :after_column
-            after_col_expr = last_arg.args[2]
-        elseif last_arg.args[1] == :before || last_arg.args[1] == :before_column
-            before_col_expr = last_arg.args[2]
-        end
-        col_exprs = args[1:end-1]
-        else
-        col_exprs = args
-    end
+          if last_arg.args[1] == :after || last_arg.args[1] == :after_column
+              after_col_expr = last_arg.args[2]
+          elseif last_arg.args[1] == :before || last_arg.args[1] == :before_column
+              before_col_expr = last_arg.args[2]
+          else
+              error("Invalid keyword argument: only 'before' or 'after' are accepted.")
+          end
+          col_exprs = args[1:end-1]
+      else
+          col_exprs = args
+      end
+  
+      # Additional check for invalid keyword arguments in the rest of args
+      for arg in col_exprs
+          if arg isa Expr && arg.head == :(=) && !(arg.args[1] in [:before, :before_column, :after, :after_column])
+              error("Invalid keyword argument: only 'before' or 'after' are accepted.")
+          end
+      end
     # Parse the column expressions
     interpolated_col_exprs = parse_interpolation.(col_exprs)
     tidy_col_exprs = [parse_tidy(i[1]) for i in interpolated_col_exprs]
@@ -84,4 +93,4 @@ macro relocate(df, args...)
       end
   
       return relocation_expr
-  end
+end

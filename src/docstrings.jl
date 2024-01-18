@@ -3326,8 +3326,8 @@ Rearranges the columns of a DataFrame. This function allows for moving specified
 # Arguments
 - `df`: The DataFrame in which columns are to be rearranged.
 - `columns`: Column or columns to to be moved.
-- `before_column`: (optional)  `nothing`, this argument is ignored.
-- `after_column`: (optional) Column or columns after which the specified columns will be moved. If not provided or `nothing`, this argument is ignored. Only one of `before_column` or `after_column` should be specified.If neither are specified, selection will be moved to the front of the df
+- `before`: (optional)  `nothing`, this argument is ignored.
+- `after`: (optional) Column or columns after which the specified columns will be moved. If not provided or `nothing`, this argument is ignored. Only one of `before_column` or `after_column` should be specified.If neither are specified, selection will be moved to the front of the df
 
 # Examples
 ```jldoctest
