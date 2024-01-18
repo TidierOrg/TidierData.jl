@@ -1,10 +1,10 @@
-function relocate(df, columns; before_column=nothing, after_column=nothing)
+function relocate(df, columns; before=nothing, after=nothing)
     cols_expr = columns isa Expr ? (columns,) : columns
     column_symbols = names(df, Cols(cols_expr...))
     column_symbols = Symbol.(column_symbols)
-    # Handle before_column and after_column as collections
-    before_cols = before_column isa Symbol ? [before_column] : before_column
-    after_cols = after_column isa Symbol ? [after_column] : after_column
+    # Handle before and after as collections
+    before_cols = before isa Symbol ? [before] : before
+    after_cols = after isa Symbol ? [after] : after
     before_col_symbols = isnothing(before_cols) ? [] : Symbol.(names(df, Cols(before_cols...)))
     after_col_symbols = isnothing(after_cols) ? [] : Symbol.(names(df, Cols(after_cols...)))
     # Convert all DataFrame column names to symbols
@@ -26,7 +26,7 @@ function relocate(df, columns; before_column=nothing, after_column=nothing)
             push!(new_order, col)
         end
     end
-    # Move columns to the leftmost position if neither before_column nor after_column is specified
+    # Move columns to the leftmost position if neither before nor after is specified
     if isempty(before_col_symbols) && isempty(after_col_symbols)
         new_order = vcat(column_symbols, filter(x -> !(x in column_symbols), df_column_names))
     end
@@ -44,9 +44,9 @@ macro relocate(df, args...)
     last_arg = args[end] 
     # Check if the last argument is a keyword argument
     if last_arg isa Expr && last_arg.head == :(=)
-          if last_arg.args[1] == :after || last_arg.args[1] == :after_column
+          if last_arg.args[1] == :after || last_arg.args[1] == :after
               after_col_expr = last_arg.args[2]
-          elseif last_arg.args[1] == :before || last_arg.args[1] == :before_column
+          elseif last_arg.args[1] == :before || last_arg.args[1] == :before
               before_col_expr = last_arg.args[2]
           else
               error("Invalid keyword argument: only 'before' or 'after' are accepted.")
@@ -58,14 +58,14 @@ macro relocate(df, args...)
   
       # Additional check for invalid keyword arguments in the rest of args
       for arg in col_exprs
-          if arg isa Expr && arg.head == :(=) && !(arg.args[1] in [:before, :before_column, :after, :after_column])
+          if arg isa Expr && arg.head == :(=) && !(arg.args[1] in [:before, :before, :after, :after])
               error("Invalid keyword argument: only 'before' or 'after' are accepted.")
           end
       end
     # Parse the column expressions
     interpolated_col_exprs = parse_interpolation.(col_exprs)
     tidy_col_exprs = [parse_tidy(i[1]) for i in interpolated_col_exprs]
-    # Parse before_column and after_column
+    # Parse before and after
     if before_col_expr != :nothing
       interpolated_before_col = parse_interpolation(before_col_expr)
       tidy_before_col_exprs = [parse_tidy(interpolated_before_col[1])]
@@ -82,12 +82,12 @@ macro relocate(df, args...)
           quote
             if $(esc(df)) isa GroupedDataFrame
               local df_copy = transform($(esc(df)), ungroup = false)
-              relocate(df_copy, [$(tidy_col_exprs...)], before_column=[$(tidy_before_col_exprs...)], after_column=[$(tidy_after_col_exprs...)])
+              relocate(df_copy, [$(tidy_col_exprs...)], before=[$(tidy_before_col_exprs...)], after=[$(tidy_after_col_exprs...)])
               local grouped_df = groupby(parent(df_copy), groupcols($(esc(df))))
               grouped_df  
           else
               local df_copy = copy($(esc(df)))
-              relocate(df_copy, [$(tidy_col_exprs...)], before_column=[$(tidy_before_col_exprs...)], after_column=[$(tidy_after_col_exprs...)])
+              relocate(df_copy, [$(tidy_col_exprs...)], before=[$(tidy_before_col_exprs...)], after=[$(tidy_after_col_exprs...)])
               df_copy  
           end
       end
