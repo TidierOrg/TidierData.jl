@@ -98,6 +98,7 @@ TidierData.jl currently supports the following top-level macros:
     - `@slice()`, `@slice_sample()`, `@slice_min()`, `@slice_max()`, `@slice_head()`, and `@slice_tail()`
     - `@group_by()` and `@ungroup()`
     - `@arrange()`
+    - `@relocate()`
     - `@pull()`
     - `@count()` and `@tally()`
     - `@left_join()`, `@right_join()`, `@inner_join()`, `@full_join()`, `@anti_join()`, and `@semi_join()`

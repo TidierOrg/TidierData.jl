@@ -1,5 +1,8 @@
 # TidierData.jl updates
 
+## v0.14.5 - 2024-01-23
+- Adds `@relocate()`
+
 ## v0.14.4 - 2023-12-30
 - Adds `@unnest_wider()`
 - Adds `@unnest_longer()`
