@@ -3319,15 +3319,15 @@ julia> @chain df begin
 
 const docstring_relocate =
 """
-    relocate(df, columns, before_column=nothing, after_column=nothing)
+    @relocate(df, columns, before = nothing, after = nothing)
 
-Rearranges the columns of a DataFrame. This function allows for moving specified columns to a new position within the DataFrame, either before or after a given target column.
+Rearranges the columns of a data frame. This function allows for moving specified columns to a new position within the data frame, either before or after a given target column. The `columns`, `before`, and `after` arguments all accept tidy selection functions. Only one of `before` or `after` should be specified. If neither are specified, the selected columns will be moved to the beginning of the data frame.
 
 # Arguments
-- `df`: The DataFrame in which columns are to be rearranged.
+- `df`: The data frame.
 - `columns`: Column or columns to to be moved.
-- `before`: (optional)  `nothing`, this argument is ignored.
-- `after`: (optional) Column or columns after which the specified columns will be moved. If not provided or `nothing`, this argument is ignored. Only one of `before_column` or `after_column` should be specified.If neither are specified, selection will be moved to the front of the df
+- `before`: (Optional) Column or columns before which the specified columns will be moved. If not provided or `nothing`, this argument is ignored.
+- `after`: (Optional) Column or columns after which the specified columns will be moved. If not provided or `nothing`, this argument is ignored. 
 
 # Examples
 ```jldoctest
@@ -3357,7 +3357,18 @@ julia> @relocate(df, B, C, D, after = E)
    4 │     4      4      9  D       B     D
    5 │     5      5     10  E       C     E
 
-julia> @relocate(df, B:C) #bring columns to the front
+julia> @relocate(df, B, C, D, after = starts_with("E"))
+5×6 DataFrame
+ Row │ A      E      B      C       D     F      
+     │ Int64  Int64  Int64  String  Char  String 
+─────┼───────────────────────────────────────────
+   1 │     1      1      6  A       A     A
+   2 │     2      2      7  b       B     b
+   3 │     3      3      8  C       A     C
+   4 │     4      4      9  D       B     D
+   5 │     5      5     10  E       C     E
+
+julia> @relocate(df, B:C) # bring columns to the front
 5×6 DataFrame
  Row │ B      C       A      D     E      F      
      │ Int64  String  Int64  Char  Int64  String 
