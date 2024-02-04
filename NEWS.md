@@ -1,5 +1,8 @@
 # TidierData.jl updates
 
+## v0.14.6 - 2024-02-03
+- Bug fix to ensure that data type constructors are not escaped
+
 ## v0.14.5 - 2024-01-23
 - Adds `@relocate()`
 
