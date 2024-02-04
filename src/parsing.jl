@@ -351,7 +351,7 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
     # If it's already escaped, make sure it needs to remain escaped
     if @capture(x, esc(variable_Symbol))
       if hasproperty(Base, variable) && !(typeof(getproperty(Base, variable)) <: Function)
-        # Remove the escaping if referring to a constant value like Base.pi
+        # Remove the escaping if referring to a constant value like Base.pi and Base.Int64
        return variable
       elseif @capture(x, variable_Symbol) && hasproperty(Core, variable) && !(typeof(getproperty(Core, variable)) <: Function)
         # Remove the escaping if referring to a data type like Core.Int64
@@ -364,13 +364,19 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
        return variable
       end
     elseif @capture(x, fn_(args__))
-      if hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
+      if fn in not_escaped[]
+        return x
+      elseif hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
         return x
       elseif hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Function
         return x
       elseif hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
         return x
-      elseif fn in not_escaped[]
+      elseif hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Type
+        return x
+      elseif hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Type
+        return x
+      elseif hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Type
         return x
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn))($(args...)))
@@ -378,7 +384,21 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
         return x
       end
     elseif @capture(x, fn_.(args__))
-      if fn in [:esc :in :∈ :∉ :Ref :Set :Cols :(:) :∘ :across :desc :mean :std :var :median :first :last :minimum :maximum :sum :length :skipmissing :quantile :passmissing :startswith :contains :endswith]
+      # if fn in [:esc :in :∈ :∉ :Ref :Set :Cols :(:) :∘ :across :desc :mean :std :var :median :first :last :minimum :maximum :sum :length :skipmissing :quantile :passmissing :startswith :contains :endswith]
+      #  return x
+      if fn in not_escaped[]
+        return x
+      elseif hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
+        return x
+      elseif hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Function
+        return x
+      elseif hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
+        return x
+      elseif hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Type
+        return x
+      elseif hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Type
+        return x
+      elseif hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Type
         return x
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn)).($(args...)))
@@ -439,9 +459,11 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String};
     elseif @capture(x, variable_Symbol)
       if variable in not_escaped[]
         return variable
-      elseif hasproperty(Base, variable) && !(typeof(getproperty(Base, variable)) <: Function)
+      elseif hasproperty(Base, variable) && !(typeof(getproperty(Base, variable)) <: Function) && !(typeof(getproperty(Base, variable)) <: Type)
         return esc(variable)
-      elseif @capture(x, variable_Symbol) && hasproperty(Core, variable) && !(typeof(getproperty(Core, variable)) <: Function)
+      elseif hasproperty(Core, variable) && !(typeof(getproperty(Core, variable)) <: Function) && !(typeof(getproperty(Core, variable)) <: Type)
+        return esc(variable)
+      elseif hasproperty(Statistics, variable) && !(typeof(getproperty(Statistics, variable)) <: Function) && !(typeof(getproperty(Statistics, variable)) <: Type)
         return esc(variable)
       else
         return variable
