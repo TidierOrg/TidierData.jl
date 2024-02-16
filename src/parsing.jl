@@ -129,7 +129,12 @@ function parse_function(lhs::Union{Symbol, Expr}, rhs::Expr; autovec::Bool=true,
   end
 
   src = unique(src)
-  func_left = :($(src...),)
+  
+  # old -> remove if no issues arise in v0.15
+  # func_left = :($(src...),)
+
+  func_left = ([:($arg = $arg) for arg in src]...,)
+  func_left = :($(func_left...),)
 
   if autovec
     rhs = parse_autovec(rhs)
@@ -138,7 +143,7 @@ function parse_function(lhs::Union{Symbol, Expr}, rhs::Expr; autovec::Bool=true,
   rhs = parse_escape_function(rhs) # ensure that functions in user space are available
 
   if subset
-    return :($src => ($func_left -> $rhs)) # to ensure that missings are replace by false
+    return :($src => ($func_left -> $rhs)) # because there is no lhs
   else
     return :($src => ($func_left -> $rhs) => $lhs)
   end
@@ -350,10 +355,13 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
 
     # If it's already escaped, make sure it needs to remain escaped
     if @capture(x, esc(variable_Symbol))
-      if hasproperty(Base, variable) && !(typeof(getproperty(Base, variable)) <: Function)
+      if hasproperty(Base, variable) # && !(typeof(getproperty(Base, variable)) <: Function)
         # Remove the escaping if referring to a constant value like Base.pi and Base.Int64
        return variable
-      elseif @capture(x, variable_Symbol) && hasproperty(Core, variable) && !(typeof(getproperty(Core, variable)) <: Function)
+      elseif hasproperty(Core, variable) # && !(typeof(getproperty(Core, variable)) <: Function)
+        # Remove the escaping if referring to a data type like Core.Int64
+       return variable
+      elseif hasproperty(Statistics, variable) # && !(typeof(getproperty(Statistics, variable)) <: Function)
         # Remove the escaping if referring to a data type like Core.Int64
        return variable
       elseif variable in not_escaped[]
@@ -366,17 +374,11 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
     elseif @capture(x, fn_(args__))
       if fn in not_escaped[]
         return x
-      elseif hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
+      elseif fn isa Symbol && hasproperty(Base, fn) # && typeof(getproperty(Base, fn)) <: Union{Function, Type}
         return x
-      elseif hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Function
+      elseif fn isa Symbol && hasproperty(Core, fn) # && typeof(getproperty(Core, fn)) <: Union{Function, Type}
         return x
-      elseif hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
-        return x
-      elseif hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Type
-        return x
-      elseif hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Type
-        return x
-      elseif hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Type
+      elseif fn isa Symbol && hasproperty(Statistics, fn) # && typeof(getproperty(Statistics, fn)) <: Union{Function, Type}
         return x
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn))($(args...)))
@@ -388,17 +390,11 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
       #  return x
       if fn in not_escaped[]
         return x
-      elseif hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
+      elseif fn isa Symbol && hasproperty(Base, fn) # && typeof(getproperty(Base, fn)) <: Union{Function, Type}
         return x
-      elseif hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Function
+      elseif fn isa Symbol && hasproperty(Core, fn) # && typeof(getproperty(Core, fn)) <: Union{Function, Type}
         return x
-      elseif hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
-        return x
-      elseif hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Type
-        return x
-      elseif hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Type
-        return x
-      elseif hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Type
+      elseif fn isa Symbol && hasproperty(Statistics, fn) # && typeof(getproperty(Statistics, fn)) <: Union{Function, Type}
         return x
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn)).($(args...)))

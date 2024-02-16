@@ -265,6 +265,14 @@ macro mutate(df, exprs...)
       local df_copy = $(esc(df)) # not a copy
     end
 
+    tidy_exprs = ($(tidy_exprs...),)
+    for expr_index in eachindex(tidy_exprs)
+      if !in.(index, Ref(df_copy))
+        deleteat!(tidy_exprs[index][1], findfirst(tidy_exprs[index][1] .== :column)); ## PICK UP FROM HERE
+      end
+    end
+    @info tidy_exprs
+
     if $(esc(df)) isa GroupedDataFrame
       if $any_found_n
         transform!(df_copy, nrow => :TidierData_n; ungroup = false)
@@ -273,7 +281,7 @@ macro mutate(df, exprs...)
         transform!(df_copy, eachindex => :TidierData_row_number; ungroup = false)   
       end
 
-      local df_output = transform(df_copy, $(tidy_exprs...); ungroup = false)
+      local df_output = transform(df_copy, tidy_exprs...; ungroup = false)
 
       if $any_found_n || $any_found_row_number
         select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup = false)
@@ -286,7 +294,7 @@ macro mutate(df, exprs...)
         transform!(df_copy, eachindex => :TidierData_row_number)
       end
       
-      local df_output = transform(df_copy, $(tidy_exprs...))
+      local df_output = transform(df_copy, tidy_exprs...)
 
       if $any_found_n || $any_found_row_number
         select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
