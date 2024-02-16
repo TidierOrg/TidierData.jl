@@ -1,5 +1,8 @@
 # TidierData.jl updates
 
+## v0.14.7 - 2024-02-16
+- Bug fix to allow `PackageName.function()` within macros to be used without escaping
+
 ## v0.14.6 - 2024-02-03
 - Bug fix to ensure that data type constructors are not escaped
 

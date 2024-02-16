@@ -353,8 +353,11 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
       if hasproperty(Base, variable) && !(typeof(getproperty(Base, variable)) <: Function)
         # Remove the escaping if referring to a constant value like Base.pi and Base.Int64
        return variable
-      elseif @capture(x, variable_Symbol) && hasproperty(Core, variable) && !(typeof(getproperty(Core, variable)) <: Function)
+      elseif hasproperty(Core, variable) && !(typeof(getproperty(Core, variable)) <: Function)
         # Remove the escaping if referring to a data type like Core.Int64
+       return variable
+      elseif hasproperty(Statistics, variable) && !(typeof(getproperty(Statistics, variable)) <: Function)
+        # Because Statistics is re-exported
        return variable
       elseif variable in not_escaped[]
         return variable
@@ -366,17 +369,17 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
     elseif @capture(x, fn_(args__))
       if fn in not_escaped[]
         return x
-      elseif hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
+      elseif fn isa Symbol && hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
         return x
-      elseif hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Function
+      elseif fn isa Symbol && hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Function
         return x
-      elseif hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
+      elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
         return x
-      elseif hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Type
+      elseif fn isa Symbol && hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Type
         return x
-      elseif hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Type
+      elseif fn isa Symbol && hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Type
         return x
-      elseif hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Type
+      elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Type
         return x
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn))($(args...)))
@@ -388,17 +391,17 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
       #  return x
       if fn in not_escaped[]
         return x
-      elseif hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
+      elseif fn isa Symbol && hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
         return x
-      elseif hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Function
+      elseif fn isa Symbol && hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Function
         return x
-      elseif hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
+      elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
         return x
-      elseif hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Type
+      elseif fn isa Symbol && hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Type
         return x
-      elseif hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Type
+      elseif fn isa Symbol && hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Type
         return x
-      elseif hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Type
+      elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Type
         return x
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn)).($(args...)))
