@@ -89,6 +89,8 @@ end
 $docstring_separate_rows
 """
 macro separate_rows(df, exprs...)
+  exprs = parse_blocks(exprs...)
+  
   delimiter = esc(last(exprs)) # extract the delimiter
   exprs = Base.front(exprs) # select all but the last value
   interpolated_exprs = parse_interpolation.(exprs)

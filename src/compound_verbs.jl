@@ -6,6 +6,7 @@
 $docstring_tally
 """
 macro tally(df, exprs...)
+  exprs = parse_blocks(exprs...)
   wt, sort = parse_tally_args(exprs...)
 
   wt_quoted = QuoteNode(wt)
@@ -51,6 +52,7 @@ end
 $docstring_count
 """
 macro count(df, exprs...)
+  exprs = parse_blocks(exprs...)
   col_names, wt, sort = parse_count_args(exprs...)
 
   col_names_quoted = QuoteNode(col_names)

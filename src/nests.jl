@@ -80,6 +80,8 @@ end
 $docstring_unnest_wider
 """
 macro unnest_wider(df, exprs...)
+  exprs = parse_blocks(exprs...)
+
   names_sep = :(nothing) 
   if length(exprs) >= 2 && isa(exprs[end], Expr) && exprs[end].head == :(=) && exprs[end].args[1] == :names_sep
     names_sep = esc(exprs[end].args[2]) 
@@ -138,6 +140,8 @@ end
 $docstring_unnest_longer
 """
 macro unnest_longer(df, exprs...)
+    exprs = parse_blocks(exprs...)
+
     indices_include = :(nothing)  
     keep_empty = :(false)         
   
@@ -237,6 +241,8 @@ end
 $docstring_nest
 """
 macro nest(df, args...)
+  args = parse_blocks(args...)
+
   kwargs_exprs = []
 
   for arg in args

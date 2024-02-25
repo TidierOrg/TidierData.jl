@@ -491,3 +491,12 @@ function parse_bind_args(tidy_expr::Union{Expr,Symbol})
   end
   return esc(tidy_expr), found_id
 end
+
+# Not export
+# converts begin-end blocks into a tuple of expressions
+function parse_blocks(exprs...)
+  if length(exprs) == 1 && hasproperty(exprs[1], :head) && exprs[1].head == :block
+    return (MacroTools.rmlines(exprs[1]).args...,)
+  end
+  return exprs
+end
