@@ -58,7 +58,7 @@ movies |>
   nrow
 end
 
-# `@chain` also comes with a built-in placeholder, which is `\_`. To calculate the `size` and extract the first value, we can use this approach:
+# `@chain` also comes with a built-in placeholder, which is `_`. To calculate the `size` and extract the first value, we can use this approach:
 
 @chain movies begin
   size
