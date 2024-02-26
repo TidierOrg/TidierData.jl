@@ -13,7 +13,7 @@ TidierData.jl is a 100% Julia implementation of the dplyr and tidyr R packages. 
 extensive meta-programming capabilities, TidierData.jl is an R user’s love
 letter to data analysis in Julia.
 
-`TidierData.jl` has three goals, which differentiate it from other data analysis
+`TidierData.jl` has two goals, which differentiate it from other data analysis
 meta-packages in Julia:
 
 1.  **Stick as closely to dplyr and tidyr syntax as possible:** Whereas other
@@ -29,16 +29,6 @@ meta-packages in Julia:
     which functions *not* to vectorize; all other functions are
     automatically vectorized. Read the documentation page on "Autovectorization"
     to read about how this works, and how to override the defaults.
-
-3.  **Make scalars and tuples mostly interchangeable:** In Julia, the function
-    `across(a, mean)` is dispatched differently than `across((a, b), mean)`.
-    The first argument in the first instance above is treated as a scalar,
-    whereas the second instance is treated as a tuple. This can be very confusing
-    to R users because `1 == c(1)` is `TRUE` in R, whereas in Julia `1 == (1,)`
-    evaluates to `false`. The design philosophy in `TidierData.jl` is that the user
-    should feel free to provide a scalar or a tuple as they see fit anytime
-    multiple values are considered valid for a given argument, such as in
-    `across()`, and `TidierData.jl` will figure out how to dispatch it.
 
 ## Installation
 

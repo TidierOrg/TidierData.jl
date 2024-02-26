@@ -424,7 +424,24 @@ rows as `df`.
 julia> df = DataFrame(a = 'a':'e', b = 1:5, c = 11:15);
 
 julia> @chain df begin
-         @mutate(d = b + c, b_minus_mean_b = b - mean(b))
+         @mutate(d = b + c,
+                 b_minus_mean_b = b - mean(b))
+       end
+5×5 DataFrame
+ Row │ a     b      c      d      b_minus_mean_b 
+     │ Char  Int64  Int64  Int64  Float64        
+─────┼───────────────────────────────────────────
+   1 │ a         1     11     12            -2.0
+   2 │ b         2     12     14            -1.0
+   3 │ c         3     13     16             0.0
+   4 │ d         4     14     18             1.0
+   5 │ e         5     15     20             2.0
+
+julia> @chain df begin
+         @mutate begin
+           d = b + c
+           b_minus_mean_b = b - mean(b)
+         end
        end
 5×5 DataFrame
  Row │ a     b      c      d      b_minus_mean_b 
@@ -511,14 +528,27 @@ Create a new DataFrame with one row that aggregating all observations from the i
 julia> df = DataFrame(a = 'a':'e', b = 1:5, c = 11:15);
 
 julia> @chain df begin
-         @summarize(mean_b = mean(b), median_b = median(b))
+         @summarize(mean_b = mean(b),
+                    median_b = median(b))
        end
 1×2 DataFrame
  Row │ mean_b   median_b 
      │ Float64  Float64  
 ─────┼───────────────────
    1 │     3.0       3.0
-  
+
+julia> @chain df begin
+         @summarize begin
+           mean_b = mean(b)
+           median_b = median(b)
+         end
+       end
+1×2 DataFrame
+ Row │ mean_b   median_b 
+     │ Float64  Float64  
+─────┼───────────────────
+   1 │     3.0       3.0 
+
 julia> @chain df begin
          @summarise(mean_b = mean(b), median_b = median(b))
        end

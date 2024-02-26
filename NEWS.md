@@ -1,7 +1,7 @@
 # TidierData.jl updates
 
 ## v0.15.0 - 2024-02-25
-- Add support for `begin-end` blocks for all single-table macros
+- Add support for `begin-end` blocks for all macros accepting multiple expressions
 - Bug fix to add support for expressions inside of `@group_by()`, as in `@group_by(b = a + 1)`
 
 ## v0.14.7 - 2024-02-16

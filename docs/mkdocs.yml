@@ -127,6 +127,7 @@ nav:
   - "@arrange" : "examples/generated/UserGuide/arrange.md"
   - "@distinct" : "examples/generated/UserGuide/distinct.md"
   - "across" : "examples/generated/UserGuide/across.md"
+  - "Piping" : "examples/generated/UserGuide/piping.md"
   - "Conditionals": "examples/generated/UserGuide/conditionals.md"
   - "Joins" : "examples/generated/UserGuide/joins.md"
   - "Binding" : "examples/generated/UserGuide/binding.md" 
