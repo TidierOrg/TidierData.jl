@@ -598,6 +598,26 @@
   
   
     <li class="md-nav__item">
+      <a href="examples/generated/UserGuide/piping/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Piping
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="examples/generated/UserGuide/conditionals/" class="md-nav__link">
         
   
@@ -931,7 +951,7 @@
 <p><a id="What-is-TidierData.jl?-1"></a></p>
 <h2 id="what-is-tidierdatajl">What is TidierData.jl?<a class="headerlink" href="#what-is-tidierdatajl" title="Permanent link">¤</a></h2>
 <p>TidierData.jl is a 100% Julia implementation of the dplyr and tidyr R packages. Powered by the DataFrames.jl package and Julia’s extensive meta-programming capabilities, TidierData.jl is an R user’s love letter to data analysis in Julia.</p>
-<p><code>TidierData.jl</code> has three goals, which differentiate it from other data analysis meta-packages in Julia:</p>
+<p><code>TidierData.jl</code> has two goals, which differentiate it from other data analysis meta-packages in Julia:</p>
 <details class="tip">
 <summary>Stick as closely to tidyverse syntax as possible.</summary>
 <p>Whereas other meta-packages introduce Julia-centric idioms for working with
@@ -963,10 +983,6 @@ through modification of the abstract syntax tree).</p>
 <details class="tip">
 <summary>Make broadcasting mostly invisible.</summary>
 <p>Broadcasting trips up many R users switching to Julia because R users are used to most functions being vectorized. <code>TidierData.jl</code> currently uses a lookup table to decide which functions <em>not</em> to vectorize; all other functions are automatically vectorized. Read the documentation page on "Autovectorization" to read about how this works, and how to override the defaults. An example of where this issue commonly causes errors is when centering a variable. To create a new column <code>a</code> that centers the column <code>b</code>, <code>TidierData.jl</code> lets you simply write <code>a = b - mean(b)</code> exactly as you would in R. This works because <code>TidierData.jl</code> knows to <em>not</em> vectorize <code>mean()</code> while also recognizing that <code>-</code> <em>should</em> be vectorized such that this expression is rewritten in <code>DataFrames.jl</code> as <code>:b =&gt; (b -&gt; b .- mean(b)) =&gt; :a</code>. For any user-defined function that you want to "mark" as being non-vectorized, you can prefix it with a <code>~</code>. For example, a function <code>new_mean()</code>, if it had the same functionality as <code>mean()</code> <em>would</em> normally get vectorized by <code>TidierData.jl</code> unless you write it as <code>~new_mean()</code>.</p>
-</details>
-<details class="tip">
-<summary>Make scalars and tuples mostly interchangeable.</summary>
-<p>In Julia, the function <code>across(a, mean)</code> is dispatched differently than <code>across((a, b), mean)</code>. The first argument in the first instance above is treated as a scalar, whereas the second instance is treated as a tuple. This can be very confusing to R users because <code>1 == c(1)</code> is <code>TRUE</code> in R, whereas in Julia <code>1 == (1,)</code> evaluates to <code>false</code>. The design philosophy in <code>TidierData.jl</code> is that the user should feel free to provide a scalar or a tuple as they see fit anytime multiple values are considered valid for a given argument, such as in <code>across()</code>, and <code>TidierData.jl</code> will figure out how to dispatch it.</p>
 </details>
 <p><a id="Installation"></a></p>
 <p><a id="Installation-1"></a></p>
