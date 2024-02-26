@@ -118,6 +118,7 @@ end
 
 # What's nice about this approach is that if you want to remove some criteria, you can easily comment out the relevant parts. For example, if you're willing to consider older movies, just comment out the `Year >= 2000`.
 
+```@example
 @chain movies begin
   @filter begin
     # Year >= 2000
@@ -125,6 +126,7 @@ end
   end
   @slice 1:5
 end
+```
 
 # ## Which approach to use?
 
