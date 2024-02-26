@@ -23,6 +23,7 @@ end
 $docstring_summary
 """
 macro summary(df, cols...)
+    cols = parse_blocks(cols...)
     if length(cols) == 0
         return quote
             summary_stats($(esc(df)))

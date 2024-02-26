@@ -2,6 +2,8 @@
 $docstring_pivot_wider
 """
 macro pivot_wider(df, exprs...)
+    exprs = parse_blocks(exprs...)
+
     # take the expressions and return arg => value dictionary    
     interpolated_exprs = parse_interpolation.(exprs)
 
@@ -39,6 +41,8 @@ end
 $docstring_pivot_longer
 """
 macro pivot_longer(df, exprs...)
+    exprs = parse_blocks(exprs...)
+    
     # take the expressions and return arg => value dictionary 
     interpolated_exprs = parse_interpolation.(exprs)
 

@@ -37,6 +37,8 @@ end
 $docstring_relocate
 """
 macro relocate(df, args...)
+    args = parse_blocks(args...)
+
     before_col_expr = :nothing
     after_col_expr = :nothing
     # Extract the columns_to_move expression and keyword arguments

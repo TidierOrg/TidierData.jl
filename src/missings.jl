@@ -2,6 +2,7 @@
 $docstring_drop_missing
 """
 macro drop_missing(df, exprs...)
+  exprs = parse_blocks(exprs...)
   interpolated_exprs = parse_interpolation.(exprs)
 
   tidy_exprs = [i[1] for i in interpolated_exprs]
@@ -89,6 +90,8 @@ end
 $docstring_fill_missing
 """
 macro fill_missing(df, args...)
+  args = parse_blocks(args...)
+  
   # Handling the simpler case of only a method provided
   if length(args) == 1
       method = args[1]

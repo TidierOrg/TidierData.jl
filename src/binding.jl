@@ -2,6 +2,7 @@
 $docstring_bind_rows
 """
 macro bind_rows(df, exprs...)
+  exprs = parse_blocks(exprs...)
   tidy_exprs = parse_bind_args.(exprs)
   locate_id = findfirst(i -> i[2], tidy_exprs)
   if locate_id isa Nothing
@@ -23,6 +24,7 @@ end
 $docstring_bind_cols
 """
 macro bind_cols(df, exprs...)
+  exprs = parse_blocks(exprs...)
   tidy_exprs = parse_bind_args.(exprs)
   df_vec = [i[1] for i in tidy_exprs]
   

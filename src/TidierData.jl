@@ -73,6 +73,7 @@ end
 $docstring_select
 """
 macro select(df, exprs...)
+  exprs = parse_blocks(exprs...)
   interpolated_exprs = parse_interpolation.(exprs)
 
   tidy_exprs = [i[1] for i in interpolated_exprs]
@@ -131,6 +132,7 @@ end
 $docstring_transmute
 """
 macro transmute(df, exprs...)
+  exprs = parse_blocks(exprs...)
   interpolated_exprs = parse_interpolation.(exprs)
 
   tidy_exprs = [i[1] for i in interpolated_exprs]
@@ -189,6 +191,7 @@ end
 $docstring_rename
 """
 macro rename(df, exprs...)
+  exprs = parse_blocks(exprs...)
   interpolated_exprs = parse_interpolation.(exprs)
 
   tidy_exprs = [i[1] for i in interpolated_exprs]
@@ -247,6 +250,7 @@ end
 $docstring_mutate
 """
 macro mutate(df, exprs...)
+  exprs = parse_blocks(exprs...)
   interpolated_exprs = parse_interpolation.(exprs)
 
   tidy_exprs = [i[1] for i in interpolated_exprs]
@@ -305,6 +309,7 @@ end
 $docstring_summarize
 """
 macro summarize(df, exprs...)
+  exprs = parse_blocks(exprs...)
   interpolated_exprs = parse_interpolation.(exprs; from_summarize = true)
 
   tidy_exprs = [i[1] for i in interpolated_exprs]
@@ -376,6 +381,7 @@ end
 $docstring_filter
 """
 macro filter(df, exprs...)
+  exprs = parse_blocks(exprs...)
   interpolated_exprs = parse_interpolation.(exprs)
 
   tidy_exprs = [i[1] for i in interpolated_exprs]
@@ -434,6 +440,7 @@ end
 $docstring_group_by
 """
 macro group_by(df, exprs...)
+  exprs = parse_blocks(exprs...)
   interpolated_exprs = parse_interpolation.(exprs)
 
   tidy_exprs = [i[1] for i in interpolated_exprs]
@@ -444,7 +451,7 @@ macro group_by(df, exprs...)
   grouping_exprs = parse_group_by.(exprs)
 
   df_expr = quote
-    local any_expressions = all(typeof.($tidy_exprs) .!= QuoteNode)
+    local any_expressions = any(typeof.($tidy_exprs) .!= QuoteNode)
 
     if $any_found_n || $any_found_row_number || any_expressions
       if $(esc(df)) isa GroupedDataFrame
@@ -494,6 +501,7 @@ end
 $docstring_arrange
 """
 macro arrange(df, exprs...)
+  exprs = parse_blocks(exprs...)
   arrange_exprs = parse_desc.(exprs)
   df_expr = quote
     if $(esc(df)) isa GroupedDataFrame
@@ -518,6 +526,7 @@ end
 $docstring_distinct
 """
 macro distinct(df, exprs...)
+  exprs = parse_blocks(exprs...)
   interpolated_exprs = parse_interpolation.(exprs)
 
   tidy_exprs = [i[1] for i in interpolated_exprs]
@@ -620,6 +629,7 @@ end
 $docstring_rename_with
 """
 macro rename_with(df, fn, exprs...)
+  exprs = parse_blocks(exprs...)
   interpolated_exprs = parse_interpolation.(exprs)
 
   tidy_exprs = [i[1] for i in interpolated_exprs]

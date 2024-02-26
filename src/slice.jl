@@ -2,6 +2,8 @@
 $docstring_slice
 """
 macro slice(df, exprs...)
+  exprs = parse_blocks(exprs...)
+
   interpolated_exprs = parse_interpolation.(exprs; from_slice = true)
   tidy_exprs = [i[1] for i in interpolated_exprs]
   tidy_exprs = parse_tidy.(tidy_exprs; from_slice = true)
@@ -44,6 +46,8 @@ end
 $docstring_slice_sample
 """
 macro slice_sample(df, exprs...)
+  exprs = parse_blocks(exprs...)
+
   expr_dict = Dict(begin @capture(expr, lhs_ = rhs_); lhs => rhs end for expr in exprs)
   if haskey(expr_dict, :replace)
     replace = expr_dict[:replace]
@@ -71,6 +75,8 @@ end
 $docstring_slice_max
 """
 macro slice_max(df, exprs...)
+  exprs = parse_blocks(exprs...)
+
   expr_dict = Dict()
   column = nothing
   missing_rm = true
@@ -155,6 +161,8 @@ end
 $docstring_slice_min
 """
 macro slice_min(df, exprs...)
+  exprs = parse_blocks(exprs...)
+
   expr_dict = Dict()
   column = nothing
   missing_rm = true
@@ -239,6 +247,8 @@ end
 $docstring_slice_head
 """
 macro slice_head(df, exprs...)
+  exprs = parse_blocks(exprs...)
+
   expr_dict = :(Dict())
 
   for expr in exprs
@@ -287,6 +297,8 @@ end
 $docstring_slice_tail
 """
 macro slice_tail(df, exprs...)
+  exprs = parse_blocks(exprs...)
+  
   expr_dict = :(Dict())
   for expr in exprs
       if @capture(expr, lhs_ = rhs_)
