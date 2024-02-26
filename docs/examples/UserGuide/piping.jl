@@ -121,7 +121,7 @@ end
 ```@example
 @chain movies begin
   @filter begin
-    # Year >= 2000
+    ## Year >= 2000
     Rating >= 9
   end
   @slice 1:5
