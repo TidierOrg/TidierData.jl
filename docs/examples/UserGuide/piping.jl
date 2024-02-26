@@ -88,6 +88,7 @@ end
 @chain movies begin
     @filter(Year >= 2000 && Rating >= 9)
     @slice(1:5)
+    @select(1:5)
 end
 
 # Note: we generally prefer using `&&` in Julia because it is a "short-cut" operator. If the first condition evaluates to `false`, then the second condition is not even evaluated, which makes it faster (because it takes a short-cut).
@@ -97,6 +98,7 @@ end
 @chain movies begin
   @filter(Year >= 2000, Rating >= 9)
   @slice(1:5)
+  @select(1:5)
 end
 
 # Another to write this expression is take advantage of the fact that Julia macros can be called without parentheses. In this case, we will add back the `&&` for the sake of readability.
@@ -104,6 +106,7 @@ end
 @chain movies begin
   @filter Year >= 2000 && Rating >= 9
   @slice 1:5
+  @select 1:5
 end
 
 # Lastly, TidierData.jl also supports multi-line expressions within each of the macros that accept multiple expressions. So you could also write this as follows:
@@ -114,6 +117,7 @@ end
     Rating >= 9
   end
   @slice 1:5
+  @select 1:5
 end
 
 # What's nice about this approach is that if you want to remove some criteria, you can easily comment out the relevant parts. For example, if you're willing to consider older movies, just comment out the `Year >= 2000`.
@@ -124,6 +128,7 @@ end
     Rating >= 9
   end
   @slice 1:5
+  @select 1:5
 end
 
 # ## Which approach to use?
