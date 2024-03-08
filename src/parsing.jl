@@ -446,7 +446,7 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String};
           return :end
         else
           found_n = true # do not move this -- this leads to creation of new column
-          return :TidierData_n
+          return :(getindex(TidierData_n, 1))
         end
       elseif fn == :row_number
         found_row_number = true
