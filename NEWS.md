@@ -1,5 +1,9 @@
 # TidierData.jl updates
 
+## v0.15.1 - 2024-03-08
+- Bugfix: `n()` pulls a single value and not a vector of values
+- `rand()` is no longer auto-vectorized
+
 ## v0.15.0 - 2024-02-25
 - Add support for `begin-end` blocks for all macros accepting multiple expressions
 - Bug fix to add support for expressions inside of `@group_by()`, as in `@group_by(b = a + 1)`
