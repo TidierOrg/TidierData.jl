@@ -34,7 +34,7 @@ end
 
 # Although `if_else()` is convenient when evaluating a single condition, it can be cumbersome when evaluating multiple conditions because subsequent conditions need to be nested within the `no` condition for the preceding argument. For situations where multiple conditions need to be evaluated, `case_when()` is more convenient.
 
-# Let's first consider a similar example from above and recreate it using `case_when()`. The following code creates a column `b` that assigns a value if 3 if `a >= 3` and otherwise leaves the value unchanged.
+# Let's first consider a similar example from above and recreate it using `case_when()`. The following code creates a column `b` that assigns a value of 3 if `a >= 3` and otherwise leaves the value unchanged.
 
 @chain df begin
   @mutate(b = case_when(a >= 3  =>  3,
