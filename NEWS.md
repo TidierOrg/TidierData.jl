@@ -1,5 +1,8 @@
 # TidierData.jl updates
 
+## v0.15.2 - 2024-04-19
+- Update Chain.jl dependency version
+
 ## v0.15.1 - 2024-03-08
 - Bugfix: `n()` pulls a single value and not a vector of values
 - `rand()` is no longer auto-vectorized
