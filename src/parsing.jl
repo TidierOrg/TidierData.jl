@@ -59,7 +59,11 @@ function parse_tidy(tidy_expr::Union{Expr,Symbol,Number}; # Can be symbol or exp
     var = QuoteNode(var)
     return :(Not($var))
   elseif @capture(tidy_expr, var_Symbol)
-    return QuoteNode(var)
+    if var == Symbol(":")
+      return var
+    else
+      return QuoteNode(var)
+    end
   elseif @capture(tidy_expr, var_Number)
     if var > 0
       return var

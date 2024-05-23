@@ -45,6 +45,13 @@ end
         value = ["A","B","A","B"],
     )
     test_long6 = @pivot_longer(test_df, -[label,num])
+    
+    true_long7 = DataFrame(
+        variable = ["label","label","label","label","name","name","name","name","num","num","num","num"],
+        value = [1,1,2,2,"A","B","A","B",1,2,3,4],
+    )
+    test_long7 = @pivot_longer(test_df, :)
+    test_long8 = @pivot_longer(test_df)
 
     @test all(Array(true_long1 .== test_long1))
     @test all(Array(true_long1 .== test_long2))
@@ -52,5 +59,7 @@ end
     @test all(Array(true_long3 .== test_long4))
     @test all(Array(true_long5 .== test_long5))
     @test all(Array(true_long6 .== test_long6))
+    @test all(Array(true_long7 .== test_long7))
+    @test all(Array(true_long7 .== test_long8))
 end
 end

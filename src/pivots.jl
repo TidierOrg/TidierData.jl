@@ -41,6 +41,9 @@ end
 $docstring_pivot_longer
 """
 macro pivot_longer(df, exprs...)
+    if length(exprs) == 0
+        exprs = (:(:),)
+    end
     exprs = parse_blocks(exprs...)
     
     # take the expressions and return arg => value dictionary 
