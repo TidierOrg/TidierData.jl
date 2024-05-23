@@ -30,9 +30,27 @@ end
     )
     test_long3 = @pivot_longer(test_df, -(name:num))
     test_long4 = @pivot_longer(test_df, label)
+
+    true_long5 = DataFrame(
+        name = ["A","B","A","B","A","B","A","B"],
+        variable = ["label","label","label","label","num","num","num","num"],
+        value = [1,1,2,2,1,2,3,4],
+    )
+    test_long5 = @pivot_longer(test_df, [label,num])
+    
+    true_long6 = DataFrame(
+        label = [1,1,2,2],
+        num = [1,2,3,4],
+        variable = ["name","name","name","name"],
+        value = ["A","B","A","B"],
+    )
+    test_long6 = @pivot_longer(test_df, -[label,num])
+
     @test all(Array(true_long1 .== test_long1))
     @test all(Array(true_long1 .== test_long2))
     @test all(Array(true_long3 .== test_long3))
     @test all(Array(true_long3 .== test_long4))
+    @test all(Array(true_long5 .== test_long5))
+    @test all(Array(true_long6 .== test_long6))
 end
 end

@@ -32,6 +32,10 @@ function parse_tidy(tidy_expr::Union{Expr,Symbol,Number}; # Can be symbol or exp
       endindex = QuoteNode(endindex)
     end
     return :(Between($startindex, $endindex))
+  elseif @capture(tidy_expr, names_vect)
+    return Symbol.(names.args)
+  elseif @capture(tidy_expr, -names_vect)
+    return Not(Symbol.(names.args))
   elseif @capture(tidy_expr, (lhs_ = fn_(args__)) | (lhs_ = fn_.(args__)))
     if length(args) == 0
       lhs = QuoteNode(lhs)
