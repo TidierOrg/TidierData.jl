@@ -64,7 +64,7 @@ macro slice_sample(df, exprs...)
                 as_integer(floor(n() * $expr_dict[:prop]));
                 replace=$replace))
     else
-      @slice($(esc(df)), sample(1:n(), 1; replace=$replace))
+      throw("Please provide either an `n` or a `prop` value as a keyword argument.")
     end
   end
 
