@@ -494,7 +494,17 @@ end
 $docstring_ungroup
 """
 macro ungroup(df)
-  :(transform($(esc(df)); ungroup = true))
+  df_expr = quote 
+    if $(esc(df)) isa GroupedDataFrame
+      transform($(esc(df)); ungroup = true)
+    else
+      copy($(esc(df)))
+    end
+  end
+  if code[]
+    @info MacroTools.prettify(df_expr)
+  end
+  return df_expr
 end
 
 """
