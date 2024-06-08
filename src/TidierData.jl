@@ -28,7 +28,7 @@ const code = Ref{Bool}(false) # output DataFrames.jl code?
 const log = Ref{Bool}(false) # output tidylog output? (not yet implemented)
 
 # The global do-not-vectorize "list"
-const not_vectorized = Ref{Vector{Symbol}}([:getindex, :rand, :esc, :Ref, :Set, :Cols, :collect, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :is_float, :is_integer, :is_string, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :categorical, :as_categorical, :is_categorical])
+const not_vectorized = Ref{Vector{Symbol}}([:getindex, :rand, :esc, :Ref, :Set, :Cols, :collect, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :mad, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :is_float, :is_integer, :is_string, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :categorical, :as_categorical, :is_categorical, :unique, :iqr])
 
 # The global do-not-escape "list"
 # `in`, `∈`, and `∉` should be vectorized in auto-vec but not escaped
@@ -494,7 +494,7 @@ end
 $docstring_ungroup
 """
 macro ungroup(df)
-  :(DataFrame($(esc(df))))
+  :(transform($(esc(df)); ungroup = true))
 end
 
 """
@@ -542,7 +542,7 @@ macro distinct(df, exprs...)
       # because if the original DataFrame is grouped, it must be ungrouped
       # and then regrouped, so there's no need to make a copy up front.
       # This is because `unique()` does not work on GroupDataFrames.
-      local df_copy = DataFrame($(esc(df)))
+      local df_copy = transform($(esc(df)); ungroup = true)
       if $any_found_n
         transform!(df_copy, nrow => :TidierData_n)
       end

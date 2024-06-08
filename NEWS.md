@@ -1,5 +1,11 @@
 # TidierData.jl updates
 
+## v0.16.0 - 2024-06-07
+- `unique()`, `mad()`, and `iqr()` are no longer auto-vectorized
+- Bugfix: `@ungroup()` now preserves row-ordering (and is faster)
+- Bugfix: `slice_sample()` now throws an error if no `n` or `prop` keyword argument is provided
+- Bump minimum Julia version to 1.9
+
 ## v0.15.2 - 2024-04-19
 - Update Chain.jl dependency version
 
