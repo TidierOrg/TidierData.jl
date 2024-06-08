@@ -64,7 +64,7 @@ end
 # ## Sample 5 random rows in the data frame
 
 @chain df begin
-  @slice_sample(5)
+  @slice_sample(n = 5)
 end
 
 # ## Slice the min
