@@ -1320,7 +1320,7 @@ julia> @semi_join(df1, df2, "a" = "a")
 
 const docstring_pivot_wider =
 """
-   @pivot_wider(df, names_from, values_from)
+   @pivot_wider(df, names_from, values_from[, values_fill])
 
 Reshapes the DataFrame to make it wider, increasing the number of columns and reducing the number of rows.
 
@@ -1328,6 +1328,7 @@ Reshapes the DataFrame to make it wider, increasing the number of columns and re
 - `df`: A DataFrame.
 - `names_from`: The name of the column to get the name of the output columns from.
 - `values_from`: The name of the column to get the cell values from.
+- `values_fill`: The value to replace a missing name/value combination (default is `missing`)
 
 # Examples
 ```jldoctest
