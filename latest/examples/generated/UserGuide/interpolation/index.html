@@ -741,9 +741,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#select-multiple-variables-vector-of-symbols" class="md-nav__link">
+  <a href="#select-multiple-variables" class="md-nav__link">
     <span class="md-ellipsis">
-      Select multiple variables (vector of symbols)
+      Select multiple variables
     </span>
   </a>
   
@@ -965,9 +965,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#select-multiple-variables-vector-of-symbols" class="md-nav__link">
+  <a href="#select-multiple-variables" class="md-nav__link">
     <span class="md-ellipsis">
-      Select multiple variables (vector of symbols)
+      Select multiple variables
     </span>
   </a>
   
@@ -1107,7 +1107,7 @@
 <div><p>The <code>!!</code> ("bang bang") operator can be used to interpolate values of variables from the parent environment into your code. This operator is borrowed from the R <code>rlang</code> package. At some point, we may switch to using native Julia interpolation, but for a variety of reasons that introduce some complexity with native interpolation, we plan to continue to support <code>!!</code> interpolation.</p>
 <p>To interpolate multiple variables, the <code>rlang</code> R package uses the <code>!!!</code> "triple bang" operator. However, in <code>TidierData.jl</code>, the <code>!!</code> "bang bang" operator can be used to interpolate either single or multiple values as shown in the examples below.</p>
 <p>Note: You can only interpolate values from variables in the parent environment. If you would like to interpolate column names, you have two options: you can either use <code>across()</code> or you can use <code>@aside</code> with <code>@pull()</code> to create variables in the parent environment containing the values of those columns which can then be accessed using interpolatino.</p>
-<p>myvar = :b<code>,</code>myvar = (:a, :b)<code>, and</code>myvar = [:a, :b]<code>all refer to *columns* with those names. On the other hand,</code>myvar = "b"<code>,</code>myvar = ("a", "b")<code>and</code>myvar = ["a", "b"]` will interpolate those <em>values</em>. See below for examples.</p>
+<p>myvar = :b<code>and</code>myvar = Cols(:a, :b)<code>both refer to *columns* with those names. On the other hand,</code>myvar = "b"<code>,</code>myvar = ("a", "b")<code>and</code>myvar = ["a", "b"]<code>will interpolate the *values*. If you intend to interpolate column names, the preferred way is to use</code>Cols()` as in the examples below.</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">TidierData</span>
 
 <span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">string</span><span class="o">.</span><span class="p">(</span><span class="n">repeat</span><span class="p">(</span><span class="sc">'a'</span><span class="o">:</span><span class="sc">'e'</span><span class="p">,</span><span class="w"> </span><span class="n">inner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">)),</span>
@@ -1129,10 +1129,21 @@
 <div><div style="float: left;"><span>10×1 DataFrame</span></div><div style="clear: both;"></div></div>
 <div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">6</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">7</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">8</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">9</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">10</td><td style="text-align: right;">4</td></tr></tbody></table></div>
 
-<p><a id="Select-multiple-variables-(vector-of-symbols)"></a></p>
-<p><a id="Select-multiple-variables-(vector-of-symbols)-1"></a></p>
-<h2 id="select-multiple-variables-vector-of-symbols">Select multiple variables (vector of symbols)<a class="headerlink" href="#select-multiple-variables-vector-of-symbols" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code><span class="n">myvars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="ss">:b</span><span class="p">]</span>
+<p><a id="Select-multiple-variables"></a></p>
+<p><a id="Select-multiple-variables-1"></a></p>
+<h2 id="select-multiple-variables">Select multiple variables<a class="headerlink" href="#select-multiple-variables" title="Permanent link">¤</a></h2>
+<p>You can also use a vector as in <code>[:a, :b]</code>, but <code>Cols()</code> is preferred because it lets you mix and match numbers.</p>
+<div class="highlight"><pre><span></span><code><span class="n">myvars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Cols</span><span class="p">(</span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="ss">:b</span><span class="p">)</span>
+
+<span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">  </span><span class="nd">@select</span><span class="p">(</span><span class="o">!!</span><span class="n">myvars</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<div><div style="float: left;"><span>10×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">b</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">b</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">6</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">7</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">8</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">9</td><td style="text-align: left;">e</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">10</td><td style="text-align: left;">e</td><td style="text-align: right;">4</td></tr></tbody></table></div>
+
+<p>This is the same as this...</p>
+<div class="highlight"><pre><span></span><code><span class="n">myvars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Cols</span><span class="p">(</span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
 
 <span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">  </span><span class="nd">@select</span><span class="p">(</span><span class="o">!!</span><span class="n">myvars</span><span class="p">)</span>
@@ -1222,7 +1233,7 @@
 <p><a id="Summarize-across-multiple-variables"></a></p>
 <p><a id="Summarize-across-multiple-variables-1"></a></p>
 <h2 id="summarize-across-multiple-variables">Summarize across multiple variables<a class="headerlink" href="#summarize-across-multiple-variables" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code><span class="n">myvars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="ss">:b</span><span class="p">,</span><span class="w"> </span><span class="ss">:c</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="n">myvars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Cols</span><span class="p">(</span><span class="ss">:b</span><span class="p">,</span><span class="w"> </span><span class="ss">:c</span><span class="p">)</span>
 
 <span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">  </span><span class="nd">@summarize</span><span class="p">(</span><span class="n">across</span><span class="p">(</span><span class="o">!!</span><span class="n">myvars</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">mean</span><span class="p">,</span><span class="w"> </span><span class="n">minimum</span><span class="p">,</span><span class="w"> </span><span class="n">maximum</span><span class="p">)))</span>
@@ -1247,7 +1258,8 @@
 <p><a id="Group-by-multiple-interpolated-variables"></a></p>
 <p><a id="Group-by-multiple-interpolated-variables-1"></a></p>
 <h2 id="group-by-multiple-interpolated-variables">Group by multiple interpolated variables<a class="headerlink" href="#group-by-multiple-interpolated-variables" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code><span class="n">myvars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="ss">:b</span><span class="p">]</span>
+<p>Once again, you can mix and match column selectors within <code>Cols()</code></p>
+<div class="highlight"><pre><span></span><code><span class="n">myvars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Cols</span><span class="p">(</span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
 
 <span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">  </span><span class="nd">@group_by</span><span class="p">(</span><span class="o">!!</span><span class="n">myvars</span><span class="p">)</span>
