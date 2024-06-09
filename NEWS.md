@@ -1,5 +1,10 @@
 # TidierData.jl updates
 
+## v0.16.1 - 2024-06-09
+- Adds support for tuples and vectors as arguments to select multiple columns. Prefixing tuples/vectors with a `-` or `!` will exclude the selected columns.
+- The `:` selector from Julia is now available and equivalent to `everything()`
+- `@pivot_longer()` now pivots all columns if no column selectors are provided
+
 ## v0.16.0 - 2024-06-07
 - `unique()`, `mad()`, and `iqr()` are no longer auto-vectorized
 - Bugfix: `@ungroup()` now preserves row-ordering (and is faster)

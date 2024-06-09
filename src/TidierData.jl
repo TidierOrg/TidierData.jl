@@ -449,6 +449,7 @@ macro group_by(df, exprs...)
 
   tidy_exprs = parse_tidy.(tidy_exprs)
   grouping_exprs = parse_group_by.(exprs)
+  grouping_exprs = parse_tidy.(grouping_exprs)
 
   df_expr = quote
     local any_expressions = any(typeof.($tidy_exprs) .!= QuoteNode)

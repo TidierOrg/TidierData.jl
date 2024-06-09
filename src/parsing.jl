@@ -1,5 +1,5 @@
 # Not exported
-function parse_tidy(tidy_expr::Union{Expr,Symbol,Number}; # Can be symbol or expression
+function parse_tidy(tidy_expr::Union{Expr,Symbol,Number, QuoteNode}; # Can be symbol or expression
                     autovec::Bool=true, subset::Bool=false, from_across::Bool=false,
                     from_slice::Bool = false)
   if @capture(tidy_expr, across(vars_, funcs_))
@@ -55,7 +55,11 @@ function parse_tidy(tidy_expr::Union{Expr,Symbol,Number}; # Can be symbol or exp
     var = QuoteNode(var)
     return :(Not($var))
   elseif @capture(tidy_expr, var_Symbol)
-    return QuoteNode(var)
+    if var == Symbol(":")
+      return var
+    else
+      return QuoteNode(var)
+    end
   elseif @capture(tidy_expr, var_Number)
     if var > 0
       return var
@@ -67,6 +71,18 @@ function parse_tidy(tidy_expr::Union{Expr,Symbol,Number}; # Can be symbol or exp
     end
   elseif @capture(tidy_expr, !var_Number)
     return :(Not($var))
+  elseif @capture(tidy_expr, (tuple__,))
+    tuple = parse_tidy.(tuple)
+    return :(Cols($(tuple...)))
+  elseif @capture(tidy_expr, [vec__])
+    vec = parse_tidy.(vec)
+    return :(Cols($(vec...)))
+  elseif @capture(tidy_expr, -[vec__])
+    vec = parse_tidy.(vec)
+    return :(Not(Cols($(vec...)))) # can simpify to Not($(tuple...)) in DataFrames 1.6+
+  elseif @capture(tidy_expr, ![vec__])
+    vec = parse_tidy.(vec)
+    return :(Not(Cols($(vec...)))) # can simpify to Not($(tuple...)) in DataFrames 1.6+
   elseif !subset & @capture(tidy_expr, -fn_(args__)) # negated selection helpers
     return :(Cols(!($(esc(fn))($(args...))))) # change the `-` to a `!` and return
   elseif !subset & @capture(tidy_expr, fn_(args__)) # selection helpers
@@ -74,6 +90,9 @@ function parse_tidy(tidy_expr::Union{Expr,Symbol,Number}; # Can be symbol or exp
       return tidy_expr
     elseif fn == :where
       return :(Cols(all.(broadcast($(esc(args...)), eachcol(DataFrame(df_copy))))))
+    elseif fn == :- || fn == :! # for negated selection as in -(A, B), which is internally represnted as function
+      args = parse_tidy.(args)
+      return :(Not(Cols($(args...)))) # can simpify to Not($(tuple...)) in DataFrames 1.6+
     else
       return :(Cols($(esc(tidy_expr))))
     end

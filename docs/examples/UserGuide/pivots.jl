@@ -36,6 +36,18 @@ df_wide = DataFrame(id = [1, 2], A = [1, 3], B = [2, 4])
 
 @pivot_longer(df_wide, -id)
 
+# The selected columns can also be included as an array
+
+@pivot_longer(df_wide, [id, B])
+
+# or excluded
+
+@pivot_longer(df_wide, -[id, B])
+
+# If all columns should be included, they can be specified by either `everything()`, `:`, or by leaving the argument blank
+
+@pivot_longer(df_wide, everything())
+
 # In this example, we set the `names_to` and `values_to` arguments. Either argument can be left out and will revert to the default value. The `names_to` and `values_to` arguments can be provided as strings or as bare unquoted variable names.
 
 # Here is an example with `names_to` and `values_to` containing strings:
@@ -45,3 +57,4 @@ df_wide = DataFrame(id = [1, 2], A = [1, 3], B = [2, 4])
 # And here is an example with `names_to` and `values_to` containing bare unquoted variables:
 
 @pivot_longer(df_wide, A:B, names_to = letter, values_to = number)
+

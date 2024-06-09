@@ -260,6 +260,28 @@ julia> @chain df @select(!(a:b))
    4 │    14
    5 │    15
 
+julia> @chain df @select(-(a, b))
+5×1 DataFrame
+ Row │ c     
+     │ Int64 
+─────┼───────
+   1 │    11
+   2 │    12
+   3 │    13
+   4 │    14
+   5 │    15
+
+julia> @chain df @select(!(a, b))
+5×1 DataFrame
+ Row │ c     
+     │ Int64 
+─────┼───────
+   1 │    11
+   2 │    12
+   3 │    13
+   4 │    14
+   5 │    15
+
 julia> @chain df begin
          @select(contains("b"), starts_with("c"))
        end
@@ -667,6 +689,34 @@ julia> @chain df begin
    3 │ C         3.0
    4 │ D         4.0
    5 │ E         5.0
+
+julia> @chain df begin
+         @group_by(-(b, c)) # same as `a`
+         @summarize(b = mean(b))
+       end
+5×2 DataFrame
+ Row │ a     b       
+     │ Char  Float64 
+─────┼───────────────
+   1 │ a         1.0
+   2 │ b         2.0
+   3 │ c         3.0
+   4 │ d         4.0
+   5 │ e         5.0
+
+julia> @chain df begin
+         @group_by(!(b, c)) # same as `a`
+         @summarize(b = mean(b))
+       end
+5×2 DataFrame
+ Row │ a     b       
+     │ Char  Float64 
+─────┼───────────────
+   1 │ a         1.0
+   2 │ b         2.0
+   3 │ c         3.0
+   4 │ d         4.0
+   5 │ e         5.0
 ```
 """
 

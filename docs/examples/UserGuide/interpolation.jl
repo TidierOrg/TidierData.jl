@@ -4,7 +4,7 @@
 
 # Note: You can only interpolate values from variables in the parent environment. If you would like to interpolate column names, you have two options: you can either use `across()` or you can use `@aside` with `@pull()` to create variables in the parent environment containing the values of those columns which can then be accessed using interpolatino.
 
-# myvar = :b`, `myvar = (:a, :b)`, and `myvar = [:a, :b]` all refer to *columns* with those names. On the other hand, `myvar = "b"`, `myvar = ("a", "b")` and `myvar = ["a", "b"]` will interpolate those *values*. See below for examples.
+# myvar = :b` and `myvar = Cols(:a, :b)` both refer to *columns* with those names. On the other hand, `myvar = "b"`, `myvar = ("a", "b")` and `myvar = ["a", "b"]` will interpolate the *values*. If you intend to interpolate column names, the preferred way is to use `Cols()` as in the examples below.
 
 using TidierData
 
@@ -20,9 +20,19 @@ myvar = :b
   @select(!!myvar)
 end
 
-# ## Select multiple variables (vector of symbols)
+# ## Select multiple variables
 
-myvars = [:a, :b]
+# You can also use a vector as in `[:a, :b]`, but `Cols()` is preferred because it lets you mix and match numbers.
+
+myvars = Cols(:a, :b)
+
+@chain df begin
+  @select(!!myvars)
+end
+
+# This is the same as this...
+
+myvars = Cols(:a, 2)
 
 @chain df begin
   @select(!!myvars)
@@ -86,7 +96,7 @@ end
 
 # ## Summarize across multiple variables
 
-myvars = [:b, :c]
+myvars = Cols(:b, :c)
 
 @chain df begin
   @summarize(across(!!myvars, (mean, minimum, maximum)))
@@ -103,7 +113,9 @@ end
 
 # ## Group by multiple interpolated variables
 
-myvars = [:a, :b]
+# Once again, you can mix and match column selectors within `Cols()`
+
+myvars = Cols(:a, 2)
 
 @chain df begin
   @group_by(!!myvars)
