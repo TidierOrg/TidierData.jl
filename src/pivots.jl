@@ -42,7 +42,7 @@ $docstring_pivot_longer
 """
 macro pivot_longer(df, exprs...)
     if length(exprs) == 0
-        exprs = (:(:),)
+        exprs = (:(everything()),)
     end
     exprs = parse_blocks(exprs...)
     
