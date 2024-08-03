@@ -1,5 +1,8 @@
 # TidierData.jl updates
 
+## v0.16.2 - 2024-08-05
+- Bugfix: `@slice_min` and `@slice_max` adhere to `n=`
+
 ## v0.16.1 - 2024-06-09
 - Adds support for tuples and vectors as arguments to select multiple columns. Prefixing tuples/vectors with a `-` or `!` will exclude the selected columns.
 - The `:` selector from Julia is now available and equivalent to `everything()`
