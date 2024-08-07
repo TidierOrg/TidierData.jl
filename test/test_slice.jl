@@ -1,4 +1,4 @@
-@testset "slice" verbose = true begin
+@testset "@slice()" verbose = true begin
 
 @testset "empty slice drops all rows" begin
     df = DataFrame(g = [1, 1, 1], x = 1:3)
