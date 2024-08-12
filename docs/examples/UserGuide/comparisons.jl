@@ -11,6 +11,7 @@
 # df2 = DataFrame(grp=[1, 3], w=[10, 11])
 # ```
 
+# ## Basic Operations
 # | Operation                | TidierData.jl                        | DataFrames.jl                          |
 # |:-------------------------|:-------------------------------------|:---------------------------------------|
 # | Reduce multiple values   | `@summarize(df, mean_x = mean(x))`   | `combine(df, :x => mean)`              |
@@ -23,13 +24,14 @@
   
 # As in DataFrames.jl, some of these functions can operate by group on a grouped dataframe. Below we show TidierData macros nested, although typically, these would be chained together:
 
+# ## Grouped DataFrames
 # | Operation                | TidierData.jl                                         | DataFrames.jl                               |
 # |:-------------------------|:------------------------------------------------------|:--------------------------------------------|
 # | Reduce multiple values   | `@summarize(@group_by(df, grp), mean_x = mean(x))`    | `combine(groupby(df, :grp), :x => mean)`    |
 # | Add new columns          | `@mutate(@group_by(df, grp), mean_x = mean(x))`       | `transform(groupby(df, :grp), :x => mean)`  |
 # | Pick & transform columns | `@transmute(@group_by(df, grp), mean_x = mean(x), y)` | `select(groupby(df, :grp), :x => mean, :y)` |
 
-# More advanced commands are shown below:
+# ## More advanced commands are shown below:
 
 # | Operation                 | TidierData.jl                                             | DataFrames.jl                                                              |
 # |:--------------------------|:----------------------------------------------------------|:---------------------------------------------------------------------------|
@@ -41,7 +43,7 @@
 # | DataFrame as output       | `@summarize(df, test = [minimum(x), maximum(x)])`         | `combine(df, :x => (x -> (value = [minimum(x), maximum(x)],)) => AsTable)` |
 
 
-### Joining data frames
+# ## Joining DataFrames
 
 # | Operation             | TidierData.jl                                   | DataFrames.jl                   |
 # |:----------------------|:------------------------------------------------|:--------------------------------|
@@ -51,3 +53,4 @@
 # | Right join            | `@right_join(df, df2, grp)`                     | `rightjoin(df, df2, on = :grp)` |
 # | Anti join (filtering) | `@anti_join(df, df2, grp)`                      | `antijoin(df, df2, on = :grp)`  |
 # | Semi join (filtering) | `@semi_join(df, df2, grp)`                      | `semijoin(df, df2, on = :grp)`  |
+
