@@ -139,5 +139,6 @@ nav:
   - "Interpolation" : "examples/generated/UserGuide/interpolation.md"
   - "Auto-vectorization" : "examples/generated/UserGuide/autovec.md"
   # - "Benchmarking" : "examples/generated/UserGuide/benchmarking.md"
+  - "Comparison to DF.jl" : "examples/generated/UserGuide/comparisons.md"
   - "Contribute" : "examples/generated/Contributors/Howto.md"
   - "Reference" : "reference.md"
