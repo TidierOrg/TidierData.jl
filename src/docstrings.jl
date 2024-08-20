@@ -2350,10 +2350,8 @@ julia> @separate(df, a, (b, c), "-")
    3 │ 3          3-3
 
 julia> @chain df begin
-         @separate(a, (b, c), "-", extra = "warn")
+         @separate(a, (b, c), "-", extra = "drop")
        end
-┌ Warning: Dropping extra split parts that don't fit into the provided `into` columns.
-└ @ TidierData ~/jl_stuff/TidierData.jl/src/separate_unite.jl:50
 3×2 DataFrame
  Row │ b          c         
      │ SubStrin…  SubStrin… 
