@@ -2305,7 +2305,7 @@ missing
 
 const docstring_separate = 
 """
-   @separate(df, From, Into, Separator)
+   @separate(df, From, Into, Separator, extra = "merge")
 
 Separate a string column into mulitiple new columns based on a specified delimter 
 
@@ -2314,6 +2314,7 @@ Separate a string column into mulitiple new columns based on a specified delimte
 - `From`: Column that will be split
 - `Into`: New column names, supports [] or ()
 - `Separator`: the string or chacater on which to split
+- `extra`: "merge", "warn" and "drop" . If not enough columns are provided, extra determines whether additional entries will be merged into the final one or dropped. "warn" generates a warning message for dropped values.
 
 # Examples
 ```jldoctest
@@ -2338,12 +2339,35 @@ julia> @chain df begin
    1 │ 1          1          missing    
    2 │ 2          2          missing    
    3 │ 3          3          3
+
+julia> @separate(df, a, (b, c), "-")
+3×2 DataFrame
+ Row │ b          c      
+     │ SubStrin…  String 
+─────┼───────────────────
+   1 │ 1          1
+   2 │ 2          2
+   3 │ 3          3-3
+
+julia> @chain df begin
+         @separate(a, (b, c), "-", extra = "warn")
+       end
+┌ Warning: Dropping extra split parts that don't fit into the provided `into` columns.
+└ @ TidierData ~/jl_stuff/TidierData.jl/src/separate_unite.jl:50
+3×2 DataFrame
+ Row │ b          c         
+     │ SubStrin…  SubStrin… 
+─────┼──────────────────────
+   1 │ 1          1
+   2 │ 2          2
+   3 │ 3          3
+
 ```
 """
 
 const docstring_unite = 
 """
-      @unite(df, new_cols, from_cols, sep)
+      @unite(df, new_cols, from_cols, sep, remove)
 
 Separate a multiple columns into one new columns using a specific delimter
 
@@ -2352,12 +2376,21 @@ Separate a multiple columns into one new columns using a specific delimter
 - `new_col`: New column that will recieve the combination
 - `from_cols`: Column names that it will combine, supports [] or ()
 - `sep`: the string or character that will seprate the values in the new column
-
+- `remove`: defaults to true, removes input columns from data frame
 # Examples
 ```jldoctest
 julia> df = DataFrame( b = ["1", "2", "3"], c = ["1", "2", "3"], d = [missing, missing, "3"]);
 
 julia> @unite(df, new_col, (b, c, d), "-")
+3×1 DataFrame
+ Row │ new_col 
+     │ String  
+─────┼─────────
+   1 │ 1-1
+   2 │ 2-2
+   3 │ 3-3-3
+   
+julia> @unite(df, new_col, (b, c, d), "-", remove = false)
 3×4 DataFrame
  Row │ b       c       d        new_col 
      │ String  String  String?  String  
