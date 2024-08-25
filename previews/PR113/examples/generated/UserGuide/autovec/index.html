@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.32">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.33">
     
     
       
@@ -805,7 +805,7 @@
 
 <span class="n">string</span><span class="p">(</span><span class="n">TidierData</span><span class="o">.</span><span class="n">not_vectorized</span><span class="p">[])</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>"[:getindex, :rand, :esc, :Ref, :Set, :Cols, :collect, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :mad, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :is_float, :is_integer, :is_string, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :categorical, :as_categorical, :is_categorical, :unique, :iqr]"
+<div class="highlight"><pre><span></span><code>"[:getindex, :rand, :esc, :Ref, :Set, :Cols, :collect, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :mad, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :is_float, :is_integer, :is_string, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :categorical, :as_categorical, :is_categorical, :unique, :iqr, :cat_other, :cat_replace_missing, :cat_recode]"
 </code></pre></div>
 <p>This "auto-vectorization" makes working with TidierData.jl more R-like and convenient. However, if you ever define your own function and try to use it, TidierData.jl may unintentionally vectorize it for you. To prevent auto-vectorization, you can prefix your function with a <code>~</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">repeat</span><span class="p">(</span><span class="sc">'a'</span><span class="o">:</span><span class="sc">'e'</span><span class="p">,</span><span class="w"> </span><span class="n">inner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">11</span><span class="o">:</span><span class="mi">20</span><span class="p">)</span>
@@ -837,7 +837,7 @@
 <p>Or you can modify the do-not-vectorize list like this:</p>
 <div class="highlight"><pre><span></span><code><span class="n">push!</span><span class="p">(</span><span class="n">TidierData</span><span class="o">.</span><span class="n">not_vectorized</span><span class="p">[],</span><span class="w"> </span><span class="ss">:new_mean</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>49-element Vector{Symbol}:
+<div class="highlight"><pre><span></span><code>52-element Vector{Symbol}:
  :getindex
  :rand
  :esc
@@ -849,14 +849,14 @@
  :∘
  :lag
  ⋮
- :cat_collapse
- :cat_lump_min
- :cat_lump_prop
  :categorical
  :as_categorical
  :is_categorical
  :unique
  :iqr
+ :cat_other
+ :cat_replace_missing
+ :cat_recode
  :new_mean
 </code></pre></div>
 <p>Now <code>new_mean()</code> should behave just like <code>mean()</code> in that it is treated as non-vectorized.</p>
@@ -1015,7 +1015,7 @@
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy", "content.code.annotate", "navigation.top", "navigation.footer", "search.highlight", "search.share", "search.suggest", "toc.follow", "header.autohide"], "search": "../../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.471ce7a9.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.af256bd8.min.js"></script>
       
         <script src="../../../../javascripts/mathjax.js"></script>
       
