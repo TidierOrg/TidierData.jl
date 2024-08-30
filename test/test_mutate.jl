@@ -81,4 +81,34 @@
             df
         )
     end
+
+    @testset "mutate supports constants" begin
+        df = DataFrame(x = 1:10, g =  repeat(1:2, inner = 5))
+        y = 1:10
+        z = 1:5
+
+        @test isequal(@mutate(df, y = !!y)[!, :y], y)
+        @test isequal(
+            (@chain df begin
+                @group_by(g)
+                @mutate y = !!y
+                @ungroup
+                @pull y
+            end
+            )
+        )
+    end
+
+    @testset "mutate works on empty dataframes" begin
+        df = DataFrame()
+        res = @mutate(df)
+        @test isequal(nrow(res), 0)
+        @test isequal(ncol(res), 0)
+
+        res = @mutate(df, x = Int64[])
+        @test isequal(names(res), ["x"])
+        @test isequal(nrow(res), 0)
+        @test isequal(ncol(res), 0)
+    end
+
 end
