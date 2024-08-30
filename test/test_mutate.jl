@@ -62,4 +62,23 @@
         @test_throws "ArgumentError: New columns must have the same length as old columns" @mutate(df, y = 1:2)
     end
 
+    @testset "can remove variables with nothing" begin
+        df = DataFrame(x = 1:3, y = 1:3)
+
+        @test isequal(@mutate(df, y = nothing), df[:, [1]])
+        @test isequal(@ungroup(@mutate(gf, y = nothing)), gf[:, [1]])
+
+        # even if it doesn't exist
+        @test isequal(@mutate(df, z = nothing), df[:, [1]])
+
+        # or was just created
+        @test isequal(
+            (@mutate df begin
+                z = 1,
+                z = nothing
+            end
+            ),
+            df
+        )
+    end
 end
