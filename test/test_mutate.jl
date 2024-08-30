@@ -56,7 +56,7 @@
         )
     end
 
-    @testset " length-1 vectors are recycled" begin
+    @testset "length-1 vectors are recycled" begin
         df = DataFrame(x = 1:4)
         @test isequal(@mutate(df, y = 1)[!, :y], fill(1, 4))
         @test_throws "ArgumentError: New columns must have the same length as old columns" @mutate(df, y = 1:2)
@@ -74,7 +74,7 @@
         # or was just created
         @test isequal(
             (@mutate df begin
-                z = 1,
+                z = 1
                 z = nothing
             end
             ),
