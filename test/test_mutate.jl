@@ -108,7 +108,7 @@
         res = @mutate(df, x = Int64[])
         @test isequal(names(res), ["x"])
         @test isequal(nrow(res), 0)
-        @test isequal(ncol(res), 0)
+        @test isequal(ncol(res), 1)
     end
 
 end
