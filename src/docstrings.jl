@@ -532,6 +532,22 @@ julia> @chain df begin
    4 │ d         4     14          1         11
    5 │ e         5     15          1         11
 ```
+Note that unlike dplyr, @mutate transformations cannot be applied progressively-meaning you cannot reuse variables within the same @mutate call. This requires the use of separate @mutate calls.
+```
+julia> @chain df begin
+          @mutate b2 = b * 2
+          @mutate b3 = b2 * 2
+        end
+5×5 DataFrame
+ Row │ a     b      c      b2     b3
+     │ Char  Int64  Int64  Int64  Int64
+─────┼──────────────────────────────────
+   1 │ a         1     11      2      4
+   2 │ b         2     12      4      8
+   3 │ c         3     13      6     12
+   4 │ d         4     14      8     16
+   5 │ e         5     15     10     20
+```
 """
 
 const docstring_summarize =
