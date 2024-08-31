@@ -535,6 +535,15 @@ julia> @chain df begin
 Note that unlike dplyr, @mutate transformations cannot be applied progressively-meaning you cannot reuse variables within the same @mutate call. This requires the use of separate @mutate calls.
 ```
 julia> @chain df begin
+        #=
+        it's tempting to do this:
+          @mutate begin
+            b2 = b * 2
+            b3 = b2 * 2
+          end
+        but this syntactic sugar isn't supported.
+        use separate @mutate calls instead.
+        =#
           @mutate b2 = b * 2
           @mutate b3 = b2 * 2
         end
