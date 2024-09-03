@@ -67,7 +67,7 @@ To support R-style programming, TidierData.jl is implemented using macros.
 
 TidierData.jl currently supports the following top-level macros:
 
-- `@glimpse()`
+- `@glimpse()` and `@head()`
 - `@select()` and `@distinct()`
 - `@rename()` and `@rename_with()`
 - `@mutate()` and `@transmute()` 

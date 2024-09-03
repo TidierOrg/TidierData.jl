@@ -2834,14 +2834,15 @@ julia> @chain df begin
    1 │      5.0       7.0       5.0
 
 julia> @chain df begin
-         @slice_max(b, with_ties = false, n = 2)
+         @slice_max(b, n = 3)
        end 
-2×3 DataFrame
+3×3 DataFrame
  Row │ a         b         c        
      │ Float64?  Float64?  Float64? 
 ─────┼──────────────────────────────
    1 │      5.0       7.0       5.0
    2 │      6.0       7.0       6.0
+   3 │      1.0       6.0       1.0
    
 julia> @chain df begin
          @slice_max(b, prop = 0.5, missing_rm = true)
@@ -2897,15 +2898,15 @@ julia> @chain df begin
    1 │  missing       0.3       0.2
 
 julia> @chain df begin
-         @slice_min(b, with_ties = true, n = 1)
-       end 
-2×3 DataFrame
- Row │ a         b         c         
-     │ Float64?  Float64?  Float64?  
-─────┼───────────────────────────────
-   1 │  missing       0.3        0.2
-   2 │  missing       0.3  missing   
-  
+         @slice_min(b, n = 3)
+       end
+3×3 DataFrame
+ Row │ a          b         c         
+     │ Float64?   Float64?  Float64?  
+─────┼────────────────────────────────
+   1 │ missing         0.3        0.2
+   2 │ missing         0.3  missing   
+   3 │       0.2       2.0        0.2  
    
 julia> @chain df begin
          @slice_min(b, prop = 0.5, missing_rm = true)
@@ -2950,7 +2951,7 @@ julia> @chain df begin
    3 │ missing    missing         0.2
 
 julia> @chain df begin
-         @slice_head(prop = .25)
+         @slice_head(prop = 0.25)
        end 
 2×3 DataFrame
  Row │ a          b         c        
@@ -2991,7 +2992,7 @@ julia> @chain df begin
    3 │       6.0       7.0        6.0
 
 julia> @chain df begin
-         @slice_tail(prop = .25)
+         @slice_tail(prop = 0.25)
        end 
 2×3 DataFrame
  Row │ a         b         c        
@@ -3459,5 +3460,74 @@ julia> @relocate(df, B:C) # bring columns to the front
    3 │     8  C           3  A         3  C
    4 │     9  D           4  B         4  D
    5 │    10  E           5  C         5  E
+```
+"""
+
+const docstring_head =
+"""
+       @head(df, value)
+Shows the first n rows of the the data frame or of each group in a grouped data frame. 
+
+# Arguments
+- `df`: The data frame.
+- `value`: number of rows to be returned. Defaults to 6 if left blank.
+
+# Examples
+```
+julia> df = DataFrame(a = vcat(repeat(["a"], inner = 4),
+                                  repeat(["b"], inner = 4)),
+                             b = 1:8)
+8×2 DataFrame
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ a           1
+   2 │ a           2
+   3 │ a           3
+   4 │ a           4
+   5 │ b           5
+   6 │ b           6
+   7 │ b           7
+   8 │ b           8
+   
+julia> @head(df, 3)
+3×2 DataFrame
+ Row │ a        b     
+     │ String?  Int64 
+─────┼────────────────
+   1 │ a            1
+   2 │ a            2
+   3 │ a            3
+
+julia> @head(df)
+6×2 DataFrame
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ a           1
+   2 │ a           2
+   3 │ a           3
+   4 │ a           4
+   5 │ b           5
+   6 │ b           6
+
+julia> @chain df begin
+         @group_by a
+         @head 2
+       end
+GroupedDataFrame with 2 groups based on key: a
+First Group (2 rows): a = "a"
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ a           1
+   2 │ a           2
+⋮
+Last Group (2 rows): a = "b"
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ b           5
+   2 │ b           6
 ```
 """

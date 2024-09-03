@@ -84,7 +84,7 @@ TidierData.jl currently supports the following top-level macros:
 
 ```@raw html
 !!! example "Top-level macros:"
-    - `@glimpse()`
+    - `@glimpse()` and `@head()`
     - `@select()` and `@distinct()`
     - `@rename()` and `@rename_with()`
     - `@mutate()` and `@transmute()` 
