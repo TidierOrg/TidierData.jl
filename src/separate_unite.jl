@@ -9,40 +9,67 @@ end
 """
 $docstring_separate
 """
-macro separate(df, from, into, sep)
-    from_quoted = QuoteNode(from)
-    
-    interpolated_into, _, _ = parse_interpolation(into)
-    
-    if @capture(interpolated_into, (args__,)) || @capture(interpolated_into, [args__])
-        args = QuoteNode.(args)
-        into_expr = :[$(args...)]
-    else
-        into_expr = quote
-            if typeof($interpolated_into) <: Vector{String}
-                Symbol.($interpolated_into)
-            else
-                $interpolated_into
-            end
+macro separate(df, from, into, sep, args...)
+  extra = "merge"
+  for arg in args
+    if isa(arg, Expr) && arg.head == :(=)
+        if arg.args[1] == :extra
+            extra = arg.args[2]
         end
     end
-    
-    return quote
-        separate($(esc(df)), $(from_quoted), $(into_expr), $(esc(sep)))
-    end
+ end
+
+  from_quoted = QuoteNode(from)
+  
+  interpolated_into, _, _ = parse_interpolation(into)
+  
+  if @capture(interpolated_into, (args__,)) || @capture(interpolated_into, [args__])
+      args = QuoteNode.(args)
+      into_expr = :[$(args...)]
+  else
+      into_expr = quote
+          if typeof($interpolated_into) <: Vector{String}
+              Symbol.($interpolated_into)
+          else
+              $interpolated_into
+          end
+      end
+  end
+  
+  return quote
+      separate($(esc(df)), $(from_quoted), $(into_expr), $(esc(sep)); extra=$(esc(extra)))
+  end
 end
 
-function separate(df::DataFrame, col::Symbol, into::Vector{Symbol}, sep::Union{Regex, String})
+function separate(df::DataFrame, col::Symbol, into::Vector{Symbol}, sep::Union{Regex, String}; extra::String = "merge")
   new_df = df[:, :]
   new_cols = map(x -> split(x, sep), new_df[:, col])
   max_cols = maximum(length.(new_cols))
 
-  if length(into) < max_cols
-      error("Not enough names provided in `into` for all split columns.")
+  if length(into) < max_cols && extra == "warn"
+      @warn "Dropping extra split parts that don't fit into the provided `into` columns."
+      max_cols = length(into)
+  elseif length(into) < max_cols && extra == "drop"
+      max_cols = length(into)
+  elseif length(into) < max_cols && extra == "merge"
+      merge = true
+  elseif length(into) < max_cols
+      error("Not enough names provided in \"into\" for all split columns.")
+  else
+      merge = false
   end
 
-  for i in 1:max_cols
-      new_df[:, into[i]] = map(x -> safe_getindex(x, i, missing), new_cols)
+  for i in 1:length(into)
+      if i < length(into) || (extra == "warn" && i <= max_cols) || (extra == "drop" && i <= max_cols)
+          new_df[:, into[i]] = map(x -> safe_getindex(x, i, missing), new_cols)
+      elseif i == length(into) && merge
+        new_df[:, into[i]] = map(x -> length(x) >= i ? join(x[i:end], sep) : missing, new_cols)
+      else
+        for i in 1:max_cols
+          new_df[:, into[i]] = map(x -> safe_getindex(x, i, missing), new_cols)
+      end
+
+      end
   end
 
   new_df = select(new_df, Not(col))
@@ -50,40 +77,57 @@ function separate(df::DataFrame, col::Symbol, into::Vector{Symbol}, sep::Union{R
   return new_df
 end
 
+
 """
 $docstring_unite
 """
-macro unite(df, new_col, from_cols, sep)
-    new_col_quoted = QuoteNode(new_col)
-    interpolated_from_cols, _, _ = parse_interpolation(from_cols)
-    interpolated_from_cols = parse_tidy(interpolated_from_cols)
+macro unite(df, new_col, from_cols, sep, args...)
+  remove=true
+  for arg in args
+    if isa(arg, Expr) && arg.head == :(=)
+        if arg.args[1] == :remove
+            remove = arg.args[2]
+        end
+    end
+ end
+  new_col_quoted = QuoteNode(new_col)
+  interpolated_from_cols, _, _ = parse_interpolation(from_cols)
+  interpolated_from_cols = parse_tidy(interpolated_from_cols)
 
-    if @capture(interpolated_from_cols, (first_col:last_col))
+  if @capture(interpolated_from_cols, (first_col:last_col))
       from_cols_expr = :($(first_col):$(last_col))
-    elseif @capture(interpolated_from_cols, (args__,)) || @capture(interpolated_from_cols, [args__])
+  elseif @capture(interpolated_from_cols, (args__,)) || @capture(interpolated_from_cols, [args__])
       args = QuoteNode.(args)
       from_cols_expr = :[$(args...)]
-    else
+  else
       from_cols_expr = quote
           if typeof($interpolated_from_cols) <: Tuple
               collect(Symbol.($interpolated_from_cols))
           else
-            $interpolated_from_cols
+              $interpolated_from_cols
           end
       end
-    end
-    return quote
-        unite($(esc(df)), $new_col_quoted, [$(from_cols_expr)], $(esc(sep)))
-    end
+  end
+  
+  return quote
+      unite($(esc(df)), $new_col_quoted, [$(from_cols_expr)], $(esc(sep)); remove=$(esc(remove)))
+  end
 end
 
-function unite(df::DataFrame, new_col_name::Symbol, columns, sep::String="_")
+
+function unite(df::DataFrame, new_col_name::Symbol, columns, sep::String="_"; remove::Bool=true)
   new_df = df[:, :]
   cols_expr = columns isa Expr ? (columns,) : columns
   column_symbols = names(df, Cols(cols_expr...)) 
   new_df[:, new_col_name] = [join(skipmissing(row), sep) for row in eachrow(df[:, column_symbols])]
+  
+  if remove
+      new_df = select(new_df, Not(column_symbols))
+  end
+  
   return new_df
 end
+
 
 """
 $docstring_separate_rows
