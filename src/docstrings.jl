@@ -2305,15 +2305,15 @@ missing
 
 const docstring_separate = 
 """
-   @separate(df, From, Into, Separator, extra = "merge")
+   @separate(df, from, into, sep, extra = "merge")
 
 Separate a string column into mulitiple new columns based on a specified delimter 
 
 # Arguments
 - `df`: A DataFrame
-- `From`: Column that will be split
-- `Into`: New column names, supports [] or ()
-- `Separator`: the string or chacater on which to split
+- `from`: Column that will be split
+- `into`: New column names, supports [] or ()
+- `sep`: the string or character on which to split
 - `extra`: "merge", "warn" and "drop" . If not enough columns are provided, extra determines whether additional entries will be merged into the final one or dropped. "warn" generates a warning message for dropped values.
 
 # Examples
@@ -2365,7 +2365,7 @@ julia> @chain df begin
 
 const docstring_unite = 
 """
-      @unite(df, new_cols, from_cols, sep, remove)
+      @unite(df, new_cols, from_cols, sep, remove = true)
 
 Separate a multiple columns into one new columns using a specific delimter
 
@@ -2373,8 +2373,9 @@ Separate a multiple columns into one new columns using a specific delimter
 - `df`: A DataFrame
 - `new_col`: New column that will recieve the combination
 - `from_cols`: Column names that it will combine, supports [] or ()
-- `sep`: the string or character that will seprate the values in the new column
-- `remove`: defaults to true, removes input columns from data frame
+- `sep`: the string or character that will separate the values in the new column
+- `remove`: defaults to `true`, removes input columns from data frame
+
 # Examples
 ```jldoctest
 julia> df = DataFrame( b = ["1", "2", "3"], c = ["1", "2", "3"], d = [missing, missing, "3"]);
