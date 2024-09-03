@@ -2899,14 +2899,14 @@ julia> @chain df begin
 
 julia> @chain df begin
          @slice_min(b, n = 3)
-       end 
+       end
 3×3 DataFrame
  Row │ a          b         c         
      │ Float64?   Float64?  Float64?  
 ─────┼────────────────────────────────
    1 │ missing         0.3        0.2
-   2 │       0.2       2.0        0.2
-   3 │ missing         3.0  missing  
+   2 │ missing         0.3  missing   
+   3 │       0.2       2.0        0.2  
    
 julia> @chain df begin
          @slice_min(b, prop = 0.5, missing_rm = true)
