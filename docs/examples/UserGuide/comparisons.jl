@@ -5,10 +5,11 @@
 # This documentation is based directly off of the DataFrames.jl documentation [comparing different workflows.](https://dataframes.juliadata.org/stable/man/comparisons/#Comparison-with-the-R-package-dplyr)
 
 # To run these examples, use these two dataframes.
+
 # ```julia
-# using DataFrames, TidierData # TidierData reexports Statistics.jl which is why its not present in this line
-# df = DataFrame(grp=repeat(1:2, 3), x=6:-1:1, y=4:9, z=[3:7; missing], id='a':'f')
-# df2 = DataFrame(grp=[1, 3], w=[10, 11])
+# using DataFrames, TidierData # TidierData re-exports Statistics.jl which is why it does not need to be explicitly loaded.
+# df = DataFrame(grp = repeat(1:2, 3), x = 6:-1:1, y = 4:9, z = [3:7; missing], id = 'a':'f')
+# df2 = DataFrame(grp = [1, 3], w = [10, 11])
 # ```
 
 # ## Basic Operations
@@ -22,21 +23,22 @@
 # | Pick rows                | `@filter(df, x >= 1)`                | `subset(df, :x => ByRow(x -> x >= 1))` |
 # | Sort rows                | `@arrange(df, x)`                    | `sort(df, :x)`                         |
   
-# As in DataFrames.jl, some of these functions can operate by group on a grouped dataframe. Below we show TidierData macros nested, although typically, these would be chained together:
+# As in DataFrames.jl, some of these functions can operate by group on a grouped dataframe.
+# Below we show TidierData macros chained together.
 
 # ## Grouped DataFrames
-# | Operation                | TidierData.jl                                         | DataFrames.jl                               |
-# |:-------------------------|:------------------------------------------------------|:--------------------------------------------|
-# | Reduce multiple values   | `@summarize(@group_by(df, grp), mean_x = mean(x))`    | `combine(groupby(df, :grp), :x => mean)`    |
-# | Add new columns          | `@mutate(@group_by(df, grp), mean_x = mean(x))`       | `transform(groupby(df, :grp), :x => mean)`  |
-# | Pick & transform columns | `@transmute(@group_by(df, grp), mean_x = mean(x), y)` | `select(groupby(df, :grp), :x => mean, :y)` |
+# | Operation                | TidierData.jl                                              | DataFrames.jl                               |
+# |:-------------------------|:-----------------------------------------------------------|:--------------------------------------------|
+# | Reduce multiple values   | `@chain df @group_by(grp) @summarize(mean_x = mean(x))`    | `combine(groupby(df, :grp), :x => mean)`    |
+# | Add new columns          | `@chain df @group_by(grp) @mutate(mean_x = mean(x))`       | `transform(groupby(df, :grp), :x => mean)`  |
+# | Pick & transform columns | `@chain df @group_by(grp) @select(mean_x = mean(x), y)`    | `select(groupby(df, :grp), :x => mean, :y)` |
 
 # ## More advanced commands are shown below:
 
 # | Operation                 | TidierData.jl                                             | DataFrames.jl                                                              |
 # |:--------------------------|:----------------------------------------------------------|:---------------------------------------------------------------------------|
 # | Complex Function          | `@summarize(df, mean_x = mean(skipmissing(x)))`           | `combine(df, :x => x -> mean(skipmissing(x)))`                             |
-# | Transform several columns | `@summarize(df, x_max = maximum(x), y_min = minimum(y))`  | `combine(df, :x => maximum,  :y => minimum)`                               |
+# | Transform several columns | `@summarize(df, x_max = maximum(x), y_min = minimum(y))`  | `combine(df, :x => maximum => :x_max,  :y => minimum => :y_min)`                               |
 # |                           | `@summarize(df, across((x, y), mean))`                    | `combine(df, [:x, :y] .=> mean)`                                           |
 # |                           | `@summarize(df, across(starts_with("x"), mean))`          | `combine(df, names(df, r"^x") .=> mean)`                                   |
 # |                           | `@summarize(df, across((x, y), (maximum, minimum)))`      | `combine(df, ([:x, :y] .=> [maximum minimum])...)`                         |
