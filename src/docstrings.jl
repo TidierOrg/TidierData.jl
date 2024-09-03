@@ -2305,15 +2305,16 @@ missing
 
 const docstring_separate = 
 """
-   @separate(df, From, Into, Separator)
+   @separate(df, from, into, sep, extra = "merge")
 
 Separate a string column into mulitiple new columns based on a specified delimter 
 
 # Arguments
 - `df`: A DataFrame
-- `From`: Column that will be split
-- `Into`: New column names, supports [] or ()
-- `Separator`: the string or chacater on which to split
+- `from`: Column that will be split
+- `into`: New column names, supports [] or ()
+- `sep`: the string or character on which to split
+- `extra`: "merge", "warn" and "drop" . If not enough columns are provided, extra determines whether additional entries will be merged into the final one or dropped. "warn" generates a warning message for dropped values.
 
 # Examples
 ```jldoctest
@@ -2338,12 +2339,33 @@ julia> @chain df begin
    1 │ 1          1          missing    
    2 │ 2          2          missing    
    3 │ 3          3          3
+
+julia> @separate(df, a, (b, c), "-")
+3×2 DataFrame
+ Row │ b          c      
+     │ SubStrin…  String 
+─────┼───────────────────
+   1 │ 1          1
+   2 │ 2          2
+   3 │ 3          3-3
+
+julia> @chain df begin
+         @separate(a, (b, c), "-", extra = "drop")
+       end
+3×2 DataFrame
+ Row │ b          c         
+     │ SubStrin…  SubStrin… 
+─────┼──────────────────────
+   1 │ 1          1
+   2 │ 2          2
+   3 │ 3          3
+
 ```
 """
 
 const docstring_unite = 
 """
-      @unite(df, new_cols, from_cols, sep)
+      @unite(df, new_cols, from_cols, sep, remove = true)
 
 Separate a multiple columns into one new columns using a specific delimter
 
@@ -2351,13 +2373,23 @@ Separate a multiple columns into one new columns using a specific delimter
 - `df`: A DataFrame
 - `new_col`: New column that will recieve the combination
 - `from_cols`: Column names that it will combine, supports [] or ()
-- `sep`: the string or character that will seprate the values in the new column
+- `sep`: the string or character that will separate the values in the new column
+- `remove`: defaults to `true`, removes input columns from data frame
 
 # Examples
 ```jldoctest
 julia> df = DataFrame( b = ["1", "2", "3"], c = ["1", "2", "3"], d = [missing, missing, "3"]);
 
 julia> @unite(df, new_col, (b, c, d), "-")
+3×1 DataFrame
+ Row │ new_col 
+     │ String  
+─────┼─────────
+   1 │ 1-1
+   2 │ 2-2
+   3 │ 3-3-3
+   
+julia> @unite(df, new_col, (b, c, d), "-", remove = false)
 3×4 DataFrame
  Row │ b       c       d        new_col 
      │ String  String  String?  String  
@@ -3112,14 +3144,14 @@ julia> @rename_with(df, str -> str_remove_all(str, "_a"), !term_a)
 
 const docstring_separate_rows =
 """
-    separate_rows(df, columns..., delimiter)
+    separate_rows(df, columns..., sep)
 
 Split the contents of specified columns in a DataFrame into multiple rows based on a given delimiter.
 
 # Arguments
 - `df`: A DataFrame
 - `columns`: A column or multiple columns to be split. Can be a mix of integers and column names.
-- `delimiter`: The string or character or regular expression used to split the column values.
+- `sep`: The string or character or regular expression used to split the column values.
 
 # Examples
 ```jldoctest
@@ -3135,7 +3167,7 @@ julia> df = DataFrame(a = 1:3,
    2 │     2  aa;bb;cc  2;3;4   8;9;10
    3 │     3  dd;ee     5;6     11;12
 
-julia> @separate_rows(df, 2, 4, ";" )
+julia> @separate_rows(df, 2, 4, ";")
 6×4 DataFrame
  Row │ a      b          c       d         
      │ Int64  SubStrin…  String  SubStrin… 
@@ -3147,7 +3179,7 @@ julia> @separate_rows(df, 2, 4, ";" )
    5 │     3  dd         5;6     11
    6 │     3  ee         5;6     12
 
-julia> @separate_rows(df, b:d, ";" )
+julia> @separate_rows(df, b:d, ";")
 6×4 DataFrame
  Row │ a      b          c          d         
      │ Int64  SubStrin…  SubStrin…  SubStrin… 
@@ -3163,7 +3195,7 @@ julia> @separate_rows(df, b:d, ";" )
 
 const docstring_unnest_wider =
 """
-    @unnest_wider(df, columns, names_sep=)
+    @unnest_wider(df, columns, names_sep)
 
 Unnest specified columns of arrays or dictionaries into wider format dataframe with individual columns.
 
@@ -3236,7 +3268,7 @@ julia> @unnest_longer(df, 2)
    3 │     2      3  [7, 8]
    4 │     2      4  [7, 8]
 
-julia> @unnest_longer(df, b:c, indices_include=true)
+julia> @unnest_longer(df, b:c, indices_include = true)
 4×5 DataFrame
  Row │ a      b      c      b_id   c_id  
      │ Int64  Int64  Int64  Int64  Int64 

@@ -28,7 +28,7 @@ const code = Ref{Bool}(false) # output DataFrames.jl code?
 const log = Ref{Bool}(false) # output tidylog output? (not yet implemented)
 
 # The global do-not-vectorize "list"
-const not_vectorized = Ref{Vector{Symbol}}([:getindex, :rand, :esc, :Ref, :Set, :Cols, :collect, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :mad, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :is_float, :is_integer, :is_string, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :categorical, :as_categorical, :is_categorical, :unique, :iqr])
+const not_vectorized = Ref{Vector{Symbol}}([:getindex, :rand, :esc, :Ref, :Set, :Cols, :collect, :(:), :∘, :lag, :lead, :ntile, :repeat, :across, :desc, :mean, :std, :var, :median, :mad, :first, :last, :minimum, :maximum, :sum, :length, :skipmissing, :quantile, :passmissing, :cumsum, :cumprod, :accumulate, :is_float, :is_integer, :is_string, :cat_rev, :cat_relevel, :cat_infreq, :cat_lump, :cat_reorder, :cat_collapse, :cat_lump_min, :cat_lump_prop, :categorical, :as_categorical, :is_categorical, :unique, :iqr, :cat_other, :cat_replace_missing, :cat_recode])
 
 # The global do-not-escape "list"
 # `in`, `∈`, and `∉` should be vectorized in auto-vec but not escaped

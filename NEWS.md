@@ -1,8 +1,9 @@
 # TidierData.jl updates
 
-## v0.16.2 - 2024-08-05
+## v0.16.2 - 2024-09-03
 - Bugfix: `@slice_min` and `@slice_max` respect the `n` argument
 - Adds `@head`
+- Adds `extra` argument for `@separate()` and `remove` argument for `@unite()`
 
 ## v0.16.1 - 2024-06-09
 - Adds support for tuples and vectors as arguments to select multiple columns. Prefixing tuples/vectors with a `-` or `!` will exclude the selected columns.
