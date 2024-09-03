@@ -3144,14 +3144,14 @@ julia> @rename_with(df, str -> str_remove_all(str, "_a"), !term_a)
 
 const docstring_separate_rows =
 """
-    separate_rows(df, columns..., delimiter)
+    separate_rows(df, columns..., sep)
 
 Split the contents of specified columns in a DataFrame into multiple rows based on a given delimiter.
 
 # Arguments
 - `df`: A DataFrame
 - `columns`: A column or multiple columns to be split. Can be a mix of integers and column names.
-- `delimiter`: The string or character or regular expression used to split the column values.
+- `sep`: The string or character or regular expression used to split the column values.
 
 # Examples
 ```jldoctest
@@ -3167,7 +3167,7 @@ julia> df = DataFrame(a = 1:3,
    2 │     2  aa;bb;cc  2;3;4   8;9;10
    3 │     3  dd;ee     5;6     11;12
 
-julia> @separate_rows(df, 2, 4, ";" )
+julia> @separate_rows(df, 2, 4, ";")
 6×4 DataFrame
  Row │ a      b          c       d         
      │ Int64  SubStrin…  String  SubStrin… 
@@ -3179,7 +3179,7 @@ julia> @separate_rows(df, 2, 4, ";" )
    5 │     3  dd         5;6     11
    6 │     3  ee         5;6     12
 
-julia> @separate_rows(df, b:d, ";" )
+julia> @separate_rows(df, b:d, ";")
 6×4 DataFrame
  Row │ a      b          c          d         
      │ Int64  SubStrin…  SubStrin…  SubStrin… 
@@ -3195,7 +3195,7 @@ julia> @separate_rows(df, b:d, ";" )
 
 const docstring_unnest_wider =
 """
-    @unnest_wider(df, columns, names_sep=)
+    @unnest_wider(df, columns, names_sep)
 
 Unnest specified columns of arrays or dictionaries into wider format dataframe with individual columns.
 
@@ -3268,7 +3268,7 @@ julia> @unnest_longer(df, 2)
    3 │     2      3  [7, 8]
    4 │     2      4  [7, 8]
 
-julia> @unnest_longer(df, b:c, indices_include=true)
+julia> @unnest_longer(df, b:c, indices_include = true)
 4×5 DataFrame
  Row │ a      b      c      b_id   c_id  
      │ Int64  Int64  Int64  Int64  Int64 
