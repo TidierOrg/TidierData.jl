@@ -21,7 +21,7 @@ export TidierData_set, across, desc, n, row_number, everything, starts_with, end
       @group_by, @ungroup, @slice, @arrange, @distinct, @pull, @left_join, @right_join, @inner_join, @full_join, @anti_join, @semi_join,
       @pivot_wider, @pivot_longer, @bind_rows, @bind_cols, @clean_names, @count, @tally, @drop_missing, @glimpse, @separate,
       @unite, @summary, @fill_missing, @slice_sample, @slice_min, @slice_max, @slice_head, @slice_tail, @rename_with, @separate_rows,
-      @unnest_longer, @unnest_wider, @nest, @relocate
+      @unnest_longer, @unnest_wider, @nest, @relocate, @head
 
 # Package global variables
 const code = Ref{Bool}(false) # output DataFrames.jl code?
@@ -687,5 +687,25 @@ macro rename_with(df, fn, exprs...)
 
   return df_expr
 end
+
+"""
+$docstring_head
+"""
+macro head(df, exprs=6)
+  return quote
+      local df_input = $(esc(df))
+      local n = $(esc(exprs))
+      
+      if df_input isa GroupedDataFrame
+          grouped_result = combine(df_input) do sdf
+              first(sdf, n)
+          end
+          groupby(grouped_result, df_input.cols)
+      else
+          first(copy(df_input), n)
+      end
+  end
+end
+
 
 end
