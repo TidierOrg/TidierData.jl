@@ -67,7 +67,7 @@ To support R-style programming, TidierData.jl is implemented using macros.
 
 TidierData.jl currently supports the following top-level macros:
 
-- `@glimpse()`
+- `@glimpse()` and `@head()`
 - `@select()` and `@distinct()`
 - `@rename()` and `@rename_with()`
 - `@mutate()` and `@transmute()` 
@@ -85,7 +85,6 @@ TidierData.jl currently supports the following top-level macros:
 - `@separate()`, `@separate_rows()`, and `@unite()`
 - `@drop_missing()` and `@fill_missing()`
 - `@unnest_longer()`, `@unnest_wider()`, and `@nest()`
-- `@head`
 - `@clean_names()` (as in R's `janitor::clean_names()` function)
 - `@summary()` (as in R's `summary()` function)
 
