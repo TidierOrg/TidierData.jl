@@ -1,4 +1,4 @@
-@testset "mutate" verbose = true begin
+@testset "@mutate()" verbose = true begin
 
     @testset "empty mutate returns input" begin
         df = DataFrame(x = 1)
