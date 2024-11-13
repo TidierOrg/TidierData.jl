@@ -1,5 +1,8 @@
 # TidierData.jl updates
 
+## v16.3
+- Bugfix: `@summary` will only act on numeric/integer columns, instead of throwing an error
+
 ## v0.16.2 - 2024-09-03
 - Bugfix: `@slice_min` and `@slice_max` respect the `n` argument
 - Adds `@head`
