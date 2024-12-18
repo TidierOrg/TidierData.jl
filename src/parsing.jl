@@ -216,7 +216,7 @@ function parse_join_by(tidy_expr::Union{Expr,Symbol,String})
   tidy_expr, found_n, found_row_number = parse_interpolation(tidy_expr)
   
   src = Union{Expr,QuoteNode}[] # type can be either a QuoteNode or a expression containing a selection helper function
-
+  
   if @capture(tidy_expr, expr_Symbol)
     push!(src, QuoteNode(expr))
   elseif @capture(tidy_expr, expr_String)
@@ -229,6 +229,16 @@ function parse_join_by(tidy_expr::Union{Expr,Symbol,String})
     lhs = QuoteNode(Symbol(lhs))
     rhs = QuoteNode(Symbol(rhs))
     push!(src, :($lhs => $rhs))
+  elseif tidy_expr isa Expr && tidy_expr.head == :call && tidy_expr.args[1] == :join_by
+    for arg in tidy_expr.args[2:end]
+        if arg isa Expr && arg.head == :call && arg.args[1] == Symbol("==")
+            lhs_arg = arg.args[2]
+            rhs_arg = arg.args[3]
+            push!(src, :($(QuoteNode(lhs_arg)) => $(QuoteNode(rhs_arg))))
+        else
+          push!(src, arg)
+        end
+    end
   else
     @capture(tidy_expr, (args__,))
     for arg in args

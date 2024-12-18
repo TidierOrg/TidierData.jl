@@ -1040,7 +1040,23 @@ Perform a left join on `df1` and `df2` with an optional `by`.
 julia> df1 = DataFrame(a = ["a", "b"], b = 1:2);
 
 julia> df2 = DataFrame(a = ["a", "c"], c = 3:4);
-  
+
+julia> @left_join(df1, df2, join_by(a == a))
+2×3 DataFrame
+ Row │ a       b      c       
+     │ String  Int64  Int64?  
+─────┼────────────────────────
+   1 │ a           1        3
+   2 │ b           2  missing 
+
+julia> @left_join(df1, df2, join_by("a"=="a"))
+2×3 DataFrame
+ Row │ a       b      c       
+     │ String  Int64  Int64?  
+─────┼────────────────────────
+   1 │ a           1        3
+   2 │ b           2  missing 
+
 julia> @left_join(df1, df2)
 2×3 DataFrame
  Row │ a       b      c       
@@ -1099,7 +1115,23 @@ Perform a right join on `df1` and `df2` with an optional `by`.
 julia> df1 = DataFrame(a = ["a", "b"], b = 1:2);
 
 julia> df2 = DataFrame(a = ["a", "c"], c = 3:4);
-  
+
+julia> @right_join(df1, df2, join_by(a == a))
+2×3 DataFrame
+ Row │ a       b        c     
+     │ String  Int64?   Int64 
+─────┼────────────────────────
+   1 │ a             1      3
+   2 │ c       missing      4
+
+julia> @right_join(df1, df2, join_by("a"=="a"))
+2×3 DataFrame
+ Row │ a       b        c     
+     │ String  Int64?   Int64 
+─────┼────────────────────────
+   1 │ a             1      3
+   2 │ c       missing      4
+
 julia> @right_join(df1, df2)
 2×3 DataFrame
  Row │ a       b        c     
@@ -1158,7 +1190,21 @@ Perform a inner join on `df1` and `df2` with an optional `by`.
 julia> df1 = DataFrame(a = ["a", "b"], b = 1:2);
 
 julia> df2 = DataFrame(a = ["a", "c"], c = 3:4);
-  
+
+julia> @inner_join(df1, df2, join_by(a == a))
+1×3 DataFrame
+ Row │ a       b      c     
+     │ String  Int64  Int64 
+─────┼──────────────────────
+   1 │ a           1      3
+
+julia> @inner_join(df1, df2, join_by("a"=="a"))
+1×3 DataFrame
+ Row │ a       b      c     
+     │ String  Int64  Int64 
+─────┼──────────────────────
+   1 │ a           1      3
+
 julia> @inner_join(df1, df2)
 1×3 DataFrame
  Row │ a       b      c     
@@ -1212,7 +1258,25 @@ Perform a full join on `df1` and `df2` with an optional `by`.
 julia> df1 = DataFrame(a = ["a", "b"], b = 1:2);
 
 julia> df2 = DataFrame(a = ["a", "c"], c = 3:4);
-  
+
+julia> @full_join(df1, df2, join_by(a == a))
+3×3 DataFrame
+ Row │ a       b        c       
+     │ String  Int64?   Int64?  
+─────┼──────────────────────────
+   1 │ a             1        3
+   2 │ b             2  missing 
+   3 │ c       missing        4
+
+julia> @full_join(df1, df2, join_by("a"=="a"))
+3×3 DataFrame
+ Row │ a       b        c       
+     │ String  Int64?   Int64?  
+─────┼──────────────────────────
+   1 │ a             1        3
+   2 │ b             2  missing 
+   3 │ c       missing        4
+
 julia> @full_join(df1, df2)
 3×3 DataFrame
  Row │ a       b        c       
@@ -1276,7 +1340,21 @@ Perform an anti-join on `df1` and `df2` with an optional `by`.
 julia> df1 = DataFrame(a = ["a", "b"], b = 1:2);
 
 julia> df2 = DataFrame(a = ["a", "c"], c = 3:4);
-  
+
+julia> @anti_join(df1, df2, join_by(a == a))
+1×2 DataFrame
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ b           2
+
+julia> @anti_join(df1, df2, join_by("a"=="a"))
+1×2 DataFrame
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ b           2
+
 julia> @anti_join(df1, df2)
 1×2 DataFrame
  Row │ a       b     
@@ -1331,6 +1409,20 @@ julia> df1 = DataFrame(a = ["a", "b"], b = 1:2);
 
 julia> df2 = DataFrame(a = ["a", "c"], c = 3:4);
   
+julia> @semi_join(df1, df2, join_by(a == a))
+1×2 DataFrame
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ a           1
+
+julia> @semi_join(df1, df2, join_by("a"=="a"))
+1×2 DataFrame
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ a           1
+
 julia> @semi_join(df1, df2)
 1×2 DataFrame
  Row │ a       b     
