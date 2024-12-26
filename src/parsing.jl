@@ -235,6 +235,8 @@ function parse_join_by(tidy_expr::Union{Expr,Symbol,String})
             lhs_arg = arg.args[2]
             rhs_arg = arg.args[3]
             push!(src, :($(QuoteNode(lhs_arg)) => $(QuoteNode(rhs_arg))))
+        elseif isa(arg, Symbol)
+          push!(src, :($(QuoteNode(arg)) => $(QuoteNode(arg))))
         else
           push!(src, arg)
         end
