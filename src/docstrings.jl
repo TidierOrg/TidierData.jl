@@ -1026,13 +1026,14 @@ julia> @chain df @pull(2)
 
 const docstring_left_join =
 """
-    @left_join(df1, df2, [by])
+    @left_join(df1, df2, [join_by])
 
 Perform a left join on `df1` and `df2` with an optional `by`.
 
 # Arguments
 - `df1`: A DataFrame.
 - `df2`: A DataFrame.
+- `join_by`: A function or expression used to specify the join condition. It should be provided in the form of `join_by(column1 == column2)` . It can accept mutliple columns such as `join_by(a==b, c==d)`
 - `by`: An optional column or tuple of columns. `by` supports interpolation of individual columns. If `by` is not supplied, then it will be inferred from shared names of columns between `df1` and `df2`.
 
 # Examples
@@ -1040,7 +1041,23 @@ Perform a left join on `df1` and `df2` with an optional `by`.
 julia> df1 = DataFrame(a = ["a", "b"], b = 1:2);
 
 julia> df2 = DataFrame(a = ["a", "c"], c = 3:4);
-  
+
+julia> @left_join(df1, df2, join_by(a == a))
+2×3 DataFrame
+ Row │ a       b      c       
+     │ String  Int64  Int64?  
+─────┼────────────────────────
+   1 │ a           1        3
+   2 │ b           2  missing 
+
+julia> @left_join(df1, df2, join_by("a"=="a"))
+2×3 DataFrame
+ Row │ a       b      c       
+     │ String  Int64  Int64?  
+─────┼────────────────────────
+   1 │ a           1        3
+   2 │ b           2  missing 
+
 julia> @left_join(df1, df2)
 2×3 DataFrame
  Row │ a       b      c       
@@ -1085,13 +1102,14 @@ julia> @left_join(df1, df2, "a" = "a")
 
 const docstring_right_join =
 """
-    @right_join(df1, df2, [by])
+    @right_join(df1, df2, [join_by])
 
 Perform a right join on `df1` and `df2` with an optional `by`.
 
 # Arguments
 - `df1`: A DataFrame.
 - `df2`: A DataFrame.
+- `join_by`: A function or expression used to specify the join condition. It should be provided in the form of `join_by(column1 == column2)` . It can accept mutliple columns such as `join_by(a==b, c==d)`
 - `by`: An optional column or tuple of columns. `by` supports interpolation of individual columns. If `by` is not supplied, then it will be inferred from shared names of columns between `df1` and `df2`.
 
 # Examples
@@ -1099,7 +1117,23 @@ Perform a right join on `df1` and `df2` with an optional `by`.
 julia> df1 = DataFrame(a = ["a", "b"], b = 1:2);
 
 julia> df2 = DataFrame(a = ["a", "c"], c = 3:4);
-  
+
+julia> @right_join(df1, df2, join_by(a == a))
+2×3 DataFrame
+ Row │ a       b        c     
+     │ String  Int64?   Int64 
+─────┼────────────────────────
+   1 │ a             1      3
+   2 │ c       missing      4
+
+julia> @right_join(df1, df2, join_by("a"=="a"))
+2×3 DataFrame
+ Row │ a       b        c     
+     │ String  Int64?   Int64 
+─────┼────────────────────────
+   1 │ a             1      3
+   2 │ c       missing      4
+
 julia> @right_join(df1, df2)
 2×3 DataFrame
  Row │ a       b        c     
@@ -1144,13 +1178,14 @@ julia> @right_join(df1, df2, "a" = "a")
 
 const docstring_inner_join =
 """
-    @inner_join(df1, df2, [by])
+    @inner_join(df1, df2, [join_by])
 
 Perform a inner join on `df1` and `df2` with an optional `by`.
 
 # Arguments
 - `df1`: A DataFrame.
 - `df2`: A DataFrame.
+- `join_by`: A function or expression used to specify the join condition. It should be provided in the form of `join_by(column1 == column2)` . It can accept mutliple columns such as `join_by(a==b, c==d)`
 - `by`: An optional column or tuple of columns. `by` supports interpolation of individual columns. If `by` is not supplied, then it will be inferred from shared names of columns between `df1` and `df2`.
 
 # Examples
@@ -1158,7 +1193,21 @@ Perform a inner join on `df1` and `df2` with an optional `by`.
 julia> df1 = DataFrame(a = ["a", "b"], b = 1:2);
 
 julia> df2 = DataFrame(a = ["a", "c"], c = 3:4);
-  
+
+julia> @inner_join(df1, df2, join_by(a == a))
+1×3 DataFrame
+ Row │ a       b      c     
+     │ String  Int64  Int64 
+─────┼──────────────────────
+   1 │ a           1      3
+
+julia> @inner_join(df1, df2, join_by("a"=="a"))
+1×3 DataFrame
+ Row │ a       b      c     
+     │ String  Int64  Int64 
+─────┼──────────────────────
+   1 │ a           1      3
+
 julia> @inner_join(df1, df2)
 1×3 DataFrame
  Row │ a       b      c     
@@ -1198,13 +1247,15 @@ julia> @inner_join(df1, df2, "a" = "a")
 
 const docstring_full_join =
 """
-    @full_join(df1, df2, [by])
+    @full_join(df1, df2, [join_by])
 
 Perform a full join on `df1` and `df2` with an optional `by`.
 
 # Arguments
 - `df1`: A DataFrame.
 - `df2`: A DataFrame.
+- `join_by`: A function or expression used to specify the join condition. It should be provided in the form of `join_by(column1 == column2)` . It can accept mutliple columns such as `join_by(a==b, c==d)`
+
 - `by`: An optional column or tuple of columns. `by` supports interpolation of individual columns. If `by` is not supplied, then it will be inferred from shared names of columns between `df1` and `df2`.
 
 # Examples
@@ -1212,7 +1263,25 @@ Perform a full join on `df1` and `df2` with an optional `by`.
 julia> df1 = DataFrame(a = ["a", "b"], b = 1:2);
 
 julia> df2 = DataFrame(a = ["a", "c"], c = 3:4);
-  
+
+julia> @full_join(df1, df2, join_by(a == a))
+3×3 DataFrame
+ Row │ a       b        c       
+     │ String  Int64?   Int64?  
+─────┼──────────────────────────
+   1 │ a             1        3
+   2 │ b             2  missing 
+   3 │ c       missing        4
+
+julia> @full_join(df1, df2, join_by("a"=="a"))
+3×3 DataFrame
+ Row │ a       b        c       
+     │ String  Int64?   Int64?  
+─────┼──────────────────────────
+   1 │ a             1        3
+   2 │ b             2  missing 
+   3 │ c       missing        4
+
 julia> @full_join(df1, df2)
 3×3 DataFrame
  Row │ a       b        c       
@@ -1262,13 +1331,15 @@ julia> @full_join(df1, df2, "a" = "a")
 
 const docstring_anti_join =
 """
-    @anti_join(df1, df2, [by])
+    @anti_join(df1, df2, [join_by])
 
 Perform an anti-join on `df1` and `df2` with an optional `by`.
 
 # Arguments
 - `df1`: A DataFrame.
 - `df2`: A DataFrame.
+- `join_by`: A function or expression used to specify the join condition. It should be provided in the form of `join_by(column1 == column2)` . It can accept mutliple columns such as `join_by(a==b, c==d)`
+
 - `by`: An optional column or tuple of columns. `by` supports interpolation of individual columns. If `by` is not supplied, then it will be inferred from shared names of columns between `df1` and `df2`.
 
 # Examples
@@ -1276,7 +1347,21 @@ Perform an anti-join on `df1` and `df2` with an optional `by`.
 julia> df1 = DataFrame(a = ["a", "b"], b = 1:2);
 
 julia> df2 = DataFrame(a = ["a", "c"], c = 3:4);
-  
+
+julia> @anti_join(df1, df2, join_by(a == a))
+1×2 DataFrame
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ b           2
+
+julia> @anti_join(df1, df2, join_by("a"=="a"))
+1×2 DataFrame
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ b           2
+
 julia> @anti_join(df1, df2)
 1×2 DataFrame
  Row │ a       b     
@@ -1316,13 +1401,15 @@ julia> @anti_join(df1, df2, "a" = "a")
 
 const docstring_semi_join =
 """
-    @semi_join(df1, df2, [by])
+    @semi_join(df1, df2, [join_by])
 
 Perform an semi-join on `df1` and `df2` with an optional `by`.
 
 # Arguments
 - `df1`: A DataFrame.
 - `df2`: A DataFrame.
+- `join_by`: A function or expression used to specify the join condition. It should be provided in the form of `join_by(column1 == column2)` . It can accept mutliple columns such as `join_by(a==b, c==d)`
+
 - `by`: An optional column or tuple of columns. `by` supports interpolation of individual columns. If `by` is not supplied, then it will be inferred from shared names of columns between `df1` and `df2`.
 
 # Examples
@@ -1331,6 +1418,20 @@ julia> df1 = DataFrame(a = ["a", "b"], b = 1:2);
 
 julia> df2 = DataFrame(a = ["a", "c"], c = 3:4);
   
+julia> @semi_join(df1, df2, join_by(a == a))
+1×2 DataFrame
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ a           1
+
+julia> @semi_join(df1, df2, join_by("a"=="a"))
+1×2 DataFrame
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ a           1
+
 julia> @semi_join(df1, df2)
 1×2 DataFrame
  Row │ a       b     
