@@ -3,18 +3,37 @@ function summary_stats(df::DataFrame)
     summary_data = []
     for column in colnames
         col = df[:, column]
-        col_nonmissing = collect(skipmissing(col))
-        push!(summary_data, (
-            Column = column,
-            Min = minimum(col_nonmissing),
-            Q1 = quantile(col_nonmissing, 0.25),
-            Median = median(col_nonmissing),
-            Mean = mean(col_nonmissing),
-            Q3 = quantile(col_nonmissing, 0.75),
-            Max = maximum(col_nonmissing),
-            Count = length(col_nonmissing),
-            Missing_Count = count(ismissing, col)
-        ))
+        if eltype(col) <: Union{Number, Missing}
+            col_nonmissing = collect(skipmissing(col))
+            push!(summary_data, (
+                column = column,
+                min = minimum(col_nonmissing),
+                q1 = quantile(col_nonmissing, 0.25),
+                median = median(col_nonmissing),
+                mean = mean(col_nonmissing),
+                q3 = quantile(col_nonmissing, 0.75),
+                max = maximum(col_nonmissing),
+                non_missing_values = length(col_nonmissing),
+                missing_values = count(ismissing, col),
+                total_values = length(col),
+                unique_values = length(unique(col_nonmissing))
+            ))
+        else
+            col_nonmissing = collect(skipmissing(col))
+            push!(summary_data, (
+                column = column,
+                min = nothing,
+                q1 = nothing,
+                median = nothing,
+                mean = nothing,
+                q3 = nothing,
+                max = nothing,
+                non_missing_values = length(col_nonmissing),
+                missing_values = count(ismissing, col),
+                total_values = length(col),
+                unique_values = length(unique(col_nonmissing))
+            ))
+        end
     end
     return DataFrame(summary_data)
 end
