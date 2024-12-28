@@ -428,7 +428,13 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
         return x
       end
     elseif @capture(x, @mac_(args__))
-      return esc(Expr(:macrocall, mac, LineNumberNode, args...))
+      if endswith(string(mac), "_str")
+        # Macros used inside of string macros are escaped, making it possible to work with Unitful units inside of `@mutate` (e.g. `u"psi"`)
+        return esc(Expr(:macrocall, mac, LineNumberNode, args...))
+      else
+        # Other macros that may reference variables referring to column names should *not* be escaped
+        return x
+      end
     end
     return x
   end

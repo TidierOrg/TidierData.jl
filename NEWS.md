@@ -1,7 +1,10 @@
 # TidierData.jl updates
 
-## v16.3
-- Bugfix: `@summary` no longer errors with non-numeric columns. Instead, it only reports non-numeric summary stats on non-numeric columns. Minor changes to summary column names to be lowercase and snakecase.
+## v0.16.3 - 2024-12-28
+- Bugfix: `@summary` no longer errors with non-numeric columns. Instead, it only reports non-numeric summary stats on non-numeric columns. Minor changes to summary column names to be snake_case.
+- Bugfix: Reverted a bug introduced in v0.13.4, which escaped all macros. Now, string macros remain escaped (i.e., keeping it possible to work with Unitful units, e.g. `u"psi"`), but other macros are *not* escaped to allow for those macros to refer to column names within arguments.
+- Updated documentation on new preferred method of interpolation using `@eval` and `$`
+- Added documentation on using other macros inside of TidierData macros
 
 ## v0.16.2 - 2024-09-03
 - Bugfix: `@slice_min` and `@slice_max` respect the `n` argument
