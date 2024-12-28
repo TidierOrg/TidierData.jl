@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../distinct/">
+        <link rel="prev" href="../autovec/">
       
       
-        <link rel="next" href="../piping/">
+        <link rel="next" href="../comparisons/">
       
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>across - TidierData.jl</title>
+        <title>Using macros - TidierData.jl</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#one-variable-one-function" class="md-skip">
+        <a href="#string-macros" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              across
+              Using macros
             
           </span>
         </div>
@@ -487,28 +487,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    across
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../across/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -517,60 +499,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#one-variable-one-function" class="md-nav__link">
-    <span class="md-ellipsis">
-      One variable, one function
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#one-variable-one-anonymous-function" class="md-nav__link">
-    <span class="md-ellipsis">
-      One variable, one anonymous function
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#multiple-variables-multiple-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Multiple variables, multiple functions
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#multiple-selection-helpers-multiple-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Multiple selection helpers, multiple functions
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -799,10 +727,28 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../macros/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Using macros
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -811,6 +757,42 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#string-macros" class="md-nav__link">
+    <span class="md-ellipsis">
+      String macros
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#macros-with-columns-as-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Macros with columns as arguments
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -900,36 +882,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#one-variable-one-function" class="md-nav__link">
+  <a href="#string-macros" class="md-nav__link">
     <span class="md-ellipsis">
-      One variable, one function
+      String macros
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#one-variable-one-anonymous-function" class="md-nav__link">
+  <a href="#macros-with-columns-as-arguments" class="md-nav__link">
     <span class="md-ellipsis">
-      One variable, one anonymous function
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#multiple-variables-multiple-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Multiple variables, multiple functions
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#multiple-selection-helpers-multiple-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Multiple selection helpers, multiple functions
+      Macros with columns as arguments
     </span>
   </a>
   
@@ -950,59 +914,51 @@
                   
 
 
-  <h1>across</h1>
+  <h1>Using macros</h1>
 
-<div><p><code>across()</code> is a helper function that is typically used inside <code>@mutate()</code> or <code>@summarize</code> to operate on multiple columns and/or multiple functions. Notice that <code>across()</code> accepts two arguments, a set of variables and a set of functions. If providing multiple variables or functions, these should be provided as a tuple – in other words, wrapped in parentheses and separated by commas. If you want to skip missing values, you can "fuse" the summary function (such as <code>mean()</code>) with the <code>skipmissing()</code> function by using the fuction fusion operator, which you can type out in Julia by typing <code>\circ</code> and then pressing <code>[Tab]</code> such that it reads <code>mean∘skipmissing</code>.</p>
+<div><p>While TidierData relies heavily on macros, you may occasionally find yourself needing to use other macros <em>within</em> TidierData macros. This can result in errors that may be hard to interpret. This page is intended to demonstrate two common situations when working with macros: string macros and macros with columns as arguments.</p>
+<p><a id="String-macros"></a></p>
+<p><a id="String-macros-1"></a></p>
+<h2 id="string-macros">String macros<a class="headerlink" href="#string-macros" title="Permanent link">¤</a></h2>
+<p>You may not think of string macros as macros because we often work with them in the form of prefixes (or suffixes) attached to string literals, such as <code>prefix"string goes here"</code>. However, string macros are indeed macros, and thankfully, these should work without any modification.</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">TidierData</span>
-<span class="k">using</span><span class="w"> </span><span class="n">RDatasets</span>
-
-<span class="n">movies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataset</span><span class="p">(</span><span class="s">"ggplot2"</span><span class="p">,</span><span class="w"> </span><span class="s">"movies"</span><span class="p">);</span>
 </code></pre></div>
-<p><a id="One-variable,-one-function"></a></p>
-<p><a id="One-variable,-one-function-1"></a></p>
-<h2 id="one-variable-one-function">One variable, one function<a class="headerlink" href="#one-variable-one-function" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">Budget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Budget</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1_000_000</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@summarize</span><span class="p">(</span><span class="n">across</span><span class="p">(</span><span class="n">Budget</span><span class="p">,</span><span class="w"> </span><span class="n">mean∘skipmissing</span><span class="p">))</span>
+<p>Let's add the <code>psi</code> unit to the <code>a</code> column using the Unitful package.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">Unitful</span>
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="o">:</span><span class="mi">10</span><span class="p">)</span>
+<span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="sa">u</span><span class="s">"psi"</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Unitful.Quantity{Int64, 𝐌 𝐋^-1 𝐓^-2, Unitful.FreeUnits{(psi,), 𝐌 𝐋^-1 𝐓^-2, nothing}}" style="text-align: left;">Quantity…</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1 psi</td><td style="text-align: right;">6</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2 psi</td><td style="text-align: right;">7</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3 psi</td><td style="text-align: right;">8</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4 psi</td><td style="text-align: right;">9</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5 psi</td><td style="text-align: right;">10</td></tr></tbody></table></div>
+
+<p>It just works!</p>
+<p><a id="Macros-with-columns-as-arguments"></a></p>
+<p><a id="Macros-with-columns-as-arguments-1"></a></p>
+<h2 id="macros-with-columns-as-arguments">Macros with columns as arguments<a class="headerlink" href="#macros-with-columns-as-arguments" title="Permanent link">¤</a></h2>
+<p>Occasionally, you may want to work with macros that operate on columns of a data frame. You may want to apply syntax that looks like this:</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">Printf</span>
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.11</span><span class="p">,</span><span class="w"> </span><span class="mf">0.21</span><span class="p">,</span><span class="w"> </span><span class="mf">0.12</span><span class="p">,</span><span class="w"> </span><span class="mf">0.22</span><span class="p">])</span>
+
+<span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">a_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@sprintf</span><span class="p">(</span><span class="s">"Var = </span><span class="si">%.1f</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">))</span>
 <span class="k">end</span>
 </code></pre></div>
-<div><div style="float: left;"><span>1×1 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Budget_mean_skipmissing</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">13.4125</td></tr></tbody></table></div>
+<p>However, this will not work! Why not? Well, there are a two reasons: it is difficult to escape a macro but not its arguments, and macros cannot be vectorized by adding a period to the end (unlike functions).</p>
+<p>The easiest way to fix both issues is to wrap the macro inside of an anonymous function. Thus, <code>@example_macro(a)</code> turns into <code>(x -&gt; example_macro(x))(a)</code>. What is happening here is that an anonymous function is being defined, and then that function is immediately being called with an argument <code>a</code> referring to the column name <code>a</code>.</p>
+<p>Here is what the looks like for <code>@sprintf</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">Printf</span>
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.11</span><span class="p">,</span><span class="w"> </span><span class="mf">0.21</span><span class="p">,</span><span class="w"> </span><span class="mf">0.12</span><span class="p">,</span><span class="w"> </span><span class="mf">0.22</span><span class="p">])</span>
 
-<p><a id="One-variable,-one-anonymous-function"></a></p>
-<p><a id="One-variable,-one-anonymous-function-1"></a></p>
-<h2 id="one-variable-one-anonymous-function">One variable, one anonymous function<a class="headerlink" href="#one-variable-one-anonymous-function" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">Budget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Budget</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1_000_000</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@summarize</span><span class="p">(</span><span class="n">across</span><span class="p">(</span><span class="n">Budget</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">skipmissing</span><span class="p">(</span><span class="n">x</span><span class="p">)))))</span>
+<span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">a_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nd">@sprintf</span><span class="p">(</span><span class="s">"Var = </span><span class="si">%.1f</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">))(</span><span class="n">a</span><span class="p">))</span>
 <span class="k">end</span>
 </code></pre></div>
-<div><div style="float: left;"><span>1×1 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Budget_function</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">13.4125</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>4×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">a_label</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Float64" style="text-align: left;">Float64</th><th title="String" style="text-align: left;">String</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">0.11</td><td style="text-align: left;">Var = 0.1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">0.21</td><td style="text-align: left;">Var = 0.2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">0.12</td><td style="text-align: left;">Var = 0.1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">0.22</td><td style="text-align: left;">Var = 0.2</td></tr></tbody></table></div>
 
-<p>Note: compound functions are not correctly supported inside of anonymous functions. As of right now, the above function works, but <code>(x -&gt; mean∘skipmissing(x))</code> does not work. This is a known bug and will be fixed in a future update.</p>
-<p><a id="Multiple-variables,-multiple-functions"></a></p>
-<p><a id="Multiple-variables,-multiple-functions-1"></a></p>
-<h2 id="multiple-variables-multiple-functions">Multiple variables, multiple functions<a class="headerlink" href="#multiple-variables-multiple-functions" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">Budget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Budget</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1_000_000</span><span class="p">)</span>
-<span class="w">    </span><span class="nd">@summarize</span><span class="p">(</span><span class="n">across</span><span class="p">((</span><span class="n">Rating</span><span class="p">,</span><span class="w"> </span><span class="n">Budget</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="n">mean∘skipmissing</span><span class="p">,</span><span class="w"> </span><span class="n">median∘skipmissing</span><span class="p">)))</span>
-<span class="k">end</span>
-</code></pre></div>
-<div><div style="float: left;"><span>1×4 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Rating_mean_skipmissing</th><th style="text-align: left;">Budget_mean_skipmissing</th><th style="text-align: left;">Rating_median_skipmissing</th><th style="text-align: left;">Budget_median_skipmissing</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">5.93285</td><td style="text-align: right;">13.4125</td><td style="text-align: right;">6.1</td><td style="text-align: right;">3.0</td></tr></tbody></table></div>
-
-<p><a id="Multiple-selection-helpers,-multiple-functions"></a></p>
-<p><a id="Multiple-selection-helpers,-multiple-functions-1"></a></p>
-<h2 id="multiple-selection-helpers-multiple-functions">Multiple selection helpers, multiple functions<a class="headerlink" href="#multiple-selection-helpers-multiple-functions" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">Budget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Budget</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1_000_000</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@summarize</span><span class="p">(</span><span class="n">across</span><span class="p">((</span><span class="n">starts_with</span><span class="p">(</span><span class="s">"Bud"</span><span class="p">),</span><span class="w"> </span><span class="n">ends_with</span><span class="p">(</span><span class="s">"ting"</span><span class="p">)),</span><span class="w"> </span><span class="p">(</span><span class="n">mean∘skipmissing</span><span class="p">,</span><span class="w"> </span><span class="n">median∘skipmissing</span><span class="p">)))</span>
-<span class="k">end</span>
-</code></pre></div>
-<div><div style="float: left;"><span>1×4 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Budget_mean_skipmissing</th><th style="text-align: left;">Rating_mean_skipmissing</th><th style="text-align: left;">Budget_median_skipmissing</th><th style="text-align: left;">Rating_median_skipmissing</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">13.4125</td><td style="text-align: right;">5.93285</td><td style="text-align: right;">3.0</td><td style="text-align: right;">6.1</td></tr></tbody></table></div>
-
+<p>This works!</p>
+<p>Even though TidierData cannot dot-vectorize <code>@sprintf</code>, it can vectorize the anonymous function in which <code>@sprintf</code> is wrapped, converting the expression to <code>a_label = (x -&gt; @sprintf("Var = %.1f", x)).(a)</code> before it is run. Notice that TidierData adds a period before the <code>(a)</code> to vectorize the function before passing this expression to DataFrames.jl.</p>
+<p>Lastly, one caveat to know is that the above anonymous wrapper function syntax currently only works for <strong>macros</strong> and <em>not</em> for functions. It should not be needed for functions, but sharing here for awareness.</p>
 <hr>
 <p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></div>
 
@@ -1040,7 +996,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../distinct/" class="md-footer__link md-footer__link--prev" aria-label="Previous: @distinct">
+          <a href="../autovec/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Auto-vectorization">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1050,20 +1006,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                @distinct
+                Auto-vectorization
               </div>
             </div>
           </a>
         
         
           
-          <a href="../piping/" class="md-footer__link md-footer__link--next" aria-label="Next: Piping">
+          <a href="../comparisons/" class="md-footer__link md-footer__link--next" aria-label="Next: Comparison to DF.jl">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Piping
+                Comparison to DF.jl
               </div>
             </div>
             <div class="md-footer__button md-icon">

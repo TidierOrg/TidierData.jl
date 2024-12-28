@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#select-the-column-because-myvar-contains-a-symbol" class="md-skip">
+        <a href="#native-and-preferred-method-of-interpolating-using-eval-and" class="md-skip">
           Skip to content
         </a>
       
@@ -732,6 +732,66 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#native-and-preferred-method-of-interpolating-using-eval-and" class="md-nav__link">
+    <span class="md-ellipsis">
+      Native (and preferred) method of interpolating using @eval and $
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Native (and preferred) method of interpolating using @eval and $">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-does-adding-an-eval-to-the-beginning-of-the-expression-make-interpolation-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why does adding an @eval to the beginning of the expression make interpolation work?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-can-i-use-eval-with-a-chained-set-of-expressions" class="md-nav__link">
+    <span class="md-ellipsis">
+      How can I use @eval with a chained set of expressions?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#does-eval-work-inside-of-user-defined-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Does @eval work inside of user-defined functions?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#note-the-below-documentation-is-included-here-only-for-historical-reasons-it-will-be-removed-in-the-future" class="md-nav__link">
+    <span class="md-ellipsis">
+      Note: the below documentation is included here only for historical reasons. It will be removed in the future.
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#superseded-method-of-interpolating-using-the-bang-bang-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Superseded method of interpolating using the !! ("bang bang") operator
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#select-the-column-because-myvar-contains-a-symbol" class="md-nav__link">
     <span class="md-ellipsis">
       Select the column (because myvar contains a symbol)
@@ -898,6 +958,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../macros/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using macros
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../comparisons/" class="md-nav__link">
         
   
@@ -974,6 +1054,66 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#native-and-preferred-method-of-interpolating-using-eval-and" class="md-nav__link">
+    <span class="md-ellipsis">
+      Native (and preferred) method of interpolating using @eval and $
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Native (and preferred) method of interpolating using @eval and $">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-does-adding-an-eval-to-the-beginning-of-the-expression-make-interpolation-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why does adding an @eval to the beginning of the expression make interpolation work?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-can-i-use-eval-with-a-chained-set-of-expressions" class="md-nav__link">
+    <span class="md-ellipsis">
+      How can I use @eval with a chained set of expressions?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#does-eval-work-inside-of-user-defined-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Does @eval work inside of user-defined functions?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#note-the-below-documentation-is-included-here-only-for-historical-reasons-it-will-be-removed-in-the-future" class="md-nav__link">
+    <span class="md-ellipsis">
+      Note: the below documentation is included here only for historical reasons. It will be removed in the future.
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#superseded-method-of-interpolating-using-the-bang-bang-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Superseded method of interpolating using the !! ("bang bang") operator
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#select-the-column-because-myvar-contains-a-symbol" class="md-nav__link">
@@ -1124,7 +1264,92 @@
 
   <h1>Interpolation</h1>
 
-<div><p>The <code>!!</code> ("bang bang") operator can be used to interpolate values of variables from the parent environment into your code. This operator is borrowed from the R <code>rlang</code> package. At some point, we may switch to using native Julia interpolation, but for a variety of reasons that introduce some complexity with native interpolation, we plan to continue to support <code>!!</code> interpolation.</p>
+<div><p><a id="Native-(and-preferred)-method-of-interpolating-using-@eval-and"></a></p>
+<p><a id="Native-(and-preferred)-method-of-interpolating-using-@eval-and-1"></a></p>
+<h2 id="native-and-preferred-method-of-interpolating-using-eval-and">Native (and preferred) method of interpolating using <code>@eval</code> and <code>$</code><a class="headerlink" href="#native-and-preferred-method-of-interpolating-using-eval-and" title="Permanent link">¤</a></h2>
+<p>TidierData relies on "non-standard evaluation," which has the side effect of making interpolation slightly more complicated. For example, in the expression <code>@mutate(df, a = b + 1)</code>, the <code>df</code> refers to a data frame, while <code>a</code> and <code>b</code> refer to column names within the data frame. What would happen if you created a variable <code>var</code> that contains the value <code>:a</code>. Would this interpolated expression work?</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">TidierData</span>
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="o">:</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:a</span>
+<span class="nd">@mutate</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="o">$</span><span class="n">var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<p>Unfortunately, this does not work because it produces <code>@mutate(df, :a = b + 1)</code>. Since TidierData uses bare variables (and not symbols) to refer to column names, this will result in an error. However, there is a slight modification we can apply to make this code work: prefixing it with an <code>@eval</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">TidierData</span>
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="o">:</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">11</span><span class="o">:</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="n">var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:a</span>
+<span class="nd">@eval</span><span class="w"> </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="o">$</span><span class="n">var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>5×3 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">7</td><td style="text-align: right;">6</td><td style="text-align: right;">11</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">8</td><td style="text-align: right;">7</td><td style="text-align: right;">12</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">9</td><td style="text-align: right;">8</td><td style="text-align: right;">13</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">10</td><td style="text-align: right;">9</td><td style="text-align: right;">14</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">11</td><td style="text-align: right;">10</td><td style="text-align: right;">15</td></tr></tbody></table></div>
+
+<p><a id="Why-does-adding-an-@eval-to-the-beginning-of-the-expression-make-interpolation-work?"></a></p>
+<p><a id="Why-does-adding-an-@eval-to-the-beginning-of-the-expression-make-interpolation-work?-1"></a></p>
+<h3 id="why-does-adding-an-eval-to-the-beginning-of-the-expression-make-interpolation-work">Why does adding an <code>@eval</code> to the beginning of the expression make interpolation work?<a class="headerlink" href="#why-does-adding-an-eval-to-the-beginning-of-the-expression-make-interpolation-work" title="Permanent link">¤</a></h3>
+<p>Adding <code>@eval</code> to the beginning causes the interpolated expressions to be evaluated prior to be interpolated. So <code>$var</code>, which contains the value <code>:a</code>, is evaluated to <code>a</code>, which produces the desired expression <code>@mutate(df, a = b + 1)</code>. The need of <code>@eval</code> here then is primarily because TidierData expects an <code>a</code> rather than an <code>:a</code> to refer to the column "a" in a data frame.</p>
+<p><a id="How-can-I-use-@eval-with-a-chained-set-of-expressions?"></a></p>
+<p><a id="How-can-I-use-@eval-with-a-chained-set-of-expressions?-1"></a></p>
+<h3 id="how-can-i-use-eval-with-a-chained-set-of-expressions">How can I use <code>@eval</code> with a chained set of expressions?<a class="headerlink" href="#how-can-i-use-eval-with-a-chained-set-of-expressions" title="Permanent link">¤</a></h3>
+<p>The answer is simple: use <code>@eval @chain</code> instead of <code>@chain</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:a</span>
+
+<span class="nd">@eval</span><span class="w"> </span><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">  </span><span class="nd">@select</span><span class="p">(</span><span class="o">$</span><span class="n">var</span><span class="p">)</span>
+<span class="w">  </span><span class="nd">@mutate</span><span class="p">(</span><span class="o">$</span><span class="n">var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">$</span><span class="n">var</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<div><div style="float: left;"><span>5×1 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">4</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">6</td></tr></tbody></table></div>
+
+<p>If you want to select multiple variables, just use a <code>...</code> to splat the vector (or tuple) of variables.</p>
+<div class="highlight"><pre><span></span><code><span class="n">vars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="ss">:b</span><span class="p">]</span>
+
+<span class="nd">@eval</span><span class="w"> </span><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">  </span><span class="nd">@select</span><span class="p">(</span><span class="o">$</span><span class="n">vars</span><span class="o">...</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">6</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">7</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: right;">8</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: right;">9</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">10</td></tr></tbody></table></div>
+
+<p>The <code>@eval</code>-based interpolation syntax is highly flexible in that it should work anywhere you might need it across the entire package.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@eval</span><span class="w"> </span><span class="nd">@chain</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">  </span><span class="nd">@summarize</span><span class="p">(</span><span class="n">across</span><span class="p">(</span><span class="o">$</span><span class="n">vars</span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="n">mean</span><span class="p">))</span>
+<span class="k">end</span>
+</code></pre></div>
+<div><div style="float: left;"><span>1×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a_mean</th><th style="text-align: left;">b_mean</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">3.0</td><td style="text-align: right;">8.0</td></tr></tbody></table></div>
+
+<p><a id="Does-@eval-work-inside-of-user-defined-functions?"></a></p>
+<p><a id="Does-@eval-work-inside-of-user-defined-functions?-1"></a></p>
+<h3 id="does-eval-work-inside-of-user-defined-functions">Does <code>@eval</code> work inside of user-defined functions?<a class="headerlink" href="#does-eval-work-inside-of-user-defined-functions" title="Permanent link">¤</a></h3>
+<p>Yes. Here's an example of how you could roll up a new <code>select_new</code> function wrapping the <code>@select</code> macros.</p>
+<div class="highlight"><pre><span></span><code><span class="k">function</span><span class="w"> </span><span class="n">select_new</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">columns</span><span class="o">...</span><span class="p">)</span>
+<span class="w">  </span><span class="nd">@eval</span><span class="w"> </span><span class="nd">@select</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="o">$</span><span class="n">columns</span><span class="o">...</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">select_new</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="ss">:c</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">c</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">11</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">12</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: right;">13</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: right;">14</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">15</td></tr></tbody></table></div>
+
+<p>Yes. Here's another example of an <code>add_one()</code> function that adds one to all numeric columns and returns the result in a new set of columns.</p>
+<div class="highlight"><pre><span></span><code><span class="k">function</span><span class="w"> </span><span class="n">add_one</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="w">  </span><span class="nd">@eval</span><span class="w"> </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">across</span><span class="p">(</span><span class="k">where</span><span class="p">(</span><span class="n">is_number</span><span class="p">),</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span>
+<span class="k">end</span>
+
+<span class="n">add_one</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</code></pre></div>
+<div><div style="float: left;"><span>5×6 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th><th style="text-align: left;">a_function</th><th style="text-align: left;">b_function</th><th style="text-align: left;">c_function</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="text-align: right;">6</td><td style="text-align: right;">11</td><td style="text-align: right;">2</td><td style="text-align: right;">7</td><td style="text-align: right;">12</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: right;">7</td><td style="text-align: right;">12</td><td style="text-align: right;">3</td><td style="text-align: right;">8</td><td style="text-align: right;">13</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: right;">8</td><td style="text-align: right;">13</td><td style="text-align: right;">4</td><td style="text-align: right;">9</td><td style="text-align: right;">14</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">4</td><td style="text-align: right;">9</td><td style="text-align: right;">14</td><td style="text-align: right;">5</td><td style="text-align: right;">10</td><td style="text-align: right;">15</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">5</td><td style="text-align: right;">10</td><td style="text-align: right;">15</td><td style="text-align: right;">6</td><td style="text-align: right;">11</td><td style="text-align: right;">16</td></tr></tbody></table></div>
+
+<p><a id="Note:-the-below-documentation-is-included-here-only-for-historical-reasons.-It-will-be-removed-in-the-future."></a></p>
+<p><a id="Note:-the-below-documentation-is-included-here-only-for-historical-reasons.-It-will-be-removed-in-the-future.-1"></a></p>
+<h2 id="note-the-below-documentation-is-included-here-only-for-historical-reasons-it-will-be-removed-in-the-future">Note: the below documentation is included here only for historical reasons. It will be removed in the future.<a class="headerlink" href="#note-the-below-documentation-is-included-here-only-for-historical-reasons-it-will-be-removed-in-the-future" title="Permanent link">¤</a></h2>
+<p><a id='Superseded-method-of-interpolating-using-the-!!-("bang-bang")-operator'></a></p>
+<p><a id='Superseded-method-of-interpolating-using-the-!!-("bang-bang")-operator-1'></a></p>
+<h2 id="superseded-method-of-interpolating-using-the-bang-bang-operator">Superseded method of interpolating using the <code>!!</code> ("bang bang") operator<a class="headerlink" href="#superseded-method-of-interpolating-using-the-bang-bang-operator" title="Permanent link">¤</a></h2>
+<p>The <code>!!</code> ("bang bang") operator can be used to interpolate values of variables from the parent environment into your code. This operator is borrowed from the R <code>rlang</code> package. At some point, we may switch to using native Julia interpolation, but for a variety of reasons that introduce some complexity with native interpolation, we plan to continue to support <code>!!</code> interpolation.</p>
 <p>To interpolate multiple variables, the <code>rlang</code> R package uses the <code>!!!</code> "triple bang" operator. However, in <code>TidierData.jl</code>, the <code>!!</code> "bang bang" operator can be used to interpolate either single or multiple values as shown in the examples below.</p>
 <p>Note: You can only interpolate values from variables in the parent environment. If you would like to interpolate column names, you have two options: you can either use <code>across()</code> or you can use <code>@aside</code> with <code>@pull()</code> to create variables in the parent environment containing the values of those columns which can then be accessed using interpolatino.</p>
 <p>myvar = :b<code>and</code>myvar = Cols(:a, :b)<code>both refer to *columns* with those names. On the other hand,</code>myvar = "b"<code>,</code>myvar = ("a", "b")<code>and</code>myvar = ["a", "b"]<code>will interpolate the *values*. If you intend to interpolate column names, the preferred way is to use</code>Cols()` as in the examples below.</p>
