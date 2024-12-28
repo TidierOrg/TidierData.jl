@@ -211,8 +211,8 @@ function separate_rows(df::Union{DataFrame, GroupedDataFrame}, columns, delimite
       for row in eachrow(temp_df)
           value = row[column]
           # Handle missing values and non-string types
-          if ismissing(value) || typeof(value) != String
-              push!(expanded_data[column], [value])
+          if ismissing(value) || !(value isa AbstractString)
+            push!(expanded_data[column], [value])
           else
               push!(expanded_data[column], split(value, delimiter))
           end
