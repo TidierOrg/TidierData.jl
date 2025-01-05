@@ -22,4 +22,5 @@ test_df = DataFrame(
 
 @testset "TidierData" verbose = true begin
     include("test_pivots.jl")
+    include("test_slice.jl")
 end
