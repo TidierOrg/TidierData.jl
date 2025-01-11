@@ -394,20 +394,12 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
         return x
       elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
         return x
-      elseif fn isa Symbol && hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Type
-        return x
-      elseif fn isa Symbol && hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Type
-        return x
-      elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Type
-        return x
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn))($(args...)))
       else
         return x
       end
     elseif @capture(x, fn_.(args__))
-      # if fn in [:esc :in :∈ :∉ :Ref :Set :Cols :(:) :∘ :across :desc :mean :std :var :median :first :last :minimum :maximum :sum :length :skipmissing :quantile :passmissing :startswith :contains :endswith]
-      #  return x
       if fn in not_escaped[]
         return x
       elseif fn isa Symbol && hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
@@ -415,12 +407,6 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
       elseif fn isa Symbol && hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Function
         return x
       elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
-        return x
-      elseif fn isa Symbol && hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Type
-        return x
-      elseif fn isa Symbol && hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Type
-        return x
-      elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Type
         return x
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn)).($(args...)))
