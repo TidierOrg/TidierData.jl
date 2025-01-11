@@ -1,5 +1,9 @@
 # TidierData.jl updates
 
+## v0.16.4 - 2025-01-11
+- Bugfix: Only functions in Base, Core, and Statistics are not escaped. All other functions and callables are escaped.
+- Updated minimum Julia version to 1.10
+
 ## v0.16.3 - 2024-12-28
 - Bugfix: `@summary` no longer errors with non-numeric columns. Instead, it only reports non-numeric summary stats on non-numeric columns. Minor changes to summary column names to be snake_case.
 - Bugfix: Reverted a bug introduced in v0.13.4, which escaped all macros. Now, string macros remain escaped (i.e., keeping it possible to work with Unitful units, e.g. `u"psi"`), but other macros are *not* escaped to allow for those macros to refer to column names within arguments.

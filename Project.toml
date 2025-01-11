@@ -1,7 +1,7 @@
 name = "TidierData"
 uuid = "fe2206b3-d496-4ee9-a338-6a095c4ece80"
 authors = ["Karandeep Singh"]
-version = "0.16.3"
+version = "0.16.4"
 
 [deps]
 Chain = "8be319e6-bccf-4806-a6f7-6fae938471bc"
@@ -20,9 +20,9 @@ DataFrames = "1.5"
 MacroTools = "0.5"
 Reexport = "0.2, 1"
 ShiftedArrays = "2"
-Statistics = "1.6"
+Statistics = "1.10"
 StatsBase = "0.34, 1"
-julia = "1.9"
+julia = "1.10"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
