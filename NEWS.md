@@ -1,5 +1,8 @@
 # TidierData.jl updates
 
+## v0.16.5 - 2025-01-11
+- Bugfix: Corrected bug when using `Module.function()` syntax within expressions, which was previously causing errors due to the module being escaped.
+
 ## v0.16.4 - 2025-01-11
 - Bugfix: Only functions in Base, Core, and Statistics are not escaped. All other functions and callables are escaped.
 - Updated minimum Julia version to 1.10
