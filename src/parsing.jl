@@ -473,11 +473,20 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String};
     elseif @capture(x, variable_Symbol)
       if variable in not_escaped[]
         return variable
-      elseif hasproperty(Base, variable) && !(typeof(getproperty(Base, variable)) <: Function) && !(typeof(getproperty(Base, variable)) <: Type)
+      elseif hasproperty(Base, variable) && 
+        !(typeof(getproperty(Base, variable)) <: Function) && 
+        !(typeof(getproperty(Base, variable)) <: Type) && 
+        !(typeof(getproperty(Base, variable)) <: Module)
         return esc(variable)
-      elseif hasproperty(Core, variable) && !(typeof(getproperty(Core, variable)) <: Function) && !(typeof(getproperty(Core, variable)) <: Type)
+      elseif hasproperty(Core, variable) && 
+        !(typeof(getproperty(Core, variable)) <: Function) && 
+        !(typeof(getproperty(Core, variable)) <: Type) && 
+        !(typeof(getproperty(Core, variable)) <: Module)
         return esc(variable)
-      elseif hasproperty(Statistics, variable) && !(typeof(getproperty(Statistics, variable)) <: Function) && !(typeof(getproperty(Statistics, variable)) <: Type)
+      elseif hasproperty(Statistics, variable) && 
+        !(typeof(getproperty(Statistics, variable)) <: Function) && 
+        !(typeof(getproperty(Statistics, variable)) <: Type) &&
+        !(typeof(getproperty(Statistics, variable)) <: Module)
         return esc(variable)
       else
         return variable
