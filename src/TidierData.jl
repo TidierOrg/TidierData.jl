@@ -7,7 +7,6 @@ using Statistics
 using StatsBase # primarily for `sample()`
 import Cleaner # changed from `using Cleaner` because of name conflict with `DataFrames.rename()`
 using Reexport
-using DeepDiffs
 
 # Exporting `Cols` because `summarize(!!vars, funs))` with multiple interpolated
 # columns requires `Cols()` to be nested within `Cols()`, so `Cols` needs to be exported.
@@ -122,7 +121,8 @@ macro select(df, exprs...)
             end
         end
 
-        log[] && @info generate_log(df_copy, df_output)
+        log[] && @info generate_log(df_copy, df_output;
+            name="@select", modes=[:colchange])
 
         df_output
     end
@@ -183,7 +183,7 @@ macro transmute(df, exprs...)
             end
         end
 
-        log[] && @info generate_log(df_copy, df_output)
+        log[] && @info generate_log(df_copy, df_output, "@transmute", [:colchange])
 
         df_output
     end
@@ -244,7 +244,7 @@ macro rename(df, exprs...)
             end
         end
 
-        log[] && @info generate_log(df_copy, df_output)
+        log[] && @info generate_log(df_copy, df_output, "@rename", [:colchange])
 
         df_output
     end
@@ -305,7 +305,7 @@ macro mutate(df, exprs...)
             end
         end
 
-        log[] && @info generate_log(df_copy, df_output)
+        log[] && @info generate_log(df_copy, df_output, "@mutate", [:colchange])
 
         df_output
     end
@@ -372,7 +372,7 @@ macro summarize(df, exprs...)
             end
         end
 
-        log[] && @info generate_log(df_copy, df_output)
+        log[] && @info generate_log(df_copy, df_output, "@summarize", [:newsize])
 
         df_output
     end
@@ -440,7 +440,7 @@ macro filter(df, exprs...)
             end
         end
 
-        log[] && @info generate_log(df_copy, df_output)
+        log[] && @info generate_log(df_copy, df_output, "@filter", [:rowchange])
 
         df_output
     end
@@ -497,7 +497,7 @@ macro group_by(df, exprs...)
         # this can cause a large number of allocations when the grouped variable is a string
         local df_output = groupby(df_copy, Cols($(grouping_exprs...)); sort=false)
 
-        log[] && @info generate_log(df_copy, df_output)
+        log[] && @info generate_log(df_copy, df_output, "@group_by", [:groups])
 
         df_output
     end
@@ -512,11 +512,14 @@ $docstring_ungroup
 """
 macro ungroup(df)
     df_expr = quote
-        if $(esc(df)) isa GroupedDataFrame
-            transform($(esc(df)); ungroup=true)
+        df_copy = $(esc(df))
+        if df_copy isa GroupedDataFrame
+            df_output = transform(df_copy; ungroup=true)
         else
-            copy($(esc(df)))
+            df_output = copy(df_copy)
         end
+        log[] && @info generate_log(df_copy, df_output, "@ungroup", [:groups])
+        df_output
     end
     if code[]
         @info MacroTools.prettify(df_expr)
@@ -604,6 +607,7 @@ macro distinct(df, exprs...)
                 select!(df_copy, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
             end
 
+            log[] && @info generate_log($(esc(df)), df_copy, "@distinct", [:rowchange])
             df_copy # value to return
         end
     end
