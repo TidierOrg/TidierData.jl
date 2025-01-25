@@ -3,7 +3,7 @@
     add_col = @mutate(test_df, num2 = [2, 3, 4, 5])
     remove_rows = @filter(test_df, name == "A")
     transmute_col = @transmute(test_df, label = string.(label))
-    transmute_col = @transmute(test_df, labelstring = string.(label))
+    transmute_col2 = @transmute(test_df, labelstring = string.(label))
     rename_col = @rename(test_df, l = label)
     summarize_col = @summarize(test_df, n = sum(num))
     group_col = @group_by(test_df, label)
