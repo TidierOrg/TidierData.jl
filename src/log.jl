@@ -28,8 +28,11 @@ function mode_message(df1, df2, name, mode)
             message *= "$name removed $(-row_change) rows. "
         end
     elseif mode == :newsize
-        message *= "$name returned a DataFrame ($(nrow(df2)) rows,
-            $(ncol(df2)) columns). "
+        nr = nrow(df2)
+        nc = ncol(df2)
+        nrs = nr == 1 ? "" : "s"
+        ncs = nc == 1 ? "" : "s"
+        message *= "$name returned a DataFrame ($nr row$nrs, $nc column$ncs). "
     elseif mode == :groups
         if df2 isa GroupedDataFrame && df1 isa DataFrame
             groups = unique([names(a) for a in collect(keys(df2))])
@@ -46,7 +49,7 @@ function mode_message(df1, df2, name, mode)
                 message *= "$name removed groups: $([g for g in rem][1])"
             end
         elseif df2 isa DataFrame && df1 isa GroupedDataFrame
-            g1 = unique([names(a) for a in collect(keys(df1))]...)
+            g1 = unique([names(a) for a in collect(keys(df1))])
             message *= "$name removed groups: $([g for g in g1][1])"
         end
     end
