@@ -9,6 +9,7 @@ function generate_log(df_copy, df_output, name, modes)
     return message
 end
 
+
 function mode_message(df1, df2, name, mode)
     message = ""
     if mode == :colchange
@@ -52,6 +53,57 @@ function mode_message(df1, df2, name, mode)
             g1 = unique([names(a) for a in collect(keys(df1))])
             message *= "$name removed groups: $([g for g in g1][1])"
         end
+    end
+    return message
+end
+
+
+function changed_columns_log(df_copy::AbstractDataFrame, df_output::AbstractDataFrame, base_msg::String)
+    local changed_msg = ""
+    local common_cols = intersect(names(df_copy), names(df_output))
+
+    for c in common_cols
+        # Old vs new column
+        oldcol = df_copy[!, c]
+        newcol = df_output[!, c]
+
+        # Count how many elements actually changed, ignoring two missing as “no change”
+        local n_changed = sum(map((o, n) ->
+            (ismissing(o) && ismissing(n)) ? false : coalesce(o != n, true),
+            oldcol, newcol))
+        if n_changed > 0
+            changed_msg *= " \nChanged $n_changed value(s) in $(c)."
+        end
+
+        # Track missing deltas
+        local old_miss = count(ismissing, oldcol)
+        local new_miss = count(ismissing, newcol)
+        local delta_miss = new_miss - old_miss
+        if delta_miss > 0
+            changed_msg *= " \nAdded $delta_miss missing value(s) in $(c)."
+        elseif delta_miss < 0
+            changed_msg *= " \nReplaced $(-delta_miss) missing value(s) in  $(c)."
+        end
+    end
+
+    # If no actual cell-level changes, just info the base_msg
+    if isempty(changed_msg)
+        @info base_msg
+    else
+        @info base_msg * changed_msg
+    end
+end
+
+
+
+
+function generate_log(df_copy, df_output; name::String, modes::Vector{Symbol})
+    message = ""
+    for mode in modes
+        message *= mode_message(df_copy, df_output, name, mode)
+    end
+    if message == ""
+        message = "No changes."
     end
     return message
 end

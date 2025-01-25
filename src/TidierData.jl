@@ -290,6 +290,13 @@ macro mutate(df, exprs...)
             if $any_found_n || $any_found_row_number
                 select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup=false)
             end
+
+            if log[]
+                local base_msg = generate_log(df_copy, df_output, "@mutate", [:colchange])
+                changed_columns_log(df_copy, df_output, base_msg)
+            end
+
+            df_output
         else
             if $any_found_n
                 transform!(df_copy, nrow => :TidierData_n)
@@ -303,11 +310,14 @@ macro mutate(df, exprs...)
             if $any_found_n || $any_found_row_number
                 select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
             end
+
+            if log[]
+                local base_msg = generate_log(df_copy, df_output, "@mutate", [:colchange])
+                changed_columns_log(df_copy, df_output, base_msg)
+            end
+
+            df_output
         end
-
-        log[] && @info generate_log(df_copy, df_output, "@mutate", [:colchange])
-
-        df_output
     end
     if code[]
         @info MacroTools.prettify(df_expr)
