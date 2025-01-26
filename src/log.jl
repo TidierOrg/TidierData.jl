@@ -30,15 +30,25 @@ function mode_message(df1, df2, name, mode)
         if length(rem) != 0
             message *= "$name removed: $([r for r in rem]) "
         end
-        if length(added) != 0
-            message *= "$name added: $([a for a in added]) "
+        for c in added
+            col = df2[!, c]
+          #  coltype = eltype(col)
+            nrows = nrow(df2)
+            nuniq = length(unique(col))
+            nmiss = count(ismissing, col)
+            pct_na = nrows > 0 ? round(100 * nmiss / nrows; digits=0) : 0
+            message *= "$name: new variable \"$c\" with $nuniq unique values and $pct_na% missing. \n\t"
         end
+
     elseif mode == :rowchange
         row_change = nrow(df2) - nrow(df1)
         if row_change > 0
-            message *= "$name added $row_change rows. "
+            pct = nrow(df1) == 0 ? 100 : round(100*row_change/nrow(df1); digits=0)
+            message *= "$name: added $row_change rows ($pct%), $(nrow(df2)) rows total. "
         elseif row_change < 0
-            message *= "$name removed $(-row_change) rows. "
+            n_removed = -row_change
+            pct = nrow(df1) == 0 ? 100 : round(100*n_removed/nrow(df1); digits=0)
+            message *= "$name: removed $n_removed rows ($pct%), $(nrow(df2)) rows remaining. "
         end
     elseif mode == :newsize
         type = "DataFrame"
@@ -81,40 +91,45 @@ function log_changed_columns(
     df_output::AbstractDataFrame,
     base_msg::String=""
 )
+    changed_msg = ""
+    common_cols = intersect(names(df_copy), names(df_output))
 
-    local changed_msg = ""
-    local common_cols = intersect(names(df_copy), names(df_output))
+    nrows = nrow(df_output)
 
     for c in common_cols
         oldcol = df_copy[!, c]
         newcol = df_output[!, c]
 
-        # Count how many elements changed (ignoring missing→missing as “no change”)
-        local n_changed = sum(map((o, n) ->
-                (ismissing(o) && ismissing(n)) ? false : coalesce(o != n, true),
+        n_changed = sum(map((o, n) ->
+            (ismissing(o) && ismissing(n)) ? false : coalesce(o != n, true),
             oldcol, newcol))
-        if n_changed > 0
-            changed_msg *= "Changed $n_changed value(s) in $(c). \n"
-        end
 
-        # Track missing deltas
-        local old_miss = count(ismissing, oldcol)
-        local new_miss = count(ismissing, newcol)
-        local delta_miss = new_miss - old_miss
-        if delta_miss > 0
-            changed_msg *= "Added $delta_miss missing value(s) in $(c). \n"
-        elseif delta_miss < 0
-            changed_msg *= "Replaced $(-delta_miss) missing value(s) in $(c).\n"
+        if n_changed > 0
+            pct_changed = nrows > 0 ? round(100 * n_changed / nrows; digits=0) : 0
+
+            old_miss = count(ismissing, oldcol)
+            new_miss = count(ismissing, newcol)
+            missing_diff = new_miss - old_miss
+
+            if missing_diff > 0
+                changed_msg *= "@mutate: changed $n_changed values ($(pct_changed)%) of \"$c\" ($missing_diff new missing)\n\t"
+            elseif missing_diff < 0
+                changed_msg *= "@mutate: changed $n_changed values ($(pct_changed)%) of \"$c\" ($(-missing_diff) replaced missing)\n\t"
+            else
+                changed_msg *= "@mutate: changed $n_changed values ($(pct_changed)%) of \"$c\"\n\t"
+            end
         end
     end
+
     base_msg = replace(base_msg, "No changes." => "")
-    # If no column-level changes, just log the base_msg
+
     if isempty(changed_msg)
-        @info base_msg
+        @info rstrip(base_msg, ['\n', '\t'])
+        return base_msg
     else
-        @info base_msg * changed_msg
+        @info rstrip((base_msg * changed_msg), ['\n', '\t'])
+        return base_msg * changed_msg
     end
-    return base_msg * changed_msg
 end
 
 
@@ -130,11 +145,11 @@ function log_join_changes(df1, df_output;
     # Construct a descriptive message
     message = ""
     if !isempty(new_cols)
-        message = "$join_type: added $(length(new_cols)) new column(s): $(new_cols).\n"
+        message = "$join_type: added $(length(new_cols)) new column(s): $(new_cols)."
     end
 
     message *= """
-               - Dimension Change: $ni×$ci -> $no×$co
+               \n\t- Dimension Change: $ni×$ci -> $no×$co
                """
     @info message
     return message
