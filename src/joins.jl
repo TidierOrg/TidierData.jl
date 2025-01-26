@@ -5,6 +5,10 @@ macro left_join(df1, df2, by)
   by = parse_join_by(by)
 
   df_expr = quote
+    if log[] 
+      log_join_changes( DataFrame($(esc(df1))), leftjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by); 
+      join_type="@left_join") 
+    end
     leftjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
@@ -17,7 +21,11 @@ macro left_join(df1, df2)
   by = :(intersect(names(DataFrame($(esc(df1)))), names(DataFrame($(esc(df2))))))
 
   df_expr = quote
-    leftjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
+    if log[] 
+      log_join_changes( DataFrame($(esc(df1))), leftjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by); 
+      join_type="@left_join") 
+    end
+        leftjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
     @info MacroTools.prettify(df_expr)
@@ -32,6 +40,7 @@ macro right_join(df1, df2, by)
   by = parse_join_by(by)
 
   df_expr = quote
+    log[] ? log_join_changes( DataFrame($(esc(df1))), rightjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by); join_type="@right_join") : 
     rightjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
@@ -44,6 +53,7 @@ macro right_join(df1, df2)
   by = :(intersect(names(DataFrame($(esc(df1)))), names(DataFrame($(esc(df2))))))
 
   df_expr = quote
+    log[] ? log_join_changes( DataFrame($(esc(df1))), rightjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by); join_type="@right_join") : 
     rightjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
@@ -59,6 +69,7 @@ macro inner_join(df1, df2, by)
   by = parse_join_by(by)
 
   df_expr = quote
+    log[] ? log_join_changes( DataFrame($(esc(df1))), innerjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by); join_type="@inner_join") : 
     innerjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
@@ -71,6 +82,7 @@ macro inner_join(df1, df2)
   by = :(intersect(names(DataFrame($(esc(df1)))), names(DataFrame($(esc(df2))))))
 
   df_expr = quote
+    log[] ? log_join_changes( DataFrame($(esc(df1))), innerjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by); join_type="@inner_join") : 
     innerjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
@@ -86,6 +98,7 @@ macro full_join(df1, df2, by)
   by = parse_join_by(by)
 
   df_expr = quote
+    log[] ? log_join_changes( DataFrame($(esc(df1))), outerjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by); join_type="@full_join") : 
     outerjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
@@ -98,6 +111,7 @@ macro full_join(df1, df2)
   by = :(intersect(names(DataFrame($(esc(df1)))), names(DataFrame($(esc(df2))))))
 
   df_expr = quote
+    log[] ? log_join_changes( DataFrame($(esc(df1))), outerjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by); join_type="@full_join") : 
     outerjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
@@ -113,6 +127,7 @@ macro anti_join(df1, df2, by)
   by = parse_join_by(by)
 
   df_expr = quote
+    log[] ? log_join_changes( DataFrame($(esc(df1))), antijoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by); join_type="@anti_join") : 
     antijoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
@@ -122,9 +137,11 @@ macro anti_join(df1, df2, by)
 end
 
 macro anti_join(df1, df2)
+  
   by = :(intersect(names(DataFrame($(esc(df1)))), names(DataFrame($(esc(df2))))))
 
   df_expr = quote
+    log[] ? log_join_changes( DataFrame($(esc(df1))), antijoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by); join_type="@anti_join") : 
     antijoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
@@ -140,6 +157,8 @@ macro semi_join(df1, df2, by)
   by = parse_join_by(by)
 
   df_expr = quote
+    log[] ? log_join_changes( DataFrame($(esc(df1))), semijoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by); join_type="@semi_join") : 
+
     semijoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
@@ -152,6 +171,8 @@ macro semi_join(df1, df2)
   by = :(intersect(names(DataFrame($(esc(df1)))), names(DataFrame($(esc(df2))))))
 
   df_expr = quote
+    log[] ? log_join_changes( DataFrame($(esc(df1))), semijoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by); join_type="@semi_join") : 
+
     semijoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]

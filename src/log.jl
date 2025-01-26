@@ -9,6 +9,18 @@ function generate_log(df_copy, df_output, name, modes)
     return message
 end
 
+function generate_log(df_copy, df_output; name::String, modes::Vector{Symbol})
+    message = ""
+    for mode in modes
+        message *= mode_message(df_copy, df_output, name, mode)
+    end
+    if message == ""
+        message = "No changes."
+    end
+    return message
+end
+
+
 
 function mode_message(df1, df2, name, mode)
     message = ""
@@ -57,22 +69,25 @@ function mode_message(df1, df2, name, mode)
     return message
 end
 
+function log_changed_columns(
+    df_copy::AbstractDataFrame,
+    df_output::AbstractDataFrame,
+    base_msg::String = ""
+)
 
-function changed_columns_log(df_copy::AbstractDataFrame, df_output::AbstractDataFrame, base_msg::String)
     local changed_msg = ""
     local common_cols = intersect(names(df_copy), names(df_output))
 
     for c in common_cols
-        # Old vs new column
         oldcol = df_copy[!, c]
         newcol = df_output[!, c]
 
-        # Count how many elements actually changed, ignoring two missing as “no change”
+        # Count how many elements changed (ignoring missing→missing as “no change”)
         local n_changed = sum(map((o, n) ->
             (ismissing(o) && ismissing(n)) ? false : coalesce(o != n, true),
             oldcol, newcol))
         if n_changed > 0
-            changed_msg *= " \nChanged $n_changed value(s) in $(c)."
+            changed_msg *= "Changed $n_changed value(s) in $(c). \n"
         end
 
         # Track missing deltas
@@ -80,30 +95,41 @@ function changed_columns_log(df_copy::AbstractDataFrame, df_output::AbstractData
         local new_miss = count(ismissing, newcol)
         local delta_miss = new_miss - old_miss
         if delta_miss > 0
-            changed_msg *= " \nAdded $delta_miss missing value(s) in $(c)."
+            changed_msg *= "Added $delta_miss missing value(s) in $(c). \n"
         elseif delta_miss < 0
-            changed_msg *= " \nReplaced $(-delta_miss) missing value(s) in  $(c)."
+            changed_msg *= "Replaced $(-delta_miss) missing value(s) in $(c).\n"
         end
     end
-
-    # If no actual cell-level changes, just info the base_msg
+    base_msg = replace(base_msg, "No changes." => "")
+    # If no column-level changes, just log the base_msg
     if isempty(changed_msg)
         @info base_msg
     else
         @info base_msg * changed_msg
     end
+    return  base_msg * changed_msg
 end
 
 
+function log_join_changes(df1, df_output; 
+    join_type::String="@left_join",
+)
+    ni, ci = nrow(df1), ncol(df1)
+    no, co = nrow(df_output), ncol(df_output)
 
+    # Which columns are new in the output that didn't exist in df1?
+    new_cols = setdiff(names(df_output), names(df1))
 
-function generate_log(df_copy, df_output; name::String, modes::Vector{Symbol})
+    # Construct a descriptive message
     message = ""
-    for mode in modes
-        message *= mode_message(df_copy, df_output, name, mode)
+    if !isempty(new_cols)
+        message = "$join_type: added $(length(new_cols)) new column(s): $(new_cols).\n"
     end
-    if message == ""
-        message = "No changes."
-    end
+
+    message *= 
+    """
+    - Dimension Change: $ni×$ci -> $no×$co
+    """
+    @info message
     return message
 end

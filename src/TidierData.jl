@@ -293,7 +293,7 @@ macro mutate(df, exprs...)
 
             if log[]
                 local base_msg = generate_log(df_copy, df_output, "@mutate", [:colchange])
-                changed_columns_log(df_copy, df_output, base_msg)
+                log_changed_columns(df_copy, df_output)
             end
 
             df_output
@@ -313,7 +313,7 @@ macro mutate(df, exprs...)
 
             if log[]
                 local base_msg = generate_log(df_copy, df_output, "@mutate", [:colchange])
-                changed_columns_log(df_copy, df_output, base_msg)
+                log_changed_columns(df_copy, df_output, base_msg)
             end
 
             df_output
