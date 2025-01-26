@@ -41,16 +41,18 @@ function mode_message(df1, df2, name, mode)
             message *= "$name removed $(-row_change) rows. "
         end
     elseif mode == :newsize
+        type = "DataFrame"
         if df2 isa GroupedDataFrame
-            nr = nrow(transform(df2; ungroup = true))
-            nc = ncol(transform(df2; ungroup = true))
+            nr = nrow(transform(df2; ungroup=true))
+            nc = ncol(transform(df2; ungroup=true))
+            type = "GroupedDataFrame"
         else
             nr = nrow(df2)
             nc = ncol(df2)
         end
         nrs = nr == 1 ? "" : "s"
         ncs = nc == 1 ? "" : "s"
-        message *= "$name returned a DataFrame ($nr row$nrs, $nc column$ncs). "
+        message *= "$name returned a $type ($nr row$nrs, $nc column$ncs). "
     elseif mode == :groups
         if df2 isa GroupedDataFrame && df1 isa DataFrame
             groups = unique([names(a) for a in collect(keys(df2))])
@@ -77,7 +79,7 @@ end
 function log_changed_columns(
     df_copy::AbstractDataFrame,
     df_output::AbstractDataFrame,
-    base_msg::String = ""
+    base_msg::String=""
 )
 
     local changed_msg = ""
@@ -89,7 +91,7 @@ function log_changed_columns(
 
         # Count how many elements changed (ignoring missing→missing as “no change”)
         local n_changed = sum(map((o, n) ->
-            (ismissing(o) && ismissing(n)) ? false : coalesce(o != n, true),
+                (ismissing(o) && ismissing(n)) ? false : coalesce(o != n, true),
             oldcol, newcol))
         if n_changed > 0
             changed_msg *= "Changed $n_changed value(s) in $(c). \n"
@@ -112,11 +114,11 @@ function log_changed_columns(
     else
         @info base_msg * changed_msg
     end
-    return  base_msg * changed_msg
+    return base_msg * changed_msg
 end
 
 
-function log_join_changes(df1, df_output; 
+function log_join_changes(df1, df_output;
     join_type::String="@left_join",
 )
     ni, ci = nrow(df1), ncol(df1)
@@ -131,10 +133,9 @@ function log_join_changes(df1, df_output;
         message = "$join_type: added $(length(new_cols)) new column(s): $(new_cols).\n"
     end
 
-    message *= 
-    """
-    - Dimension Change: $ni×$ci -> $no×$co
-    """
+    message *= """
+               - Dimension Change: $ni×$ci -> $no×$co
+               """
     @info message
     return message
 end
