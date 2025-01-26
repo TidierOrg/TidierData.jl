@@ -41,8 +41,13 @@ function mode_message(df1, df2, name, mode)
             message *= "$name removed $(-row_change) rows. "
         end
     elseif mode == :newsize
-        nr = nrow(df2)
-        nc = ncol(df2)
+        if df2 isa GroupedDataFrame
+            nr = nrow(transform(df2; ungroup = true))
+            nc = ncol(transform(df2; ungroup = true))
+        else
+            nr = nrow(df2)
+            nc = ncol(df2)
+        end
         nrs = nr == 1 ? "" : "s"
         ncs = nc == 1 ? "" : "s"
         message *= "$name returned a DataFrame ($nr row$nrs, $nc column$ncs). "
