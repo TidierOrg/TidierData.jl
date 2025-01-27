@@ -12,7 +12,7 @@ macro left_join(df1, df2, by)
     leftjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
-    @info MacroTools.prettify(df_expr)
+    @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
   end
   return df_expr
 end
@@ -28,7 +28,7 @@ macro left_join(df1, df2)
         leftjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
-    @info MacroTools.prettify(df_expr)
+    @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
   end
   return df_expr
 end
@@ -44,7 +44,7 @@ macro right_join(df1, df2, by)
     rightjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
-    @info MacroTools.prettify(df_expr)
+    @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
   end
   return df_expr
 end
@@ -57,7 +57,7 @@ macro right_join(df1, df2)
     rightjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
-    @info MacroTools.prettify(df_expr)
+    @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
   end
   return df_expr
 end
@@ -73,7 +73,7 @@ macro inner_join(df1, df2, by)
     innerjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
-    @info MacroTools.prettify(df_expr)
+    @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
   end
   return df_expr
 end
@@ -86,7 +86,7 @@ macro inner_join(df1, df2)
     innerjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
-    @info MacroTools.prettify(df_expr)
+    @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
   end
   return df_expr
 end
@@ -102,7 +102,7 @@ macro full_join(df1, df2, by)
     outerjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
-    @info MacroTools.prettify(df_expr)
+    @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
   end
   return df_expr
 end
@@ -115,7 +115,7 @@ macro full_join(df1, df2)
     outerjoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
-    @info MacroTools.prettify(df_expr)
+    @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
   end
   return df_expr
 end
@@ -131,7 +131,7 @@ macro anti_join(df1, df2, by)
     antijoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
-    @info MacroTools.prettify(df_expr)
+    @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
   end
   return df_expr
 end
@@ -145,7 +145,7 @@ macro anti_join(df1, df2)
     antijoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
-    @info MacroTools.prettify(df_expr)
+    @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
   end
   return df_expr
 end
@@ -162,7 +162,7 @@ macro semi_join(df1, df2, by)
     semijoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
-    @info MacroTools.prettify(df_expr)
+    @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
   end
   return df_expr
 end
@@ -176,7 +176,7 @@ macro semi_join(df1, df2)
     semijoin(DataFrame($(esc(df1))), DataFrame($(esc(df2))); on = $by)
   end
   if code[]
-    @info MacroTools.prettify(df_expr)
+    @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
   end
   return df_expr
 end

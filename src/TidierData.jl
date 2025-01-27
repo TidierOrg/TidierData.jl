@@ -127,7 +127,7 @@ macro select(df, exprs...)
         df_output
     end
     if code[]
-        @info MacroTools.prettify(df_expr)
+        @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
     end
     return df_expr
 end
@@ -188,7 +188,7 @@ macro transmute(df, exprs...)
         df_output
     end
     if code[]
-        @info MacroTools.prettify(df_expr)
+        @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
     end
     return df_expr
 end
@@ -249,7 +249,7 @@ macro rename(df, exprs...)
         df_output
     end
     if code[]
-        @info MacroTools.prettify(df_expr)
+        @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
     end
     return df_expr
 end
@@ -320,7 +320,7 @@ macro mutate(df, exprs...)
         end
     end
     if code[]
-        @info MacroTools.prettify(df_expr)
+        @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
     end
     return df_expr
 end
@@ -387,7 +387,7 @@ macro summarize(df, exprs...)
         df_output
     end
     if code[]
-        @info MacroTools.prettify(df_expr)
+        @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
     end
     return df_expr
 end
@@ -455,7 +455,7 @@ macro filter(df, exprs...)
         df_output
     end
     if code[]
-        @info MacroTools.prettify(df_expr)
+        @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
     end
     return df_expr
 end
@@ -512,7 +512,7 @@ macro group_by(df, exprs...)
         df_output
     end
     if code[]
-        @info MacroTools.prettify(df_expr)
+        @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
     end
     return df_expr
 end
@@ -532,7 +532,7 @@ macro ungroup(df)
         df_output
     end
     if code[]
-        @info MacroTools.prettify(df_expr)
+        @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
     end
     return df_expr
 end
@@ -557,7 +557,7 @@ macro arrange(df, exprs...)
         end
     end
     if code[]
-        @info MacroTools.prettify(df_expr)
+        @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
     end
     return df_expr
 end
@@ -622,7 +622,7 @@ macro distinct(df, exprs...)
         end
     end
     if code[]
-        @info MacroTools.prettify(df_expr)
+        @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
     end
     return df_expr
 end
