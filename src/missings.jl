@@ -6,36 +6,47 @@ macro drop_missing(df, exprs...)
   interpolated_exprs = parse_interpolation.(exprs)
 
   tidy_exprs = [i[1] for i in interpolated_exprs]
-
   tidy_exprs = parse_tidy.(tidy_exprs)
   num_exprs = length(exprs)
+
   df_expr = quote
-    if $(esc(df)) isa GroupedDataFrame
-      local col_names = groupcols($(esc(df)))
-      
-      # A copy is only needed for grouped dataframes because the copy
-      # has to be regrouped because `dropmissing()` does not support
-      # grouped data frames.
-      local df_copy = DataFrame($(esc(df)))
-      if $num_exprs == 0
-        dropmissing!(df_copy)
+      local df_output = if $(esc(df)) isa GroupedDataFrame
+          # For a grouped dataframe, we must copy then call dropmissing!
+          local col_names = groupcols($(esc(df)))
+          local df_copy   = DataFrame($(esc(df)))
+
+          if $num_exprs == 0
+              dropmissing!(df_copy)
+          else
+              dropmissing!(df_copy, Cols($(tidy_exprs...)))
+          end
+
+          # Re-group after dropping missing
+          groupby(df_copy, col_names; sort = false)
       else
-        dropmissing!(df_copy, Cols($(tidy_exprs...)))
+          # For a regular dataframe, we can just dropmissing directly
+          if $num_exprs == 0
+              dropmissing($(esc(df)))
+          else
+              dropmissing($(esc(df)), Cols($(tidy_exprs...)))
+          end
       end
-      groupby(df_copy, col_names; sort = false) # regroup
-    else
-      if $num_exprs == 0
-        dropmissing($(esc(df)))
-      else
-        dropmissing($(esc(df)), Cols($(tidy_exprs...)))
+
+      # Logging (optional) — compares the original df vs. df_output
+      if log[]
+          @info generate_log($(esc(df)), df_output, "@drop_missing", [:rowchange])
       end
-    end
+
+      df_output
   end
-  if code[]
-    @info MacroTools.prettify(df_expr)
+
+  if code[]  # If you want to pretty-print the generated expression for debugging
+      @info MacroTools.prettify(df_expr)
   end
+
   return df_expr
 end
+
 
 function fill_missing(df::DataFrame, method::String)
   return fill_missing(df, Symbol.(names(df)), method)
@@ -91,36 +102,51 @@ $docstring_fill_missing
 """
 macro fill_missing(df, args...)
   args = parse_blocks(args...)
-  
+
   # Handling the simpler case of only a method provided
   if length(args) == 1
       method = args[1]
       return quote
-          if $(esc(df)) isa GroupedDataFrame
+          local df_output = if $(esc(df)) isa GroupedDataFrame
               combine($(esc(df))) do gd
                   fill_missing(gd, $method)
               end
           else
               fill_missing($(esc(df)), $method)
           end
+
+          if log[]
+              local base_msg = generate_log($(esc(df)), df_output, "@fill_missing", [:colchange])
+              log_changed_columns($(esc(df)), df_output; base_msg, name="@fill_missing")
+          end
+
+          df_output
       end
   end
 
   interpolated_exprs = parse_interpolation.(args[1:(length(args)-1)])
   tidy_exprs = [i[1] for i in interpolated_exprs]
   tidy_exprs = parse_tidy.(tidy_exprs)
-  
+
   method = esc(last(args))
   cols_quoted = tidy_exprs
 
   return quote
-      if $(esc(df)) isa GroupedDataFrame
+      local df_output = if $(esc(df)) isa GroupedDataFrame
           fill_missing($(esc(df)), [$(cols_quoted...)], $method)
       else
           fill_missing($(esc(df)), [$(cols_quoted...)], $method)
       end
+
+      if log[]
+          local base_msg = generate_log($(esc(df)), df_output, "@fill_missing", [:colchange])
+          log_changed_columns($(esc(df)), df_output; base_msg, name= "@fill_missing")
+      end
+
+      df_output
   end
 end
+
 
 """
 $docstring_missing_if

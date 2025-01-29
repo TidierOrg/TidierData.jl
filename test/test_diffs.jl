@@ -34,4 +34,5 @@
     @test """@left_join: added 1 new column(s): [\"c\"].\n\t- Dimension Change: 2×2 -> 2×3\n""" == 
     TidierData.log_join_changes(df1, @left_join(df1, df2), join_type = "@left_join")
     @test !isempty(@chain test_df @mutate( num2 = [2, 3, missing, 5], num5 = [5, 6, missing, 8])  @mutate( num2 = replace_missing(num2, 8)))
+    @test !isempty(@chain test_df @group_by(name) @mutate(mean = mean(num)))
 end

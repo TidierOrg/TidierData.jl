@@ -31,6 +31,7 @@ function mode_message(df1, df2, name, mode)
             message *= "$name removed: $([r for r in rem]) "
         end
         for c in added
+            df2 = df2 isa GroupedDataFrame ? parent(df2) : df2 
             col = df2[!, c]
           #  coltype = eltype(col)
             nrows = nrow(df2)
@@ -86,51 +87,65 @@ function mode_message(df1, df2, name, mode)
     return message
 end
 
-function log_changed_columns(
-    df_copy::AbstractDataFrame,
-    df_output::AbstractDataFrame,
-    base_msg::String=""
-)
+function log_changed_columns(df_copy, df_output; base_msg::String="", name::String = "@mutate")
+
+    local grouped_copy   = df_copy isa GroupedDataFrame
+    local grouped_output = df_output isa GroupedDataFrame
+    local dfc = grouped_copy   ? parent(df_copy)   : df_copy
+    local dfo = grouped_output ? parent(df_output) : df_output
+
     changed_msg = ""
-    common_cols = intersect(names(df_copy), names(df_output))
+    common_cols = intersect(names(dfc), names(dfo))
+    nrows       = nrow(dfo)
 
-    nrows = nrow(df_output)
-
+    # 1) Detect changed values in columns that exist in both DataFrames
     for c in common_cols
-        oldcol = df_copy[!, c]
-        newcol = df_output[!, c]
+        oldcol = dfc[!, c]
+        newcol = dfo[!, c]
 
-        n_changed = sum(map((o, n) ->
+        local n_changed = sum(map((o, n) ->
             (ismissing(o) && ismissing(n)) ? false : coalesce(o != n, true),
             oldcol, newcol))
 
         if n_changed > 0
-            pct_changed = nrows > 0 ? round(100 * n_changed / nrows; digits=0) : 0
-
-            old_miss = count(ismissing, oldcol)
-            new_miss = count(ismissing, newcol)
-            missing_diff = new_miss - old_miss
+            local pct_changed = nrows > 0 ? round(100 * n_changed / nrows; digits=0) : 0
+            local old_miss    = count(ismissing, oldcol)
+            local new_miss    = count(ismissing, newcol)
+            local missing_diff = new_miss - old_miss
 
             if missing_diff > 0
-                changed_msg *= "@mutate: changed $n_changed values ($(pct_changed)%) of \"$c\" ($missing_diff new missing)\n\t"
+                changed_msg *= "$name: changed $n_changed values ($(pct_changed)%) of \"$c\" ($missing_diff new missing)\n\t"
             elseif missing_diff < 0
-                changed_msg *= "@mutate: changed $n_changed values ($(pct_changed)%) of \"$c\" ($(-missing_diff) replaced missing)\n\t"
+                changed_msg *= "$name: changed $n_changed values ($(pct_changed)%) of \"$c\" ($(-missing_diff) replaced missing)\n\t"
             else
-                changed_msg *= "@mutate: changed $n_changed values ($(pct_changed)%) of \"$c\"\n\t"
+                changed_msg *= "$name: changed $n_changed values ($(pct_changed)%) of \"$c\"\n\t"
             end
         end
     end
 
-    base_msg = replace(base_msg, "No changes." => "")
+    # 2) Detect newly added columns in df_output that didn’t exist in df_copy
+    local added_cols = setdiff(names(dfo), names(dfc))
+    for c in added_cols
+        # Just like you do in mode_message, gather #unique, %missing, etc.
+        local col    = dfo[!, c]
+        local nuniq  = length(unique(col))
+        local nmiss  = count(ismissing, col)
+        local pct_na = nrows > 0 ? round(100 * nmiss / nrows; digits=1) : 0.0
+        changed_msg *= "$name: new variable \"$c\" with $nuniq unique values and $pct_na% missing.\n\t"
+    end
 
+    # 3) Produce final output
+    base_msg = replace(base_msg, "No changes." => "")
     if isempty(changed_msg)
         @info rstrip(base_msg, ['\n', '\t'])
         return base_msg
     else
-        @info rstrip((base_msg * changed_msg), ['\n', '\t'])
-        return base_msg * changed_msg
+        local combined_msg = rstrip(base_msg * changed_msg, ['\n', '\t'])
+        @info combined_msg
+        return combined_msg
     end
 end
+
 
 
 function log_join_changes(df1, df_output;

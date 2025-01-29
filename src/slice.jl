@@ -37,7 +37,7 @@ macro slice(df, exprs...)
     end
   end
   if code[]
-    @info MacroTools.prettify(df_expr)
+    @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
   end
   return df_expr
 end
