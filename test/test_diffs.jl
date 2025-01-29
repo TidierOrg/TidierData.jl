@@ -10,6 +10,8 @@
     ungroup = @ungroup(group_col)
     double = @bind_rows(test_df, test_df)
     half = @distinct(double)
+    filled = @fill_missing(df, dt2, "down");
+    grouped = @chain test_df @group_by(name) @mutate(mean = mean(num));
     
     @test "@select removed: [\"label\"] " ==
     TidierData.generate_log(test_df, remove_col, "@select", [:colchange])
@@ -32,7 +34,10 @@
     TidierData.generate_log(double, half, "@distinct", [:rowchange])
     df1 = DataFrame(a = ["a", "b"], b = 1:2); df2 = DataFrame(a = ["a", "c"], c = 3:4);
     @test """@left_join: added 1 new column(s): [\"c\"].\n\t- Dimension Change: 2×2 -> 2×3\n""" == 
-    TidierData.log_join_changes(df1, @left_join(df1, df2), join_type = "@left_join")
+    TidierData.log_join_changes(df1, leftjoin(df1, df2, on = :a), join_type = "@left_join")
     @test !isempty(@chain test_df @mutate( num2 = [2, 3, missing, 5], num5 = [5, 6, missing, 8])  @mutate( num2 = replace_missing(num2, 8)))
-    @test !isempty(@chain test_df @group_by(name) @mutate(mean = mean(num)))
+    @test TidierData.log_changed_columns(test_df, grouped; base_msg =  "") ==
+    """@mutate: new variable \"mean\" with 2 unique values and 0.0% missing."""
+    @test TidierData.log_changed_columns(df, filled; base_msg =  "", name = "@fill_missing") == 
+    """@fill_missing: changed 3 values (38.0%) of \"dt2\" (3 replaced missing)"""
 end

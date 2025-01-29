@@ -123,10 +123,8 @@ function log_changed_columns(df_copy, df_output; base_msg::String="", name::Stri
         end
     end
 
-    # 2) Detect newly added columns in df_output that didn’t exist in df_copy
     local added_cols = setdiff(names(dfo), names(dfc))
     for c in added_cols
-        # Just like you do in mode_message, gather #unique, %missing, etc.
         local col    = dfo[!, c]
         local nuniq  = length(unique(col))
         local nmiss  = count(ismissing, col)
@@ -154,10 +152,8 @@ function log_join_changes(df1, df_output;
     ni, ci = nrow(df1), ncol(df1)
     no, co = nrow(df_output), ncol(df_output)
 
-    # Which columns are new in the output that didn't exist in df1?
     new_cols = setdiff(names(df_output), names(df1))
 
-    # Construct a descriptive message
     message = ""
     if !isempty(new_cols)
         message = "$join_type: added $(length(new_cols)) new column(s): $(new_cols)."
