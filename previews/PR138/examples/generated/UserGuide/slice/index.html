@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.1">
     
     
       
@@ -275,6 +275,7 @@
   
   <span class="md-ellipsis">
     Home
+    
   </span>
   
 
@@ -295,6 +296,7 @@
   
   <span class="md-ellipsis">
     Movies dataset
+    
   </span>
   
 
@@ -315,6 +317,7 @@
   
   <span class="md-ellipsis">
     Setting Options
+    
   </span>
   
 
@@ -335,6 +338,7 @@
   
   <span class="md-ellipsis">
     @select
+    
   </span>
   
 
@@ -355,6 +359,7 @@
   
   <span class="md-ellipsis">
     @rename
+    
   </span>
   
 
@@ -375,6 +380,7 @@
   
   <span class="md-ellipsis">
     @mutate
+    
   </span>
   
 
@@ -395,6 +401,7 @@
   
   <span class="md-ellipsis">
     @summarize
+    
   </span>
   
 
@@ -415,6 +422,7 @@
   
   <span class="md-ellipsis">
     @filter
+    
   </span>
   
 
@@ -442,6 +450,7 @@
   
   <span class="md-ellipsis">
     @slice
+    
   </span>
   
 
@@ -453,6 +462,7 @@
   
   <span class="md-ellipsis">
     @slice
+    
   </span>
   
 
@@ -581,6 +591,7 @@
   
   <span class="md-ellipsis">
     @group_by
+    
   </span>
   
 
@@ -601,6 +612,7 @@
   
   <span class="md-ellipsis">
     @arrange
+    
   </span>
   
 
@@ -621,6 +633,7 @@
   
   <span class="md-ellipsis">
     @distinct
+    
   </span>
   
 
@@ -641,6 +654,7 @@
   
   <span class="md-ellipsis">
     across
+    
   </span>
   
 
@@ -661,6 +675,7 @@
   
   <span class="md-ellipsis">
     Piping
+    
   </span>
   
 
@@ -681,6 +696,7 @@
   
   <span class="md-ellipsis">
     Conditionals
+    
   </span>
   
 
@@ -701,6 +717,7 @@
   
   <span class="md-ellipsis">
     Joins
+    
   </span>
   
 
@@ -721,6 +738,7 @@
   
   <span class="md-ellipsis">
     Binding
+    
   </span>
   
 
@@ -741,6 +759,7 @@
   
   <span class="md-ellipsis">
     Pivoting
+    
   </span>
   
 
@@ -761,6 +780,7 @@
   
   <span class="md-ellipsis">
     Separating
+    
   </span>
   
 
@@ -781,6 +801,7 @@
   
   <span class="md-ellipsis">
     Nesting
+    
   </span>
   
 
@@ -801,6 +822,7 @@
   
   <span class="md-ellipsis">
     @summary
+    
   </span>
   
 
@@ -821,6 +843,7 @@
   
   <span class="md-ellipsis">
     Column names
+    
   </span>
   
 
@@ -841,6 +864,7 @@
   
   <span class="md-ellipsis">
     Interpolation
+    
   </span>
   
 
@@ -861,6 +885,7 @@
   
   <span class="md-ellipsis">
     Auto-vectorization
+    
   </span>
   
 
@@ -881,6 +906,7 @@
   
   <span class="md-ellipsis">
     Using macros
+    
   </span>
   
 
@@ -901,6 +927,7 @@
   
   <span class="md-ellipsis">
     Comparison to DF.jl
+    
   </span>
   
 
@@ -921,6 +948,7 @@
   
   <span class="md-ellipsis">
     Contribute
+    
   </span>
   
 
@@ -941,6 +969,7 @@
   
   <span class="md-ellipsis">
     Reference
+    
   </span>
   
 
@@ -1078,6 +1107,7 @@
                   
 
 
+
   <h1>@slice</h1>
 
 <div><p>Slicing rows is similar to filtering rows, except that slicing is performed based on row numbers rather tha filter criteria. In <code>TidierData.jl</code>, slicing works similarly to R's <code>tidyverse</code> in that both positive (which rows to keep) and negative (which rows to remove) slicing is supported. For <code>@slice()</code>, any valid <code>UnitRange</code> of integers is considered valid; this is not the case for <code>@select()</code> or <code>across()</code>.</p>
@@ -1170,7 +1200,7 @@
 <span class="k">end</span>
 </code></pre></div>
 <div><div style="float: left;"><span>5×3 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">row_num</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">7</td><td style="text-align: left;">d</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">6</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">10</td><td style="text-align: left;">e</td><td style="text-align: right;">4</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">4</td><td style="text-align: left;">b</td><td style="text-align: right;">2</td></tr></tbody></table></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">row_num</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">4</td><td style="text-align: left;">b</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">6</td><td style="text-align: left;">c</td><td style="text-align: right;">2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">9</td><td style="text-align: left;">e</td><td style="text-align: right;">3</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">3</td><td style="text-align: left;">b</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">1</td><td style="text-align: left;">a</td><td style="text-align: right;">1</td></tr></tbody></table></div>
 
 <p><a id="Slice-the-min"></a></p>
 <p><a id="Slice-the-min-1"></a></p>
@@ -1345,7 +1375,7 @@
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy", "content.code.annotate", "navigation.top", "navigation.footer", "search.highlight", "search.share", "search.suggest", "toc.follow", "header.autohide"], "search": "../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.5090c770.min.js"></script>
       
         <script src="../../../../javascripts/mathjax.js"></script>
       
