@@ -5,6 +5,8 @@ macro slice(df, exprs...)
   exprs = parse_blocks(exprs...)
 
   interpolated_exprs = parse_interpolation.(exprs; from_slice = true)
+
+
   tidy_exprs = [i[1] for i in interpolated_exprs]
   tidy_exprs = parse_tidy.(tidy_exprs; from_slice = true)
 
@@ -13,7 +15,7 @@ macro slice(df, exprs...)
 
   df_expr = quote
     local df_copy = $(esc(df)) # not a copy
-    
+
     if df_copy isa GroupedDataFrame
       if all(.!$negated)
         combine(df_copy; ungroup = false) do sdf
@@ -28,12 +30,14 @@ macro slice(df, exprs...)
       end
     else
       if all(.!$negated)
-        df_copy[Iterators.flatten([$(tidy_exprs...)]) |> collect,:]
+        df_copy = $(esc(df))[Iterators.flatten([$(tidy_exprs...)]) |> collect,:]
       elseif all($negated)
-        df_copy[Iterators.flatten([$(tidy_exprs...)]) |> collect |> Not,:]
+        df_copy = $(esc(df))[Iterators.flatten([$(tidy_exprs...)]) |> collect |> Not,:]
       else
         throw("@slice() indices must either be all positive or all negative.")
       end
+      log[] && @info generate_log($(esc(df)), df_copy, "@slice", [:rowchange]) # COV_EXCL_LINE
+      df_copy
     end
   end
   if code[]
@@ -41,6 +45,7 @@ macro slice(df, exprs...)
   end
   return df_expr
 end
+
 
 """
 $docstring_slice_sample

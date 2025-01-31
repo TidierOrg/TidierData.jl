@@ -32,7 +32,6 @@ macro drop_missing(df, exprs...)
           end
       end
 
-      # Logging (optional) — compares the original df vs. df_output
       if log[]
           @info generate_log($(esc(df)), df_output, "@drop_missing", [:rowchange])
       end
