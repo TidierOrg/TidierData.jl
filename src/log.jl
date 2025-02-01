@@ -22,6 +22,7 @@ end
 
 
 
+
 function mode_message(df1, df2, name, mode)
     message = ""
     if mode == :colchange
@@ -42,14 +43,19 @@ function mode_message(df1, df2, name, mode)
         end
 
     elseif mode == :rowchange
-        row_change = nrow(df2) - nrow(df1)
+        row_change = (df2 isa DataFrames.GroupedDataFrame ? nrow(parent(df2)) : nrow(df2)) -
+                    (df1 isa DataFrames.GroupedDataFrame ? nrow(parent(df1)) : nrow(df1))
         if row_change > 0
-            pct = nrow(df1) == 0 ? 100 : round(100*row_change/nrow(df1); digits=0)
-            message *= "$name: added $row_change rows ($pct%), $(nrow(df2)) rows total. "
+            base_nrow = df1 isa DataFrames.GroupedDataFrame ? nrow(parent(df1)) : nrow(df1)
+            pct = base_nrow == 0 ? 100 : round(100 * row_change / base_nrow; digits=0)
+            total_rows = df2 isa DataFrames.GroupedDataFrame ? nrow(parent(df2)) : nrow(df2)
+            message *= "$name: added $row_change rows ($pct%), $total_rows rows total. "
         elseif row_change < 0
             n_removed = -row_change
-            pct = nrow(df1) == 0 ? 100 : round(100*n_removed/nrow(df1); digits=0)
-            message *= "$name: removed $n_removed rows ($pct%), $(nrow(df2)) rows remaining. "
+            base_nrow = df1 isa DataFrames.GroupedDataFrame ? nrow(parent(df1)) : nrow(df1)
+            pct = base_nrow == 0 ? 100 : round(100 * n_removed / base_nrow; digits=0)
+            remaining = df2 isa DataFrames.GroupedDataFrame ? nrow(parent(df2)) : nrow(df2)
+            message *= "$name: removed $n_removed rows ($pct%), $remaining rows remaining. "
         end
     elseif mode == :newsize
         type = "DataFrame"
