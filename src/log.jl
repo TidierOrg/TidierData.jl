@@ -163,6 +163,9 @@ function log_join_changes(df1, df_output;
     message = ""
     if !isempty(new_cols)
         message = "$join_type: added $(length(new_cols)) new column(s): $(new_cols)."
+    else
+        dropped = setdiff(names(df_output) ,setdiff(names(df_output), names(df1)))
+        message = "$join_type: removed $(length(dropped)) new column(s): $(dropped)."
     end
 
     message *= """
@@ -170,4 +173,37 @@ function log_join_changes(df1, df_output;
                """
     @info message
     return message
+end
+
+
+function log_unite_changes(df::DataFrame, df_after::DataFrame, new_col::Symbol; remove::Bool=true, join_type::String="@unite")
+
+    new_data = df_after[!, new_col]
+    uniq_vals = unique(new_data)
+    n_missing = count(ismissing, new_data)
+    pct_missing = nrow(df_after) > 0 ? round(100 * n_missing / nrow(df_after); digits=1) : 0.0
+    msg = "$join_type: added variable \"$(new_col)\" with $(length(uniq_vals)) unique value(s), $(pct_missing)% missing"
+    #println(typeof(from_cols))
+   # println(collect(from_cols))
+    dropped = setdiff(names(df), names(df_after))
+    remove ? msg *= "\n\t\tremoved $(length(dropped)) columns: $dropped\n" : msg *= ".\n"
+    return  msg
+end
+
+function log_separate_changes(df_before::DataFrame, df_after::DataFrame, into)
+    msg = "@separate added $(length(into)) new columns"
+    dropped_cols = setdiff(setdiff(names(df_before), names(df_after)), into)
+    !isempty(dropped_cols) ? msg *= " and removed column \"$(dropped_cols[1])\" \n" : msg *= "\n"
+     
+    for col in into
+        if col in names(df_after)
+            # Gather unique values and missing count from the new column
+            uniq_vals = unique(df_after[!, col])
+            n_missing = round(count(ismissing, df_after[!, col]) / nrow(df_after), digits = 2) * 100
+            msg *= "\t- $(col): $(length(uniq_vals)) unique values, $(n_missing)% missing\n"
+        else
+            msg *= "\t- $(col): not found in the output DataFrame.\n"
+        end
+    end
+    return msg
 end

@@ -10,6 +10,7 @@
     ungroup = @ungroup(group_col)
     double = @bind_rows(test_df, test_df)
     half = @distinct(double)
+    df = DataFrame( dt1 = [missing, 0.2, missing, missing, 1, missing, 5, 6], dt2 = [0.3, 2, missing, 3, missing, 5, 6,missing])
     filled = @fill_missing(df, dt2, "down");
     grouped = @chain test_df @group_by(name) @mutate(mean = mean(num));
     
@@ -40,4 +41,12 @@
     """@mutate: new variable \"mean\" with 2 unique values and 0.0% missing."""
     @test TidierData.log_changed_columns(df, filled; base_msg =  "", name = "@fill_missing") == 
     """@fill_missing: changed 3 values (38.0%) of \"dt2\" (3 replaced missing)"""
+    dfu = DataFrame( b = ["1", "2", "3"], c = ["1", "2", "3"], d = [missing, missing, "3"]); dfud = @unite(dfu, new_col, (b, c, d), "-");
+    @test TidierData.log_unite_changes(dfu, dfud, :new_col) == 
+    "@unite: added variable \"new_col\" with 3 unique value(s), 0.0% missing\n\t\tremoved 3 columns: [\"b\", \"c\", \"d\"]\n"
+    df = DataFrame(a = ["1-1", "2-2", "3-3-3"]); df2 = @separate(df, a, [b, c, d], "-")
+    @test strip(TidierData.log_separate_changes(df, df2, [:b, :c, :d])) ==
+      strip("""
+@separate added 3 new columns and removed column \"a\" \n\t- b: not found in the output DataFrame.\n\t- c: not found in the output DataFrame.\n\t- d: not found in the output DataFrame.
+      """)
 end

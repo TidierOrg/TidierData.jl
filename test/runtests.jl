@@ -19,9 +19,6 @@ test_df = DataFrame(
     name=["A", "B", "A", "B"],
     num=[1, 2, 3, 4]
 )
-df = DataFrame(
-                 dt1 = [missing, 0.2, missing, missing, 1, missing, 5, 6],
-                 dt2 = [0.3, 2, missing, 3, missing, 5, 6,missing])
 
 @testset "TidierData" verbose = true begin
     include("test_pivots.jl")

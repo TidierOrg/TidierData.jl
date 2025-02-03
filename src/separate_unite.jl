@@ -65,14 +65,17 @@ function separate(df::DataFrame, col::Symbol, into::Vector{Symbol}, sep::Union{R
       elseif i == length(into) && merge
         new_df[:, into[i]] = map(x -> length(x) >= i ? join(x[i:end], sep) : missing, new_cols)
       else
-        for i in 1:max_cols
-          new_df[:, into[i]] = map(x -> safe_getindex(x, i, missing), new_cols)
-      end
-
+          for i in 1:max_cols
+              new_df[:, into[i]] = map(x -> safe_getindex(x, i, missing), new_cols)
+          end
       end
   end
 
   new_df = select(new_df, Not(col))
+  
+  if log[]
+    @info log_separate_changes(df, new_df, into) 
+  end
 
   return new_df
 end
@@ -111,7 +114,7 @@ macro unite(df, new_col, from_cols, sep, args...)
   
   return quote
       unite($(esc(df)), $new_col_quoted, [$(from_cols_expr)], $(esc(sep)); remove=$(esc(remove)))
-  end
+    end
 end
 
 
@@ -120,11 +123,13 @@ function unite(df::DataFrame, new_col_name::Symbol, columns, sep::String="_"; re
   cols_expr = columns isa Expr ? (columns,) : columns
   column_symbols = names(df, Cols(cols_expr...)) 
   new_df[:, new_col_name] = [join(skipmissing(row), sep) for row in eachrow(df[:, column_symbols])]
-  
+
   if remove
       new_df = select(new_df, Not(column_symbols))
   end
-  
+  if log[] 
+    @info log_unite_changes(df, df_output, new_col_name; remove=remove, join_type="@unite")
+  end
   return new_df
 end
 
@@ -229,5 +234,10 @@ function separate_rows(df::Union{DataFrame, GroupedDataFrame}, columns, delimite
   if is_grouped
     temp_df = groupby(temp_df, grouping_columns)
    end
+
+  if log[]
+    @info  generate_log(df, temp_df, "@separate_rows", [:rowchange])
+  end
+
   return temp_df
 end
