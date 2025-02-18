@@ -29,7 +29,7 @@ function mode_message(df1, df2, name, mode)
         added = setdiff(names(df2), names(df1))
         rem = setdiff(names(df1), names(df2))
         if length(rem) != 0
-            message *= "$name removed: $([r for r in rem]) "
+            message *= "$name removed: $([r for r in rem]) \n\t"
         end
         for c in added
             df2 = df2 isa GroupedDataFrame ? parent(df2) : df2 
@@ -90,7 +90,7 @@ function mode_message(df1, df2, name, mode)
             message *= "$name removed groups: $([g for g in g1][1])"
         end
     end
-    return message
+    return strip(message, ['\n','\t'])
 end
 
 function log_changed_columns(df_copy, df_output; base_msg::String="", name::String = "@mutate")

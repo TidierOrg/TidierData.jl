@@ -128,7 +128,7 @@ function unite(df::DataFrame, new_col_name::Symbol, columns, sep::String="_"; re
       new_df = select(new_df, Not(column_symbols))
   end
   if log[] 
-    @info log_unite_changes(df, df_output, new_col_name; remove=remove, join_type="@unite")
+    @info log_unite_changes(df, new_df, new_col_name; remove=remove, join_type="@unite")
   end
   return new_df
 end

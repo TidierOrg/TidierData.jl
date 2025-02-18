@@ -16,14 +16,15 @@
     
     @test "@select removed: [\"label\"] " ==
     TidierData.generate_log(test_df, remove_col, "@select", [:colchange])
-    @test "@mutate: new variable \"num2\" with 4 unique values and 0.0% missing. \n\t" ==
+    @test "@mutate: new variable \"num2\" with 4 unique values and 0.0% missing. " ==
     TidierData.generate_log(test_df, add_col, "@mutate", [:colchange])
     @test "@filter: removed 2 rows (50.0%), 2 rows remaining. " ==
     TidierData.generate_log(test_df, remove_rows, "@filter", [:rowchange])
     @test "@transmute removed: [\"name\", \"num\"] " ==
     TidierData.generate_log(test_df, transmute_col, "@transmute", [:colchange])
-    @test "@transmute removed: [\"label\", \"name\", \"num\"] @transmute: new variable \"labelstring\" with 2 unique values and 0.0% missing. \n\t" == TidierData.generate_log(test_df, transmute_col2, "@transmute", [:colchange])
-    @test "@transmute removed: [\"label\"] @transmute: new variable \"l\" with 2 unique values and 0.0% missing. \n\t" ==
+    @test "@transmute removed: [\"label\", \"name\", \"num\"] \n\t@transmute: new variable \"labelstring\" with 2 unique values and 0.0% missing. " == 
+    TidierData.generate_log(test_df, transmute_col2, "@transmute", [:colchange])
+    @test "@transmute removed: [\"label\"] \n\t@transmute: new variable \"l\" with 2 unique values and 0.0% missing. " ==
     TidierData.generate_log(test_df, rename_col, "@transmute", [:colchange])
     @test "@summarize returned a DataFrame (1 row, 1 column). " ==
     TidierData.generate_log(test_df, summarize_col, "@summarize", [:newsize])
