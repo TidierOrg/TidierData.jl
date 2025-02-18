@@ -49,11 +49,11 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
             for item in df_copy[!, col]
                 union!(keys_set, keys(item))
             end
-  
+        
             for key in keys_set
                 new_col_name = names_sep === nothing ? Symbol(key) : Symbol(string(col, names_sep, key))
-                df_copy[!, new_col_name] = getindex.(df_copy[!, col], key)
-            end
+                df_copy[!, new_col_name] = get.(df_copy[!, col], Ref(key), missing)
+            end        
   
         elseif col_type <: Array
             n = length(first(df_copy[!, col]))

@@ -3234,6 +3234,17 @@ julia> @unnest_wider(df2, b:c, names_sep = "_")
 ─────┼───────────────────────────────────
    1 │     1      1      2      5      6
    2 │     2      3      4      7      8
+
+
+julia> a1=Dict("a"=>1, "b"=>Dict("c"=>1, "d"=>2)); a2=Dict("a"=>1, "b"=>Dict("c"=>1)); a=[a1;a2]; df=DataFrame(a);
+
+julia> @unnest_wider(df, b)
+2×3 DataFrame
+ Row │ a      c      d       
+     │ Int64  Int64  Int64?  
+─────┼───────────────────────
+   1 │     1      1        2
+   2 │     1      1  missing 
 ```
 """
 
