@@ -59,9 +59,34 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
             n = length(first(df_copy[!, col]))
             for i in 1:n
                 new_col_name = names_sep === nothing ? Symbol(string(col, i)) : Symbol(string(col, names_sep, i))
-                df_copy[!, new_col_name] = getindex.(df_copy[!, col], i)
+                try 
+                    df_copy[!, new_col_name] = getindex.(df_copy[!, col], i)
+                catch
+                    throw("Try using `@unnest_longer($col)` before `@unnest_wider(attribute)`")
+                end
             end
-  
+        elseif any(x -> x isa Dict, df_copy[!, col])
+            keys_set = Set{String}()
+            for item in df_copy[!, col]
+                if item isa Dict
+                    union!(keys_set, keys(item))
+                end
+            end
+            for key in keys_set
+                new_col_name = names_sep === nothing ? Symbol(key) : Symbol(string(col, names_sep, key))
+                df_copy[!, new_col_name] = [item isa Dict ? get(item, key, missing) : missing for item in df_copy[!, col]]
+            end
+        elseif any(x -> x isa Pair, df_copy[!, col])
+            keys_set = Set{Any}()
+            for item in df_copy[!, col]
+                if item isa Pair
+                    push!(keys_set, item.first)
+                end
+            end
+            for key in keys_set
+                new_col_name = names_sep === nothing ? Symbol(string(key)) : Symbol(string(col, names_sep, key))
+                df_copy[!, new_col_name] = [item isa Pair && item.first == key ? item.second : missing for item in df_copy[!, col]]
+            end
         else
             error("Column $col contains neither dictionaries nor arrays nor DataFrames")
         end
