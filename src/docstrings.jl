@@ -3245,6 +3245,18 @@ julia> @unnest_wider(df, b)
 ─────┼───────────────────────
    1 │     1      1        2
    2 │     1      1  missing 
+
+julia> a0=Dict("a"=>0, "b"=>0);  a1=Dict("a"=>1, "b"=>Dict("c"=>1, "d"=>2)); a2=Dict("a"=>2, "b"=>Dict("c"=>2)); a3=Dict("a"=>3, "b"=>Dict("c"=>3)); a=[a0;a1;a2;a3]; df3=DataFrame(a);
+
+julia> @unnest_wider(df3, b)
+4×3 DataFrame
+ Row │ a      c        d       
+     │ Int64  Int64?   Int64?  
+─────┼─────────────────────────
+   1 │     0  missing  missing 
+   2 │     1        1        2
+   3 │     2        2  missing 
+   4 │     3        3  missing 
 ```
 """
 
