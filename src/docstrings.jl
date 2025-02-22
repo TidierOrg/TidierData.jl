@@ -3391,10 +3391,10 @@ julia> @chain df begin
 
 julia> @chain df begin
          @nest(data = b:c_2)
-         @unnest_wider(data)
+         @unnest_wider(data, names_sep = nothing)
        end
 5×4 DataFrame
- Row │ a     data_b        data_c_1      data_c_2     
+ Row │ a     b             c_1           c_2          
      │ Char  Any           Any           Any          
 ─────┼────────────────────────────────────────────────
    1 │ a     [1, 2, 3]     [16, 17, 18]  [31, 32, 33]
@@ -3405,33 +3405,33 @@ julia> @chain df begin
 
 julia> @chain df begin
          @nest(data = -a)
-         @unnest_wider(data) # wider first
+         @unnest_wider(data, names_sep = nothing) # wider first
          @unnest_longer(-a)  # then longer
        end
 15×4 DataFrame
- Row │ a     data_b  data_c_1  data_c_2 
-     │ Char  Int64   Int64     Int64    
-─────┼──────────────────────────────────
-   1 │ a          1        16        31
-   2 │ a          2        17        32
-   3 │ a          3        18        33
-   4 │ b          4        19        34
-   5 │ b          5        20        35
-   6 │ b          6        21        36
-   7 │ c          7        22        37
-   8 │ c          8        23        38
-   9 │ c          9        24        39
-  10 │ d         10        25        40
-  11 │ d         11        26        41
-  12 │ d         12        27        42
-  13 │ e         13        28        43
-  14 │ e         14        29        44
-  15 │ e         15        30        45
+ Row │ a     b      c_1    c_2   
+     │ Char  Int64  Int64  Int64 
+─────┼───────────────────────────
+   1 │ a         1     16     31
+   2 │ a         2     17     32
+   3 │ a         3     18     33
+   4 │ b         4     19     34
+   5 │ b         5     20     35
+   6 │ b         6     21     36
+   7 │ c         7     22     37
+   8 │ c         8     23     38
+   9 │ c         9     24     39
+  10 │ d        10     25     40
+  11 │ d        11     26     41
+  12 │ d        12     27     42
+  13 │ e        13     28     43
+  14 │ e        14     29     44
+  15 │ e        15     30     45
 
 julia> @chain df begin
          @nest(data = -a)
          @unnest_longer(data) # longer first
-         @unnest_wider(-a)    # then wider
+         @unnest_wider(-a)    # then wider, names sep defualting to "_"
        end
 15×4 DataFrame
  Row │ a     data_b  data_c_2  data_c_1 
