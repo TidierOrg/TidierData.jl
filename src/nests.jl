@@ -10,40 +10,43 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
         col_type = typeof(df_copy[1, col])
     
         if col_type <: DataFrame
-          # Handling DataFrames
-          nested_col_names = unique([name for i in 1:nrow(df_copy) for name in names(df_copy[i, col])])
+            # Handling DataFrames
+            nested_col_names = unique([name for i in 1:nrow(df_copy) for name in names(df_copy[i, col])])
     
-          for nested_col in nested_col_names
-              new_col_name = names_sep === nothing ? nested_col : Symbol(string(col, names_sep, nested_col))
-              combined_nested_col = Any[missing for _ in 1:nrow(df_copy)]
+            for nested_col in nested_col_names
+                new_col_name = names_sep === nothing ?
+                    Symbol(string(col, "_", nested_col)) :
+                    Symbol(string(col, names_sep, nested_col))
+                combined_nested_col = Any[missing for _ in 1:nrow(df_copy)]
     
-              for row in 1:nrow(df_copy)
-                  nested_df = df_copy[row, col]
-                  if ncol(nested_df) > 0 && haskey(nested_df[1, :], nested_col)
-                      combined_nested_col[row] = nested_df[!, nested_col]
-                      # Extract single value if there's only one element
-                      if length(combined_nested_col[row]) == 1
-                          combined_nested_col[row] = combined_nested_col[row][1]
-                      end
-                  end
-              end
-              df_copy[!, new_col_name] = combined_nested_col
-          end
-      elseif col_type <: NamedTuple || col_type <: Union{NamedTuple, Missing}
-          # Handling NamedTuples and missing values
-          keys_set = Set{Symbol}()
-          for item in df_copy[!, col]
-              if item !== missing
-                  union!(keys_set, keys(item))
-              end
-          end
+                for row in 1:nrow(df_copy)
+                    nested_df = df_copy[row, col]
+                    if ncol(nested_df) > 0 && haskey(nested_df[1, :], nested_col)
+                        combined_nested_col[row] = nested_df[!, nested_col]
+                        # Extract single value if there's only one element
+                        if length(combined_nested_col[row]) == 1
+                            combined_nested_col[row] = combined_nested_col[row][1]
+                        end
+                    end
+                end
+                df_copy[!, new_col_name] = combined_nested_col
+            end
+        elseif col_type <: NamedTuple || col_type <: Union{NamedTuple, Missing}
+            # Handling NamedTuples and missing values
+            keys_set = Set{Symbol}()
+            for item in df_copy[!, col]
+                if item !== missing
+                    union!(keys_set, keys(item))
+                end
+            end
     
-          for key in keys_set
-              new_col_name = names_sep === nothing ? key : Symbol(string(col, names_sep, key))
-              df_copy[!, new_col_name] = [item !== missing ? get(item, key, missing) : missing for item in df_copy[!, col]]
-          end
+            for key in keys_set
+                new_col_name = names_sep === nothing ?
+                    Symbol(string(col, "_", key)) :
+                    Symbol(string(col, names_sep, key))
+                df_copy[!, new_col_name] = [item !== missing ? get(item, key, missing) : missing for item in df_copy[!, col]]
+            end
       
-  
         elseif col_type <: Dict
             keys_set = Set{String}()
             for item in df_copy[!, col]
@@ -51,14 +54,18 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
             end
         
             for key in keys_set
-                new_col_name = names_sep === nothing ? Symbol(key) : Symbol(string(col, names_sep, key))
+                new_col_name = names_sep === nothing ?
+                    Symbol(string(col, "_", key)) :
+                    Symbol(string(col, names_sep, key))
                 df_copy[!, new_col_name] = get.(df_copy[!, col], Ref(key), missing)
             end        
   
         elseif col_type <: Array
             n = length(first(df_copy[!, col]))
             for i in 1:n
-                new_col_name = names_sep === nothing ? Symbol(string(col, i)) : Symbol(string(col, names_sep, i))
+                new_col_name = names_sep === nothing ?
+                    Symbol(string(col, i)) :
+                    Symbol(string(col, names_sep, i))
                 try 
                     df_copy[!, new_col_name] = getindex.(df_copy[!, col], i)
                 catch
@@ -73,7 +80,9 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
                 end
             end
             for key in keys_set
-                new_col_name = names_sep === nothing ? Symbol(key) : Symbol(string(col, names_sep, key))
+                new_col_name = names_sep === nothing ?
+                    Symbol(string(col, "_", key)) :
+                    Symbol(string(col, names_sep, key))
                 df_copy[!, new_col_name] = [item isa Dict ? get(item, key, missing) : missing for item in df_copy[!, col]]
             end
         elseif any(x -> x isa Pair, df_copy[!, col])
@@ -84,7 +93,9 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
                 end
             end
             for key in keys_set
-                new_col_name = names_sep === nothing ? Symbol(string(key)) : Symbol(string(col, names_sep, key))
+                new_col_name = names_sep === nothing ?
+                    Symbol(string(col, "_", key)) :
+                    Symbol(string(col, names_sep, key))
                 df_copy[!, new_col_name] = [item isa Pair && item.first == key ? item.second : missing for item in df_copy[!, col]]
             end
         else

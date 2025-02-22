@@ -69,3 +69,34 @@ df3 = DataFrame(
     @unnest_wider(y)
     @unnest_longer(a:c, keep_empty = true)
 end
+
+# ## unnest JSON files 
+
+using JSON 
+
+jsonstr = """
+       {
+           "name": "Chris",
+           "age": 23,
+           "address": {
+               "city": "New York",
+               "country": "America"
+           },
+           "friends": [
+               {
+                   "name": "Emily",
+                   "hobbies": [ "biking", "music", "gaming" ]
+               },
+               {
+                   "name": "John",
+                   "hobbies": [ "soccer", "gaming" ]
+               }
+           ]
+       }
+       """;
+
+DataFrame(JSON.parse(jsonstr))
+
+@chain DataFrame(dataSet) begin
+       @unnest_wider address friends
+end
