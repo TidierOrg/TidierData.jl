@@ -63,6 +63,7 @@ df3 = DataFrame(
         DataFrame(a = ["A", "B", "C"], b = [13, 12, 11], c = [4, 4, 4])
     ]
 )
+
 # `df3` contains dataframes in with different widths that also contain arrays. Chaining together `@unnest_wider` and `@unnest_longer` will unnest the columns to tuples first and then they will be fully unnested after.
 
 @chain df3 begin 
@@ -72,7 +73,7 @@ end
 
 # ## unnest JSON files 
 
-using JSON 
+using JSON
 
 json_str = """
        {
@@ -98,5 +99,5 @@ json_str = """
 json_df = DataFrame(JSON.parse(json_str))
 
 @chain json_df begin
-       @unnest_wider address friends
+       @unnest_wider(address, friends)
 end
