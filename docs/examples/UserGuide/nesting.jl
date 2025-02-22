@@ -74,7 +74,7 @@ end
 
 using JSON 
 
-jsonstr = """
+json_str = """
        {
            "name": "Chris",
            "age": 23,
@@ -95,8 +95,8 @@ jsonstr = """
        }
        """;
 
-DataFrame(JSON.parse(jsonstr))
+json_df = DataFrame(JSON.parse(json_str))
 
-@chain DataFrame(dataSet) begin
+@chain json_df begin
        @unnest_wider address friends
 end
