@@ -63,7 +63,6 @@ df3 = DataFrame(
         DataFrame(a = ["A", "B", "C"], b = [13, 12, 11], c = [4, 4, 4])
     ]
 )
-
 # `df3` contains dataframes in with different widths that also contain arrays. Chaining together `@unnest_wider` and `@unnest_longer` will unnest the columns to tuples first and then they will be fully unnested after.
 
 @chain df3 begin 
