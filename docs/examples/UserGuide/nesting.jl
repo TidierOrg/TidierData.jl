@@ -66,8 +66,8 @@ df3 = DataFrame(
 # `df3` contains dataframes in with different widths that also contain arrays. Chaining together `@unnest_wider` and `@unnest_longer` will unnest the columns to tuples first and then they will be fully unnested after.
 
 @chain df3 begin 
-    @unnest_wider(y, name_sep = nothing)
-    @unnest_longer(a:c, keep_empty = true)
+    @unnest_wider(y)
+    @unnest_longer(y_a:y_c, keep_empty = true)
 end
 
 # ## unnest JSON files 
