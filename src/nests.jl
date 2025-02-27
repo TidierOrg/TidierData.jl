@@ -124,6 +124,8 @@ macro unnest_wider(df, exprs...)
   return df_expr
 end
 
+using DataFrames
+
 function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols; indices_include::Union{Nothing, Bool}=nothing, keep_empty::Bool=false)
     is_grouped = df isa GroupedDataFrame
     grouping_columns = is_grouped ? groupcols(df) : Symbol[]
@@ -140,10 +142,28 @@ function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols; indices_inc
                            x for x in df_copy[!, col]]
     end
   
+    # Pad rows if columns have different lengths.
+    for i in 1:nrow(df_copy)
+        # Collect lengths of each non-missing iterable in this row
+        current_lengths = [length(df_copy[i, col]) for col in column_symbols if !ismissing(df_copy[i, col])]
+        if !isempty(current_lengths)
+            maxlen = maximum(current_lengths)
+            for col in column_symbols
+                if !ismissing(df_copy[i, col])
+                    arr = df_copy[i, col]
+                    if length(arr) < maxlen
+                        df_copy[i, col] = vcat(arr, fill(missing, maxlen - length(arr)))
+                    end
+                end
+            end
+        end
+    end
+  
     # Apply filter if keep_empty is false
     if !keep_empty
       df_copy = filter(row -> !any(ismissing, [row[col] for col in column_symbols]), df_copy)
     end
+  
     # Flatten the dataframe
     flattened_df = flatten(df_copy, column_symbols)
   
@@ -161,6 +181,7 @@ function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols; indices_inc
   
     return flattened_df
 end
+
   
 """
 $docstring_unnest_longer
