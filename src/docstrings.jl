@@ -2037,7 +2037,18 @@ julia> @chain df begin
    1 │ b           15
    2 │ missing      8
    3 │ c            7
-   4 │ a            6       
+   4 │ a            6
+
+julia> @chain df begin
+         @count(a)
+         @count(n)
+       end 
+2×2 DataFrame
+ Row │ n      nn    
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     3      2
+   2 │     1      2      
 ```
 """
 
