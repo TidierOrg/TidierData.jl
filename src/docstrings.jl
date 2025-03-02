@@ -3452,6 +3452,17 @@ julia> @chain df begin
   13 │ e         13        43        28
   14 │ e         14        44        29
   15 │ e         15        45        30
+
+julia> @chain df @group_by(a) @nest(data = b:c_2) @ungroup()
+5×2 DataFrame
+ Row │ a     data          
+     │ Char  DataFrame     
+─────┼─────────────────────
+   1 │ a     3×3 DataFrame 
+   2 │ b     3×3 DataFrame 
+   3 │ c     3×3 DataFrame 
+   4 │ d     3×3 DataFrame 
+   5 │ e     3×3 DataFrame 
 ```
 """
 
