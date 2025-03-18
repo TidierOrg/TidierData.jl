@@ -65,6 +65,18 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
                     throw("Try using `@unnest_longer($col)` before `@unnest_wider(attribute)`")
                 end
             end
+        elseif col_type <: Tuple || (col_type <: Union{Tuple, Missing})
+            nonmissing = filter(x -> x !== missing, df_copy[!, col])
+            n = length(first(nonmissing))
+            for i in 1:n
+                new_col_name = names_sep === nothing ? Symbol(string(col, i)) : Symbol(string(col, names_sep, i))
+                try 
+                    df_copy[!, new_col_name] = getindex.(df_copy[!, col], i)
+                catch
+                    throw("Error unnesting tuple from column $col. Try using `@unnest_longer($col)` before `@unnest_wider(attribute)`")
+                end
+            end
+        
         elseif any(x -> x isa Dict, df_copy[!, col])
             keys_set = Set{String}()
             for item in df_copy[!, col]

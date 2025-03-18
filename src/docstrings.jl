@@ -3257,6 +3257,24 @@ julia> @unnest_wider(df3, b)
    2 │     1        1        2
    3 │     2        2  missing 
    4 │     3        3  missing 
+
+julia> df = DataFrame(x1 = ["one", "two", "three"], x2 = [(1, "a"), (2, "b"), (3, "c")])
+3×2 DataFrame
+ Row │ x1      x2       
+     │ String  Tuple…   
+─────┼──────────────────
+   1 │ one     (1, "a")
+   2 │ two     (2, "b")
+   3 │ three   (3, "c")
+
+julia> @unnest_wider df x2
+3×3 DataFrame
+ Row │ x1      x2_1   x2_2   
+     │ String  Int64  String 
+─────┼───────────────────────
+   1 │ one         1  a
+   2 │ two         2  b
+   3 │ three       3  c
 ```
 """
 
