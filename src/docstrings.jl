@@ -2257,6 +2257,9 @@ julia> as_float("1.5")
 
 julia> as_float(missing)
 missing
+
+julia> as_float("aa")
+missing
 ```
 """
 
@@ -2286,6 +2289,9 @@ julia> as_integer("2.5")
 2
 
 julia> as_integer(missing)
+missing
+
+julia> as_integer("letters")
 missing
 ```
 """
