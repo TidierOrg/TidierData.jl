@@ -55,6 +55,13 @@ macro count(df, exprs...)
   exprs = parse_blocks(exprs...)
   col_names, wt, sort = parse_count_args(exprs...)
 
+  local candidate = "n"
+  while any(x -> (isa(x, Symbol) && x == Symbol(candidate)) ||
+                 (isa(x, Expr) && x == :( $(Symbol(candidate)) )), col_names)
+    candidate *= "n"
+  end
+  local count_name = Symbol(candidate)
+
   col_names_quoted = QuoteNode(col_names)
   wt_quoted = QuoteNode(wt)
 
@@ -69,14 +76,14 @@ macro count(df, exprs...)
       end
       @chain _ begin
         if isnothing($wt_quoted)
-          @summarize(_, n = n())
+          @summarize(_, $(count_name) = n())
         else
-          @summarize(_, n = sum(skipmissing($wt)))
+          @summarize(_, $(count_name) = sum(skipmissing($wt)))
         end
       end
       @chain _ begin
         if $sort == true
-          @arrange(_, desc(n))
+          @arrange(_, desc($(count_name)))
         else
           _
         end

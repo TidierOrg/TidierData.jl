@@ -1,5 +1,3 @@
-# COV_EXCL_START
-
 function generate_log(df_copy, df_output, name, modes)
     message = ""
     for mode in modes
@@ -209,5 +207,3 @@ function log_separate_changes(df_before::DataFrame, df_after::DataFrame, into)
     end
     return msg
 end
-
-# COV_EXCL_STOP
