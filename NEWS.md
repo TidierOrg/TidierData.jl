@@ -2,6 +2,7 @@
 
 ## v.0.17.0 - 2025-03-24
 - Bugfix: `@count()` can now be called multiple times. If column `n` already exists, then the new column containing the count will be `nn` (and so on).
+- Bugfix: `@unnest_wider()` now works on data where keys are missing
 - Adds logging ability to track changes to data frames with `TidierData_set("log", true)`
 - Adds docs describing logging and code printing
 

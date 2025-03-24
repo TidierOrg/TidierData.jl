@@ -1,4 +1,4 @@
-function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::Union{String, Nothing}=nothing)
+function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::Union{String, Nothing}="_")
     is_grouped = df isa GroupedDataFrame
     grouping_columns = is_grouped ? groupcols(df) : Symbol[]
     df_copy = copy(is_grouped ? parent(df) : df)
@@ -49,19 +49,56 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
             for item in df_copy[!, col]
                 union!(keys_set, keys(item))
             end
-  
+        
             for key in keys_set
                 new_col_name = names_sep === nothing ? Symbol(key) : Symbol(string(col, names_sep, key))
-                df_copy[!, new_col_name] = getindex.(df_copy[!, col], key)
-            end
+                df_copy[!, new_col_name] = get.(df_copy[!, col], Ref(key), missing)
+            end        
   
         elseif col_type <: Array
             n = length(first(df_copy[!, col]))
             for i in 1:n
                 new_col_name = names_sep === nothing ? Symbol(string(col, i)) : Symbol(string(col, names_sep, i))
-                df_copy[!, new_col_name] = getindex.(df_copy[!, col], i)
+                try 
+                    df_copy[!, new_col_name] = getindex.(df_copy[!, col], i)
+                catch
+                    throw("Try using `@unnest_longer($col)` before `@unnest_wider(attribute)`")
+                end
             end
-  
+        elseif col_type <: Tuple || (col_type <: Union{Tuple, Missing})
+            nonmissing = filter(x -> x !== missing, df_copy[!, col])
+            n = length(first(nonmissing))
+            for i in 1:n
+                new_col_name = names_sep === nothing ? Symbol(string(col, i)) : Symbol(string(col, names_sep, i))
+                try 
+                    df_copy[!, new_col_name] = getindex.(df_copy[!, col], i)
+                catch
+                    throw("Error unnesting tuple from column $col. Try using `@unnest_longer($col)` before `@unnest_wider(attribute)`")
+                end
+            end
+        
+        elseif any(x -> x isa Dict, df_copy[!, col])
+            keys_set = Set{String}()
+            for item in df_copy[!, col]
+                if item isa Dict
+                    union!(keys_set, keys(item))
+                end
+            end
+            for key in keys_set
+                new_col_name = names_sep === nothing ? Symbol(key) : Symbol(string(col, names_sep, key))
+                df_copy[!, new_col_name] = [item isa Dict ? get(item, key, missing) : missing for item in df_copy[!, col]]
+            end
+        elseif any(x -> x isa Pair, df_copy[!, col])
+            keys_set = Set{Any}()
+            for item in df_copy[!, col]
+                if item isa Pair
+                    push!(keys_set, item.first)
+                end
+            end
+            for key in keys_set
+                new_col_name = names_sep === nothing ? Symbol(string(key)) : Symbol(string(col, names_sep, key))
+                df_copy[!, new_col_name] = [item isa Pair && item.first == key ? item.second : missing for item in df_copy[!, col]]
+            end
         else
             error("Column $col contains neither dictionaries nor arrays nor DataFrames")
         end
@@ -78,13 +115,14 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
     return df_copy
 end
 
+
 """
 $docstring_unnest_wider
 """
 macro unnest_wider(df, exprs...)
   exprs = parse_blocks(exprs...)
 
-  names_sep = :(nothing) 
+  names_sep = :("_") 
   if length(exprs) >= 2 && isa(exprs[end], Expr) && exprs[end].head == :(=) && exprs[end].args[1] == :names_sep
     names_sep = esc(exprs[end].args[2]) 
     exprs = exprs[1:end-1] 
@@ -99,6 +137,8 @@ macro unnest_wider(df, exprs...)
 
   return df_expr
 end
+
+using DataFrames
 
 function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols; indices_include::Union{Nothing, Bool}=nothing, keep_empty::Bool=false)
     is_grouped = df isa GroupedDataFrame
@@ -116,10 +156,28 @@ function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols; indices_inc
                            x for x in df_copy[!, col]]
     end
   
+    # Pad rows if columns have different lengths.
+    for i in 1:nrow(df_copy)
+        # Collect lengths of each non-missing iterable in this row
+        current_lengths = [length(df_copy[i, col]) for col in column_symbols if !ismissing(df_copy[i, col])]
+        if !isempty(current_lengths)
+            maxlen = maximum(current_lengths)
+            for col in column_symbols
+                if !ismissing(df_copy[i, col])
+                    arr = df_copy[i, col]
+                    if length(arr) < maxlen
+                        df_copy[i, col] = vcat(arr, fill(missing, maxlen - length(arr)))
+                    end
+                end
+            end
+        end
+    end
+  
     # Apply filter if keep_empty is false
     if !keep_empty
       df_copy = filter(row -> !any(ismissing, [row[col] for col in column_symbols]), df_copy)
     end
+  
     # Flatten the dataframe
     flattened_df = flatten(df_copy, column_symbols)
   
@@ -139,6 +197,7 @@ function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols; indices_inc
     end
     return flattened_df
 end
+
   
 """
 $docstring_unnest_longer

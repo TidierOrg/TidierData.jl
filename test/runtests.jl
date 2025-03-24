@@ -8,7 +8,7 @@ DocMeta.setdocmeta!(TidierData, :DocTestSetup, :(using TidierData); recursive=tr
 
 doctest(TidierData)
 
-end
+end 
 
 using TidierData
 using Test

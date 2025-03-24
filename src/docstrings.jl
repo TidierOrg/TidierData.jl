@@ -3223,7 +3223,7 @@ Unnest specified columns of arrays or dictionaries into wider format dataframe w
 # Arguments
 - `df`: A DataFrame.
 - `columns`: Columns to be unnested. These columns should contain arrays, dictionaries, dataframes, or tuples. Dictionarys headings will be converted to column names.
-- `names_sep`: An optional string to specify the separator for creating new column names. If not provided, defaults to no separator.
+- `names_sep`: An optional string to specify the separator for creating new column names. If not provided, defaults to `_`.
 
 # Examples
 ```jldoctest
@@ -3233,11 +3233,11 @@ julia> df = DataFrame(name = ["Zaki", "Farida"], attributes = [
 
 julia> @unnest_wider(df, attributes)
 2×3 DataFrame
- Row │ name    city         age   
-     │ String  String       Int64 
-─────┼────────────────────────────
-   1 │ Zaki    New York        25
-   2 │ Farida  Los Angeles     30
+ Row │ name    attributes_city  attributes_age 
+     │ String  String           Int64          
+─────┼─────────────────────────────────────────
+   1 │ Zaki    New York                     25
+   2 │ Farida  Los Angeles                  30
 
 julia> df2 = DataFrame(a=[1, 2], b=[[1, 2], [3, 4]], c=[[5, 6], [7, 8]])
 2×3 DataFrame
@@ -3247,13 +3247,54 @@ julia> df2 = DataFrame(a=[1, 2], b=[[1, 2], [3, 4]], c=[[5, 6], [7, 8]])
    1 │     1  [1, 2]  [5, 6]
    2 │     2  [3, 4]  [7, 8]
 
-julia> @unnest_wider(df2, b:c, names_sep = "_")
+julia> @unnest_wider(df2, b:c, names_sep = "")
 2×5 DataFrame
- Row │ a      b_1    b_2    c_1    c_2   
+ Row │ a      b1     b2     c1     c2    
      │ Int64  Int64  Int64  Int64  Int64 
 ─────┼───────────────────────────────────
    1 │     1      1      2      5      6
    2 │     2      3      4      7      8
+
+
+julia> a1=Dict("a"=>1, "b"=>Dict("c"=>1, "d"=>2)); a2=Dict("a"=>1, "b"=>Dict("c"=>1)); a=[a1;a2]; df=DataFrame(a);
+
+julia> @unnest_wider(df, b)
+2×3 DataFrame
+ Row │ a      b_c    b_d     
+     │ Int64  Int64  Int64?  
+─────┼───────────────────────
+   1 │     1      1        2
+   2 │     1      1  missing 
+
+julia> a0=Dict("a"=>0, "b"=>0);  a1=Dict("a"=>1, "b"=>Dict("c"=>1, "d"=>2)); a2=Dict("a"=>2, "b"=>Dict("c"=>2)); a3=Dict("a"=>3, "b"=>Dict("c"=>3)); a=[a0;a1;a2;a3]; df3=DataFrame(a);
+
+julia> @unnest_wider(df3, b)
+4×3 DataFrame
+ Row │ a      b_c      b_d     
+     │ Int64  Int64?   Int64?  
+─────┼─────────────────────────
+   1 │     0  missing  missing 
+   2 │     1        1        2
+   3 │     2        2  missing 
+   4 │     3        3  missing 
+
+julia> df = DataFrame(x1 = ["one", "two", "three"], x2 = [(1, "a"), (2, "b"), (3, "c")])
+3×2 DataFrame
+ Row │ x1      x2       
+     │ String  Tuple…   
+─────┼──────────────────
+   1 │ one     (1, "a")
+   2 │ two     (2, "b")
+   3 │ three   (3, "c")
+
+julia> @unnest_wider df x2
+3×3 DataFrame
+ Row │ x1      x2_1   x2_2   
+     │ String  Int64  String 
+─────┼───────────────────────
+   1 │ one         1  a
+   2 │ two         2  b
+   3 │ three       3  c
 ```
 """
 
@@ -3388,7 +3429,7 @@ julia> @chain df begin
 
 julia> @chain df begin
          @nest(data = b:c_2)
-         @unnest_wider(data)
+         @unnest_wider(data, names_sep = nothing)
        end
 5×4 DataFrame
  Row │ a     b             c_1           c_2          
@@ -3402,7 +3443,7 @@ julia> @chain df begin
 
 julia> @chain df begin
          @nest(data = -a)
-         @unnest_wider(data) # wider first
+         @unnest_wider(data, names_sep = nothing) # wider first
          @unnest_longer(-a)  # then longer
        end
 15×4 DataFrame
@@ -3428,27 +3469,38 @@ julia> @chain df begin
 julia> @chain df begin
          @nest(data = -a)
          @unnest_longer(data) # longer first
-         @unnest_wider(-a)    # then wider
+         @unnest_wider(-a)    # then wider, names sep defualting to "_"
        end
 15×4 DataFrame
- Row │ a     b      c_2    c_1   
-     │ Char  Int64  Int64  Int64 
-─────┼───────────────────────────
-   1 │ a         1     31     16
-   2 │ a         2     32     17
-   3 │ a         3     33     18
-   4 │ b         4     34     19
-   5 │ b         5     35     20
-   6 │ b         6     36     21
-   7 │ c         7     37     22
-   8 │ c         8     38     23
-   9 │ c         9     39     24
-  10 │ d        10     40     25
-  11 │ d        11     41     26
-  12 │ d        12     42     27
-  13 │ e        13     43     28
-  14 │ e        14     44     29
-  15 │ e        15     45     30
+ Row │ a     data_b  data_c_2  data_c_1 
+     │ Char  Int64   Int64     Int64    
+─────┼──────────────────────────────────
+   1 │ a          1        31        16
+   2 │ a          2        32        17
+   3 │ a          3        33        18
+   4 │ b          4        34        19
+   5 │ b          5        35        20
+   6 │ b          6        36        21
+   7 │ c          7        37        22
+   8 │ c          8        38        23
+   9 │ c          9        39        24
+  10 │ d         10        40        25
+  11 │ d         11        41        26
+  12 │ d         12        42        27
+  13 │ e         13        43        28
+  14 │ e         14        44        29
+  15 │ e         15        45        30
+
+julia> @chain df @group_by(a) @nest(data = b:c_2) @ungroup()
+5×2 DataFrame
+ Row │ a     data          
+     │ Char  DataFrame     
+─────┼─────────────────────
+   1 │ a     3×3 DataFrame 
+   2 │ b     3×3 DataFrame 
+   3 │ c     3×3 DataFrame 
+   4 │ d     3×3 DataFrame 
+   5 │ e     3×3 DataFrame 
 ```
 """
 
