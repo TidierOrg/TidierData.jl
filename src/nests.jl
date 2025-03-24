@@ -72,7 +72,9 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
     if is_grouped
         df_copy = groupby(df_copy, grouping_columns)
     end
-  
+    if log[]
+        @info generate_log(df, df_copy, "@unnest_wider", [:colchange])
+    end
     return df_copy
 end
 
@@ -132,7 +134,9 @@ function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols; indices_inc
     if is_grouped
         flattened_df = groupby(flattened_df, grouping_columns)
     end
-  
+    if log[]
+        @info  generate_log(df, flattened_df, "@unnest_longer", [:rowchange])
+    end
     return flattened_df
 end
   
