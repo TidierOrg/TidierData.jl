@@ -117,6 +117,7 @@ plugins:
 nav:
   - "Home": "index.md"
   - "Movies dataset" : "examples/generated/UserGuide/dataset_movies.md"
+  - "Setting Options" : "examples/generated/UserGuide/settings.md"
   - "@select" : "examples/generated/UserGuide/select.md"
   - "@rename" : "examples/generated/UserGuide/rename.md"
   - "@mutate" : "examples/generated/UserGuide/mutate_transmute.md"
