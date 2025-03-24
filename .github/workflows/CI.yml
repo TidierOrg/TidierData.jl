@@ -38,3 +38,4 @@ jobs:
         with:
           github-token: ${{ github.token }}
           path-to-lcov: lcov.info
+          fail-on-error: false

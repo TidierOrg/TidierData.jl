@@ -1,6 +1,7 @@
 # TidierData.jl updates
 
 ## v.0.17.0 - 2025-03-24
+- Bugfix: `@count()` can now be called multiple times. If column `n` already exists, then the new column containing the count will be `nn` (and so on).
 - Adds logging ability to track changes to data frames with `TidierData_set("log", true)`
 - Adds docs describing logging and code printing
 
