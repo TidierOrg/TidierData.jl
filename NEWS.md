@@ -1,8 +1,8 @@
 # TidierData.jl updates
 
-## v.0.17.0 - 2025-01-27
-- add logging ability to track changes to dataframe with `TidierData_set("log", true)`
-- add docs around logging and code printing
+## v.0.17.0 - 2025-03-24
+- Adds logging ability to track changes to data frames with `TidierData_set("log", true)`
+- Adds docs describing logging and code printing
 
 ## v0.16.5 - 2025-01-11
 - Bugfix: Corrected bug when using `Module.function()` syntax within expressions, which was previously causing errors due to the module being escaped.
