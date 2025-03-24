@@ -748,6 +748,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#unnest-json-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      unnest JSON files
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -984,6 +993,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#unnest-json-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      unnest JSON files
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1017,7 +1035,7 @@
 
 <p>To return to the original dataframe, you can unnest wider and then longer.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">nested_df</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="nd">@unnest_wider</span><span class="p">(</span><span class="n">n3</span><span class="o">:</span><span class="n">n2</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@unnest_wider</span><span class="p">(</span><span class="n">n3</span><span class="o">:</span><span class="n">n2</span><span class="p">,</span><span class="w"> </span><span class="n">names_sep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nothing</span><span class="p">)</span>
 <span class="w">    </span><span class="nd">@unnest_longer</span><span class="p">(</span><span class="n">y</span><span class="o">:</span><span class="n">ab</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre></div>
@@ -1027,7 +1045,7 @@
 <p>Or you can unnest longer and then wider.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">nested_df</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">  </span><span class="nd">@unnest_longer</span><span class="p">(</span><span class="n">n3</span><span class="o">:</span><span class="n">n2</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@unnest_wider</span><span class="p">(</span><span class="n">n3</span><span class="o">:</span><span class="n">n2</span><span class="p">)</span>
+<span class="w">  </span><span class="nd">@unnest_wider</span><span class="p">(</span><span class="n">n3</span><span class="o">:</span><span class="n">n2</span><span class="p">,</span><span class="w"> </span><span class="n">names_sep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nothing</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre></div>
 <div><div style="float: left;"><span>6×5 DataFrame</span></div><div style="clear: both;"></div></div>
@@ -1069,7 +1087,7 @@
 <span class="k">end</span>
 </code></pre></div>
 <div><div style="float: left;"><span>2×3 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">name</th><th style="text-align: left;">city</th><th style="text-align: left;">age</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">Zaki</td><td style="text-align: left;">New York</td><td style="text-align: right;">25</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">Farida</td><td style="text-align: left;">Los Angeles</td><td style="text-align: right;">30</td></tr></tbody></table></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">name</th><th style="text-align: left;">attributes_city</th><th style="text-align: left;">attributes_age</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">Zaki</td><td style="text-align: left;">New York</td><td style="text-align: right;">25</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">Farida</td><td style="text-align: left;">Los Angeles</td><td style="text-align: right;">30</td></tr></tbody></table></div>
 
 <p><a id="Unnesting-nested-Dataframes-with-different-lengths-which-contains-arrays"></a></p>
 <p><a id="Unnesting-nested-Dataframes-with-different-lengths-which-contains-arrays-1"></a></p>
@@ -1089,11 +1107,45 @@
 <p><code>df3</code> contains dataframes in with different widths that also contain arrays. Chaining together <code>@unnest_wider</code> and <code>@unnest_longer</code> will unnest the columns to tuples first and then they will be fully unnested after.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">df3</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">    </span><span class="nd">@unnest_wider</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="w">    </span><span class="nd">@unnest_longer</span><span class="p">(</span><span class="n">a</span><span class="o">:</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">keep_empty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@unnest_longer</span><span class="p">(</span><span class="n">y_a</span><span class="o">:</span><span class="n">y_c</span><span class="p">,</span><span class="w"> </span><span class="n">keep_empty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre></div>
 <div><div style="float: left;"><span>5×4 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">x</th><th style="text-align: left;">a</th><th style="text-align: left;">b</th><th style="text-align: left;">c</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Any" style="text-align: left;">Any</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: left;">missing</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">A</td><td style="text-align: right;">14</td><td style="font-style: italic; text-align: right;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: left;">A</td><td style="text-align: right;">13</td><td style="text-align: right;">4</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">3</td><td style="text-align: left;">B</td><td style="text-align: right;">12</td><td style="text-align: right;">4</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">3</td><td style="text-align: left;">C</td><td style="text-align: right;">11</td><td style="text-align: right;">4</td></tr></tbody></table></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">x</th><th style="text-align: left;">y_a</th><th style="text-align: left;">y_b</th><th style="text-align: left;">y_c</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="Any" style="text-align: left;">Any</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: left;">missing</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2</td><td style="text-align: left;">A</td><td style="text-align: right;">14</td><td style="font-style: italic; text-align: right;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">3</td><td style="text-align: left;">A</td><td style="text-align: right;">13</td><td style="text-align: right;">4</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">3</td><td style="text-align: left;">B</td><td style="text-align: right;">12</td><td style="text-align: right;">4</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">3</td><td style="text-align: left;">C</td><td style="text-align: right;">11</td><td style="text-align: right;">4</td></tr></tbody></table></div>
+
+<p><a id="unnest-JSON-files"></a></p>
+<p><a id="unnest-JSON-files-1"></a></p>
+<h2 id="unnest-json-files">unnest JSON files<a class="headerlink" href="#unnest-json-files" title="Permanent link">¤</a></h2>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">JSON</span>
+
+<span class="n">json_str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"""</span>
+<span class="s">       {</span>
+<span class="s">           "name": "Chris",</span>
+<span class="s">           "age": 23,</span>
+<span class="s">           "address": {</span>
+<span class="s">               "city": "New York",</span>
+<span class="s">               "country": "America"</span>
+<span class="s">           },</span>
+<span class="s">           "friends": [</span>
+<span class="s">               {</span>
+<span class="s">                   "name": "Emily",</span>
+<span class="s">                   "hobbies": [ "biking", "music", "gaming" ]</span>
+<span class="s">               },</span>
+<span class="s">               {</span>
+<span class="s">                   "name": "John",</span>
+<span class="s">                   "hobbies": [ "soccer", "gaming" ]</span>
+<span class="s">               }</span>
+<span class="s">           ]</span>
+<span class="s">       }</span>
+<span class="s">       """</span><span class="p">;</span>
+<span class="n">json_df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">json_str</span><span class="p">))</span>
+
+<span class="nd">@chain</span><span class="w"> </span><span class="n">json_df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">       </span><span class="nd">@unnest_wider</span><span class="p">(</span><span class="n">address</span><span class="p">,</span><span class="w"> </span><span class="n">friends</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<div><div style="float: left;"><span>2×6 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">age</th><th style="text-align: left;">name</th><th style="text-align: left;">address_city</th><th style="text-align: left;">address_country</th><th style="text-align: left;">friends_name</th><th style="text-align: left;">friends_hobbies</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Int64" style="text-align: left;">Int64</th><th title="String" style="text-align: left;">String</th><th title="String" style="text-align: left;">String</th><th title="String" style="text-align: left;">String</th><th title="String" style="text-align: left;">String</th><th title="Vector{Any}" style="text-align: left;">Array…</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">23</td><td style="text-align: left;">Chris</td><td style="text-align: left;">New York</td><td style="text-align: left;">America</td><td style="text-align: left;">Emily</td><td style="text-align: left;">Any["biking", "music", "gaming"]</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">23</td><td style="text-align: left;">Chris</td><td style="text-align: left;">New York</td><td style="text-align: left;">America</td><td style="text-align: left;">John</td><td style="text-align: left;">Any["soccer", "gaming"]</td></tr></tbody></table></div>
 
 <hr>
 <p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></div>
