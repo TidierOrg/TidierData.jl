@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../group_by/">
+        <link rel="prev" href="../dataset_movies/">
       
       
-        <link rel="next" href="../distinct/">
+        <link rel="next" href="../select/">
       
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>@arrange - TidierData.jl</title>
+        <title>Setting Options - TidierData.jl</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#sort-both-variables-in-ascending-order" class="md-skip">
+        <a href="#log" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              @arrange
+              Setting Options
             
           </span>
         </div>
@@ -309,10 +309,29 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../settings/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Setting Options
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -322,6 +341,42 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#log" class="md-nav__link">
+    <span class="md-ellipsis">
+      log
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code" class="md-nav__link">
+    <span class="md-ellipsis">
+      code
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -477,29 +532,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    @arrange
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../arrange/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -509,42 +545,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#sort-both-variables-in-ascending-order" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sort both variables in ascending order
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sort-in-a-mix-of-ascending-and-descending-order" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sort in a mix of ascending and descending order
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -931,18 +931,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#sort-both-variables-in-ascending-order" class="md-nav__link">
+  <a href="#log" class="md-nav__link">
     <span class="md-ellipsis">
-      Sort both variables in ascending order
+      log
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sort-in-a-mix-of-ascending-and-descending-order" class="md-nav__link">
+  <a href="#code" class="md-nav__link">
     <span class="md-ellipsis">
-      Sort in a mix of ascending and descending order
+      code
     </span>
   </a>
   
@@ -964,40 +964,57 @@
 
 
 
-  <h1>@arrange</h1>
+  <h1>Setting Options</h1>
 
-<div><p>Arranging is the way to sort a data frame. <code>@arrange()</code> can take multiple arguments. Arguments refer to columns that are sorted in ascending order by default. If you want to sort in descending order, make sure to wrap the column name in <code>desc()</code> as shown below.</p>
-<p><code>DataFrames.jl</code> does not currently support the <code>sort()</code> function on grouped data frames. In order to make this work in <code>TidierData.jl</code>, if you apply <code>@arrange()</code> to a GroupedDataFrame, <code>@arrange()</code> will temporarily ungroup the data, perform the <code>sort()</code>, and then re-group by the original grouping variables.</p>
+<div><p>TidierData.jl comes with two settings that make it easier to understand the transformations that are being applied to a data frame and to troubleshoot errors. These settings are <code>log</code> and <code>code</code>. The <code>log</code> setting outputs information about the data frame after each transformation, including the number of missing values and the number of unique values in each column. The <code>code</code> setting outputs the code that is being executed by the TidierData.jl macros. By default, both settings are set to <code>false</code>. This page will review the <code>log</code> and <code>code</code> settings using the movies dataset.</p>
+<p>We recommend setting the <code>log</code> setting to <code>true</code> in general, and especially when you are first learning TidierData.jl. This will help you understand how the data frame is being transformed at each step. The <code>code</code> setting is useful for debugging errors in TidierData.jl chains.</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">TidierData</span>
 <span class="k">using</span><span class="w"> </span><span class="n">RDatasets</span>
 
 <span class="n">movies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataset</span><span class="p">(</span><span class="s">"ggplot2"</span><span class="p">,</span><span class="w"> </span><span class="s">"movies"</span><span class="p">);</span>
 </code></pre></div>
-<p><a id="Sort-both-variables-in-ascending-order"></a></p>
-<p><a id="Sort-both-variables-in-ascending-order-1"></a></p>
-<h2 id="sort-both-variables-in-ascending-order">Sort both variables in ascending order<a class="headerlink" href="#sort-both-variables-in-ascending-order" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@arrange</span><span class="p">(</span><span class="n">Year</span><span class="p">,</span><span class="w"> </span><span class="n">Rating</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@select</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
-<span class="k">end</span>
+<p><a id="log"></a></p>
+<p><a id="log-1"></a></p>
+<h2 id="log"><code>log</code><a class="headerlink" href="#log" title="Permanent link">¤</a></h2>
+<p>Logging is set to <code>false</code> by default but can enabled as follows:</p>
+<div class="highlight"><pre><span></span><code><span class="n">TidierData_set</span><span class="p">(</span><span class="s">"log"</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span>
 </code></pre></div>
-<div><div style="float: left;"><span>5×5 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Title</th><th style="text-align: left;">Year</th><th style="text-align: left;">Length</th><th style="text-align: left;">Budget</th><th style="text-align: left;">Rating</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Int32" style="text-align: left;">Int32</th><th title="Int32" style="text-align: left;">Int32</th><th title="Union{Missing, Int32}" style="text-align: left;">Int32?</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">Blacksmith Scene</td><td style="text-align: right;">1893</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">7.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">Hadj Cheriff</td><td style="text-align: right;">1894</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">4.1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">Glenroy Bros., No. 2</td><td style="text-align: right;">1894</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">4.2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">Leonard-Cushing Fight</td><td style="text-align: right;">1894</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">4.4</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">Sioux Ghost Dance</td><td style="text-align: right;">1894</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">4.4</td></tr></tbody></table></div>
-
-<p><a id="Sort-in-a-mix-of-ascending-and-descending-order"></a></p>
-<p><a id="Sort-in-a-mix-of-ascending-and-descending-order-1"></a></p>
-<h2 id="sort-in-a-mix-of-ascending-and-descending-order">Sort in a mix of ascending and descending order<a class="headerlink" href="#sort-in-a-mix-of-ascending-and-descending-order" title="Permanent link">¤</a></h2>
-<p>To sort in descending order, make sure to wrap the variable inside of <code>desc()</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">  </span><span class="nd">@arrange</span><span class="p">(</span><span class="n">Year</span><span class="p">,</span><span class="w"> </span><span class="n">desc</span><span class="p">(</span><span class="n">Rating</span><span class="p">))</span>
-<span class="w">  </span><span class="nd">@select</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
-<span class="w">  </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span>
-<span class="k">end</span>
+<div class="highlight"><pre><span></span><code>true
 </code></pre></div>
-<div><div style="float: left;"><span>5×5 DataFrame</span></div><div style="clear: both;"></div></div>
-<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Title</th><th style="text-align: left;">Year</th><th style="text-align: left;">Length</th><th style="text-align: left;">Budget</th><th style="text-align: left;">Rating</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Int32" style="text-align: left;">Int32</th><th title="Int32" style="text-align: left;">Int32</th><th title="Union{Missing, Int32}" style="text-align: left;">Int32?</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">Blacksmith Scene</td><td style="text-align: right;">1893</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">7.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">Luis Martinetti, Contortionist</td><td style="text-align: right;">1894</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">6.1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">Caicedo (with Pole)</td><td style="text-align: right;">1894</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">5.8</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">Glenroy Brothers (Comic Boxing)</td><td style="text-align: right;">1894</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">5.4</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">Buffalo Dance</td><td style="text-align: right;">1894</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="text-align: right;">5.0</td></tr></tbody></table></div>
+<p>When enabled, each macro called will show information about its transformation of the data. Logging can be especially useful to catch silent bugs (those that do not result in an error).</p>
+<p>When column values are changed, it will report the number new missing values, the percentage of missing values, and the number of unique values.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@filter</span><span class="p">(</span><span class="n">Year</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2000</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@mutate</span><span class="p">(</span><span class="n">Budget_cat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">case_when</span><span class="p">(</span><span class="n">Budget</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">18000</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">"high"</span><span class="p">,</span>
+<span class="w">                                   </span><span class="n">Budget</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2000</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">"medium"</span><span class="p">,</span>
+<span class="w">                                   </span><span class="n">Budget</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">"low"</span><span class="p">,</span>
+<span class="w">                                    </span><span class="nb">true</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">missing</span><span class="p">))</span>
+<span class="w">    </span><span class="nd">@filter</span><span class="p">(</span><span class="o">!</span><span class="n">ismissing</span><span class="p">(</span><span class="n">Budget</span><span class="p">))</span>
+<span class="w">    </span><span class="nd">@group_by</span><span class="p">(</span><span class="n">Year</span><span class="p">,</span><span class="w"> </span><span class="n">Budget_cat</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@summarize</span><span class="p">(</span><span class="n">Avg_Budget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">Budget</span><span class="p">),</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="p">())</span>
+<span class="w">    </span><span class="nd">@ungroup</span>
+<span class="w">    </span><span class="nd">@arrange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="k">end</span>
 
+<span class="n">TidierData_set</span><span class="p">(</span><span class="s">"log"</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"> </span><span class="c"># disable logging</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>false
+</code></pre></div>
+<p><a id="code"></a></p>
+<p><a id="code-1"></a></p>
+<h2 id="code"><code>code</code><a class="headerlink" href="#code" title="Permanent link">¤</a></h2>
+<p>Code printing is set to <code>false</code> by default. Enabling this setting prints the underlying DataFrames.jl code created by TidierData.jl macros. It can be useful for debugging, especially for users who understand DataFrames.jl syntax, or for filing bug reports.</p>
+<div class="highlight"><pre><span></span><code><span class="n">TidierData_set</span><span class="p">(</span><span class="s">"code"</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="c"># enable macro code output</span>
+
+<span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@select</span><span class="p">(</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">Year</span><span class="p">,</span><span class="w"> </span><span class="n">Budget</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@slice_sample</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">TidierData_set</span><span class="p">(</span><span class="s">"code"</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"> </span><span class="c"># disable macro code output</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>false
+</code></pre></div>
 <hr>
 <p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></div>
 
@@ -1035,7 +1052,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../group_by/" class="md-footer__link md-footer__link--prev" aria-label="Previous: @group_by">
+          <a href="../dataset_movies/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Movies dataset">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1045,20 +1062,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                @group_by
+                Movies dataset
               </div>
             </div>
           </a>
         
         
           
-          <a href="../distinct/" class="md-footer__link md-footer__link--next" aria-label="Next: @distinct">
+          <a href="../select/" class="md-footer__link md-footer__link--next" aria-label="Next: @select">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                @distinct
+                @select
               </div>
             </div>
             <div class="md-footer__button md-icon">
