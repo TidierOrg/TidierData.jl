@@ -3,6 +3,7 @@
 ## v.0.17.0 - 2025-03-24
 - Bugfix: `@count()` can now be called multiple times. If column `n` already exists, then the new column containing the count will be `nn` (and so on).
 - Bugfix: `@unnest_wider()` now works on data where keys are missing
+- Bugfix: Fixes `@filter()` involving multiple comparison operators (e.g., `3 <= a < 5`), which have a `:head` of `:comparison` and are parsed differently than `(3 <= a) && (a < 5)`
 - Adds logging ability to track changes to data frames with `TidierData_set("log", true)`
 - Adds docs describing logging and code printing
 
