@@ -143,6 +143,12 @@ function parse_function(lhs::Union{Symbol, Expr}, rhs::Expr; autovec::Bool=true,
     if @capture(x, (fn_(args__)) | (fn_.(args__))) && fn != :esc
       args = args[isa.(args, Symbol)]
       push!(src, args...)
+    elseif hasproperty(x, :head) && x.head == :comparison
+      for (index, value) in enumerate(x.args)
+        if index % 2 == 1 && value isa Symbol
+          push!(src, value)
+        end
+      end
     end
     return x
   end
@@ -356,6 +362,15 @@ function parse_autovec(tidy_expr::Union{Expr,Symbol})
       end
     elseif hasproperty(x, :head) && (x.head == :&& || x.head == :||)
       x.head = Symbol("." * string(x.head))
+      return x
+    elseif hasproperty(x, :head) && x.head == :comparison
+      for (index, value) in enumerate(x.args)
+        if index % 2 == 0
+          if first(string(value), 1) != "."
+            x.args[index] = Symbol("." * string(value))
+          end
+        end
+      end
       return x
     end
     return x
