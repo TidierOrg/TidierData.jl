@@ -29,6 +29,8 @@ TidierData_set("log", true)
     @arrange(n)
 end
 
+# Logging can also be disabled.
+
 TidierData_set("log", false) # disable logging
 
 # ## `code`
@@ -40,5 +42,7 @@ TidierData_set("code", true) # enable macro code output
     @select(Title, Year, Budget)
     @slice_sample(n = 10)
 end
+
+# Code printing can also be disabled.
 
 TidierData_set("code", false) # disable macro code output
