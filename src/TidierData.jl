@@ -285,7 +285,7 @@ macro mutate(df, exprs...)
                 transform!(df_copy, eachindex => :TidierData_row_number; ungroup=false)
             end
 
-            local df_output = transform(df_copy, $(tidy_exprs...); ungroup=false)
+            local df_output = transform(df_copy, $(esc(tidy_exprs...)); ungroup=false)
 
             if $any_found_n || $any_found_row_number
                 select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup=false)
@@ -305,7 +305,7 @@ macro mutate(df, exprs...)
                 transform!(df_copy, eachindex => :TidierData_row_number)
             end
 
-            local df_output = transform(df_copy, $(tidy_exprs...))
+            local df_output = transform(df_copy, $(esc(tidy_exprs...)))
 
             if $any_found_n || $any_found_row_number
                 select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))

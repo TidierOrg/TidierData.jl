@@ -140,9 +140,16 @@ function parse_function(lhs::Union{Symbol, Expr}, rhs::Expr; autovec::Bool=true,
 
   src = Symbol[]
   MacroTools.postwalk(rhs) do x
-    if @capture(x, (fn_(args__)) | (fn_.(args__))) && fn != :esc
-      args = args[isa.(args, Symbol)]
-      push!(src, args...)
+    if @capture(x, (fn_(args__)) | (fn_.(args__)))
+      if fn != :esc
+        for arg in args
+          if arg isa Symbol && !hasproperty(Base, arg) && !hasproperty(Core, arg) && !hasproperty(Statistics, arg)
+            push!(src, arg)
+          end
+        end
+      else
+        filter!(x -> x == args[1], src)
+      end
     elseif hasproperty(x, :head) && x.head == :comparison
       for (index, value) in enumerate(x.args)
         if index % 2 == 1 && value isa Symbol
@@ -160,13 +167,26 @@ function parse_function(lhs::Union{Symbol, Expr}, rhs::Expr; autovec::Bool=true,
     rhs = parse_autovec(rhs)
   end
 
-  rhs = parse_escape_function(rhs) # ensure that functions in user space are available
+  rhs = parse_unescape_all(rhs)
+  # rhs = parse_escape_function(rhs) # ensure that functions in user space are available
 
   if subset
-    return :($src => ($func_left -> $rhs)) # to ensure that missings are replace by false
+    return :($src => ($func_left -> $rhs)) # to ensure that missings are replaced by false
   else
     return :($src => ($func_left -> $rhs) => $lhs)
   end
+end
+
+function parse_unescape_all(rhs_expr::Union{Expr,Symbol})
+  rhs_expr = MacroTools.postwalk(rhs_expr) do x
+
+    # If it's already escaped, make sure it needs to remain escaped
+    if @capture(x, esc(variable_Symbol))
+      return variable
+    end
+    return x
+  end
+  return rhs_expr 
 end
 
 # Not exported
@@ -485,27 +505,27 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String};
     # Escape any native Julia symbols that come from the Base or Core packages
     # This includes :missing but also includes all data types (e.g., :Real, :String, etc.)
     # To refer to a column named String, you can use `String` (in backticks)
-    elseif @capture(x, variable_Symbol)
-      if variable in not_escaped[]
-        return variable
-      elseif hasproperty(Base, variable) && 
-        !(typeof(getproperty(Base, variable)) <: Function) && 
-        !(typeof(getproperty(Base, variable)) <: Type) && 
-        !(typeof(getproperty(Base, variable)) <: Module)
-        return esc(variable)
-      elseif hasproperty(Core, variable) && 
-        !(typeof(getproperty(Core, variable)) <: Function) && 
-        !(typeof(getproperty(Core, variable)) <: Type) && 
-        !(typeof(getproperty(Core, variable)) <: Module)
-        return esc(variable)
-      elseif hasproperty(Statistics, variable) && 
-        !(typeof(getproperty(Statistics, variable)) <: Function) && 
-        !(typeof(getproperty(Statistics, variable)) <: Type) &&
-        !(typeof(getproperty(Statistics, variable)) <: Module)
-        return esc(variable)
-      else
-        return variable
-      end
+    # elseif @capture(x, variable_Symbol)
+    #   if variable in not_escaped[]
+    #     return variable
+    #   elseif hasproperty(Base, variable) && 
+    #     !(typeof(getproperty(Base, variable)) <: Function) && 
+    #     !(typeof(getproperty(Base, variable)) <: Type) && 
+    #     !(typeof(getproperty(Base, variable)) <: Module)
+    #     return esc(variable)
+    #   elseif hasproperty(Core, variable) && 
+    #     !(typeof(getproperty(Core, variable)) <: Function) && 
+    #     !(typeof(getproperty(Core, variable)) <: Type) && 
+    #     !(typeof(getproperty(Core, variable)) <: Module)
+    #     return esc(variable)
+    #   elseif hasproperty(Statistics, variable) && 
+    #     !(typeof(getproperty(Statistics, variable)) <: Function) && 
+    #     !(typeof(getproperty(Statistics, variable)) <: Type) &&
+    #     !(typeof(getproperty(Statistics, variable)) <: Module)
+    #     return esc(variable)
+    #   else
+    #     return variable
+    #   end
     end
     return x
   end
