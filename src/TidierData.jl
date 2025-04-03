@@ -338,52 +338,39 @@ macro summarize(df, exprs...)
 
     tidy_exprs = parse_tidy.(tidy_exprs; autovec=true) # use auto-vectorization inside `@summarize()`
     df_expr = quote
-        if $any_found_n || $any_found_row_number
-            if $(esc(df)) isa GroupedDataFrame
-                local df_copy = transform($(esc(df)); ungroup=false)
-            else
-                local df_copy = copy($(esc(df)))
-            end
-        else
-            local df_copy = $(esc(df)) # not a copy
+
+        local orig_df = $(esc(df))
+        local is_grouped = orig_df isa GroupedDataFrame
+        local needs_temp = $any_found_n || $any_found_row_number
+
+        local df_copy = needs_temp ? (is_grouped ? transform(orig_df; ungroup=false) : copy(orig_df)) : orig_df
+
+        if $any_found_n
+            transform!(df_copy, nrow => :TidierData_n; ungroup=false)
+        end
+        if $any_found_row_number
+            transform!(df_copy, eachindex => :TidierData_row_number; ungroup=false)
         end
 
-        if $(esc(df)) isa GroupedDataFrame
-            local col_names = groupcols($(esc(df)))
-            if $any_found_n
-                transform!(df_copy, nrow => :TidierData_n; ungroup=false)
+        local df_output
+        if is_grouped
+            local col_names = groupcols(orig_df)
+            df_output = combine(df_copy, $(tidy_exprs...); ungroup=true)
+            if $any_found_n || $any_found_row_number
+                select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
             end
-            if $any_found_row_number
-                transform!(df_copy, eachindex => :TidierData_row_number; ungroup=false)
-            end
-
-            if length(col_names) == 1
-                local df_output = combine(df_copy, $(tidy_exprs...); ungroup=true)
-                if $any_found_n || $any_found_row_number
-                    select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
-                end
-            else
-                local df_output = combine(df_copy, $(tidy_exprs...); ungroup=true)
-                if $any_found_n || $any_found_row_number
-                    select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
-                end
+            # Re-group if there is more than one grouping column.
+            if length(col_names) > 1
                 df_output = groupby(df_output, col_names[1:end-1]; sort=false)
             end
         else
-            if $any_found_n
-                transform!(df_copy, nrow => :TidierData_n; ungroup=false)
-            end
-            if $any_found_row_number
-                transform!(df_copy, eachindex => :TidierData_row_number; ungroup=false)
-            end
-            local df_output = combine(df_copy, $(tidy_exprs...))
+            df_output = combine(df_copy, $(tidy_exprs...))
             if $any_found_n || $any_found_row_number
                 select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")))
             end
         end
 
         log[] && @info generate_log(df_copy, df_output, "@summarize", [:newsize])
-
         df_output
     end
     if code[]
