@@ -29,14 +29,19 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
               end
               df_copy[!, new_col_name] = combined_nested_col
           end
-      elseif col_type <: NamedTuple || col_type <: Union{NamedTuple, Missing}
-          # Handling NamedTuples and missing values
-          keys_set = Set{Symbol}()
-          for item in df_copy[!, col]
-              if item !== missing
-                  union!(keys_set, keys(item))
-              end
-          end
+        elseif col_type <: NamedTuple || col_type <: Union{NamedTuple, Missing}
+            keys_set = Set{Symbol}()
+            for item in df_copy[!, col]
+                if item !== missing
+                    union!(keys_set, Symbol.(keys(item))) 
+                end
+            end
+        
+            for key in keys_set
+                new_col_name = names_sep === nothing ? key : Symbol(string(col, names_sep, key))
+                df_copy[!, new_col_name] = [item !== missing ? get(item, key, missing) : missing for item in df_copy[!, col]]
+            end
+        
     
           for key in keys_set
               new_col_name = names_sep === nothing ? key : Symbol(string(col, names_sep, key))
