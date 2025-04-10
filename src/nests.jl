@@ -115,6 +115,10 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
     if is_grouped
         df_copy = groupby(df_copy, grouping_columns)
     end
+
+    if log[]
+        @info generate_log(df, df_copy, "@unnest_wider", [:colchange])
+    end
     return df_copy
 end
 
@@ -140,8 +144,6 @@ macro unnest_wider(df, exprs...)
 
   return df_expr
 end
-
-using DataFrames
 
 function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols; indices_include::Union{Nothing, Bool}=nothing, keep_empty::Bool=false)
     is_grouped = df isa GroupedDataFrame
