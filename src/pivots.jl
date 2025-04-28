@@ -3,7 +3,6 @@ $docstring_pivot_wider
 """
 macro pivot_wider(df, exprs...)
     exprs = parse_blocks(exprs...)
-
     # take the expressions and return arg => value dictionary    
     interpolated_exprs = parse_interpolation.(exprs)
 
@@ -23,18 +22,63 @@ macro pivot_wider(df, exprs...)
         arg_dict[:fill] = eval(expr_dict[QuoteNode(:values_fill)])
     end
 
-    df_expr = quote
-        unstack(DataFrame($(esc(df))), 
-            $(expr_dict[QuoteNode(:names_from)]),
-            $(expr_dict[QuoteNode(:values_from)]);
-            $(arg_dict)...)
-    end
+    names_from  = expr_dict[QuoteNode(:names_from)]
+    values_from = expr_dict[QuoteNode(:values_from)]
 
-    if code[]
-        @info MacroTools.prettify(df_expr)
+    return quote
+        vals = $(values_from)
+        if vals isa Vector
+            pivot_wider_multi($(esc(df)),
+                               $(names_from),
+                               vals;
+                               $(arg_dict)...)
+        else
+            unstack(($(esc(df))),
+                    $(names_from),
+                    vals;
+                    $(arg_dict)...)
+        end
     end
+end
 
-    return(df_expr)
+function pivot_wider_multi(df::AbstractDataFrame,
+                            names_from_raw,
+                            values_from::Vector{Symbol};
+                            fill = missing)
+
+    # resolve column references exactly as stored in `df`
+    raw_name  = names_from_raw isa QuoteNode ? names_from_raw.value : names_from_raw
+    name_col  = first(col for col in names(df) if String(col) == String(raw_name))
+
+    val_cols  = [first(col for col in names(df) if String(col) == String(v))
+                 for v in values_from]
+
+    id_cols   = setdiff(names(df), vcat([name_col], val_cols))
+
+    result = nothing
+
+    for (i, v) in enumerate(val_cols)
+        sel_cols = vcat(id_cols, [name_col, v]) |> unique
+        tmp      = df[:, sel_cols]                             # copy for this pass
+
+        wide     = unstack(tmp, name_col, v; fill = fill)
+
+        if name_col in names(wide)                             # drop names_from col
+            select!(wide, Not(name_col))
+        end
+
+        suffix   = String(values_from[i])                      # original col symbol
+        rename!(wide, Dict(c => Symbol(string(c), "_", suffix)
+                     for c in setdiff(names(wide), id_cols)))
+
+        if result === nothing
+            result = wide
+        else
+            sort!(wide, id_cols)                               # align rows before hcat
+            result = hcat(result, select(wide, Not(id_cols)); makeunique = true)
+        end
+    end
+    return result
 end
 
 """

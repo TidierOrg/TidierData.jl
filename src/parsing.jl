@@ -409,6 +409,8 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
         return x
       elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
         return x
+     # elseif fn isa Symbol && hasproperty(Main, fn) && typeof(getproperty(Main, fn)) <: Function
+     #   return :(Main.$fn($(args...)))
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn))($(args...)))
       else
@@ -423,6 +425,8 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
         return x
       elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
         return x
+   #   elseif fn isa Symbol && hasproperty(Main, fn) && typeof(getproperty(Main, fn)) <: Function
+   #     return :(Main.$fn.($(args...)))
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn)).($(args...)))
       else
