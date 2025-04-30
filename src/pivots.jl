@@ -24,32 +24,24 @@ macro pivot_wider(df, exprs...)
 
     names_from  = expr_dict[QuoteNode(:names_from)]
     values_from = expr_dict[QuoteNode(:values_from)]
+    tidy_cols = parse_tidy(values_from)
 
     return quote
-        vals = $(values_from)
-        if vals isa Vector
-            pivot_wider_multi($(esc(df)),
-                               $(names_from),
-                               vals;
-                               $(arg_dict)...)
+        if  $(tidy_cols) isa Symbol || $(tidy_cols) isa String
+            unstack($(esc(df)), $names_from, $(tidy_cols); $(arg_dict)...)
         else
-            unstack(($(esc(df))),
-                    $(names_from),
-                    vals;
-                    $(arg_dict)...)
+            pivot_wider_multi($(esc(df)), $(names_from), names(($(esc(df))), $(tidy_cols)); $(arg_dict)...)
         end
     end
 end
 
 function pivot_wider_multi(df::AbstractDataFrame,
                             names_from_raw,
-                            values_from::Vector{Symbol};
+                            values_from;
                             fill = missing)
 
-    # resolve column references exactly as stored in `df`
     raw_name  = names_from_raw isa QuoteNode ? names_from_raw.value : names_from_raw
     name_col  = first(col for col in names(df) if String(col) == String(raw_name))
-
     val_cols  = [first(col for col in names(df) if String(col) == String(v))
                  for v in values_from]
 
@@ -59,22 +51,20 @@ function pivot_wider_multi(df::AbstractDataFrame,
 
     for (i, v) in enumerate(val_cols)
         sel_cols = vcat(id_cols, [name_col, v]) |> unique
-        tmp      = df[:, sel_cols]                             # copy for this pass
-
+        tmp      = df[:, sel_cols]                             
         wide     = unstack(tmp, name_col, v; fill = fill)
-
-        if name_col in names(wide)                             # drop names_from col
+        if name_col in names(wide)                            
             select!(wide, Not(name_col))
         end
 
-        suffix   = String(values_from[i])                      # original col symbol
+        suffix   = String(values_from[i])                     
         rename!(wide, Dict(c => Symbol(string(c), "_", suffix)
                      for c in setdiff(names(wide), id_cols)))
 
         if result === nothing
             result = wide
         else
-            sort!(wide, id_cols)                               # align rows before hcat
+            sort!(wide, id_cols)                               
             result = hcat(result, select(wide, Not(id_cols)); makeunique = true)
         end
     end
@@ -127,3 +117,45 @@ macro pivot_longer(df, exprs...)
     return df_expr
 end
 
+function parse_values_from(vf, df_esc)
+    sel = parse_tidy(vf; subset = true)          # let TidierData do most work
+
+    # Between(:a,:b) → names(df[:, Between(:a,:b)])
+    if sel isa Expr && sel.head == :Between
+        return :(names($df_esc[:, $sel]))
+
+    # Cols( … ) -----------------------------------------------
+    elseif sel isa Expr && sel.head == :Cols
+        inner = sel.args[1]
+
+        # starts_with / startswith  inside Cols()
+        if inner isa Expr && inner.head == :call &&
+           (inner.args[1] == :startswith || inner.args[1] == :starts_with)
+            pat = inner.args[2]
+            return :(names($df_esc)[startswith.(String.(names($df_esc)), $pat)])
+
+        # ends_with / endswith  inside Cols()
+        elseif inner isa Expr && inner.head == :call &&
+               (inner.args[1] == :endswith || inner.args[1] == :ends_with)
+            pat = inner.args[2]
+            return :(names($df_esc)[endswith.(String.(names($df_esc)), $pat)])
+
+        # any other Cols() selector → use it directly
+        else
+            return :(names($df_esc)[$sel])
+        end
+    end
+
+    # vectors already explicit, leave as-is
+    if (vf isa Expr && (vf.head == :vect || vf.head == :tuple)) || vf isa QuoteNode
+        return vf
+    end
+
+    # bare Symbol → QuoteNode(Symbol)
+    if vf isa Symbol
+        return QuoteNode(vf)
+    end
+
+    # fallback (rare)
+    return vf
+end

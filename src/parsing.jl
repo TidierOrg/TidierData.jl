@@ -539,3 +539,53 @@ function parse_blocks(exprs...)
   end
   return exprs
 end
+
+# Not exported 
+# The pivot_wider helper function when there are mutliple columns requires
+# a vector of symbols.  
+function _parse_values_from(values_from, df_esc)
+  if values_from isa Expr && (values_from.head == :vect || values_from.head == :tuple)
+      quoted = [a isa QuoteNode ? a : QuoteNode(a) for a in values_from.args]
+      return Expr(:vect, quoted...)
+
+  elseif values_from isa Symbol
+      return QuoteNode(values_from)
+
+  # starts_with / startswith ------------------------------------------
+  elseif values_from isa Expr && values_from.head == :starts_with
+      pat = values_from.args[1]
+      return :(names($df_esc)[startswith.(String.(names($df_esc)), $pat)])
+
+  elseif values_from isa Expr && values_from.head == :call &&
+         (values_from.args[1] == :startswith || values_from.args[1] == :starts_with)
+      pat = values_from.args[2]
+      return :(names($df_esc)[startswith.(String.(names($df_esc)), $pat)])
+
+  # ends_with / endswith ----------------------------------------------
+  elseif values_from isa Expr && values_from.head == :ends_with
+      pat = values_from.args[1]
+      return :(names($df_esc)[endswith.(String.(names($df_esc)), $pat)])
+
+  elseif values_from isa Expr && values_from.head == :call &&
+         (values_from.args[1] == :endswith || values_from.args[1] == :ends_with)
+      pat = values_from.args[2]
+      return :(names($df_esc)[endswith.(String.(names($df_esc)), $pat)])
+
+  # plain  estimate:moe  ----------------------------------------------
+  elseif values_from isa Expr && values_from.head == :call && values_from.args[1] == :(:)
+      a, b = values_from.args[2:3]
+      return :(names($df_esc[:, Between($(QuoteNode(a)), $(QuoteNode(b)))]))
+
+  # Between(:estimate,:moe) -------------------------------------------
+  elseif values_from isa Expr && values_from.head == :call && values_from.args[1] == :Between
+      a, b = values_from.args[2:3]
+      return :(names($df_esc[:, Between($a, $b)]))
+
+  # if wrapped in QuoteNode, unwrap and recurse -----------------------
+  elseif values_from isa QuoteNode && values_from.value isa Expr
+      return _parse_values_from(values_from.value, df_esc)
+
+  else
+      return values_from   # unchanged
+  end
+end
