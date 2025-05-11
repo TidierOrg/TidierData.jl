@@ -1413,6 +1413,22 @@ julia> @pivot_wider(df_long_missing, names_from = variable, values_from = value,
 ─────┼─────────────────────
    1 │     1      1      2
    2 │     2      0      4
+
+julia> df_mult = DataFrame(
+                  paddockId = [0, 0, 1, 1, 2, 2],
+                  color = repeat([:red, :blue], 3),
+                  count = repeat([3, 4], 3),
+                  weight = [0.2, 0.3, 0.2, 0.3, 0.2, 0.2],
+              );
+
+julia> @pivot_wider(df_mult, names_from = color, values_from = count:weight)
+3×5 DataFrame
+ Row │ paddockId  red_count  blue_count  red_weight  blue_weight 
+     │ Int64      Int64?     Int64?      Float64?    Float64?    
+─────┼───────────────────────────────────────────────────────────
+   1 │         0          3           4         0.2          0.3
+   2 │         1          3           4         0.2          0.3
+   3 │         2          3           4         0.2          0.2
 ```
 """
 
