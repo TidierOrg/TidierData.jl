@@ -30,7 +30,7 @@ macro pivot_wider(df, exprs...)
         if  $(tidy_cols) isa Symbol || $(tidy_cols) isa String
             unstack($(esc(df)), $names_from, $(tidy_cols); $(arg_dict)...)
         else
-            pivot_wider_multi($(esc(df)), $(names_from), names(($(esc(df))), $(tidy_cols)); $(arg_dict)...)
+            pivot_wider_multi($(esc(df)), $(names_from), names(($(esc(df))), $(tidy_cols)); $(arg_dict)...) 
         end
     end
 end
