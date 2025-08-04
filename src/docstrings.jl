@@ -3247,7 +3247,7 @@ julia> df = DataFrame(name = ["Zaki", "Farida"], attributes = [
                Dict("age" => 25, "city" => "New York"),
                Dict("age" => 30, "city" => "Los Angeles")]);
 
-julia> @unnest_wider(df, attributes)
+julia> @chain df @unnest_wider(attributes) @relocate(name, attributes_city, attributes_age)
 2×3 DataFrame
  Row │ name    attributes_city  attributes_age 
      │ String  String           Int64          
