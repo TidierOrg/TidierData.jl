@@ -12,19 +12,17 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
     
         if col_type <: DataFrame
             nested_col_names = unique([name for i in 1:nrow(df_copy) for name in names(df_copy[i, col])])
-    
+
             for nested_col in nested_col_names
                 new_col_name = names_sep === nothing ? nested_col : Symbol(string(col, names_sep, nested_col))
                 combined_nested_col = Any[missing for _ in 1:nrow(df_copy)]
-    
+
                 for row in 1:nrow(df_copy)
                     nested_df = df_copy[row, col]
                     if ncol(nested_df) > 0 && haskey(nested_df[1, :], nested_col)
+                        # Keep the extracted column as a vector (even if length == 1),
+                        # so later unnesting treats it consistently as a sequence.
                         combined_nested_col[row] = nested_df[!, nested_col]
-                        # Extract a single value if there's only one element
-                        if length(combined_nested_col[row]) == 1
-                            combined_nested_col[row] = combined_nested_col[row][1]
-                        end
                     end
                 end
                 df_copy[!, new_col_name] = combined_nested_col
