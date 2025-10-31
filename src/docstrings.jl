@@ -3353,14 +3353,14 @@ julia> df2 = DataFrame(x = 1:4, y = [[], [1, 2, 3], [4, 5], Int[]])
 julia> @unnest_longer(df2, y, keep_empty = true)
 7×2 DataFrame
  Row │ x      y       
-     │ Int64  Any     
+     │ Int64  Int64?  
 ─────┼────────────────
    1 │     1  missing 
-   2 │     2  1
-   3 │     2  2
-   4 │     2  3
-   5 │     3  4
-   6 │     3  5
+   2 │     2        1
+   3 │     2        2
+   4 │     2        3
+   5 │     3        4
+   6 │     3        5
    7 │     4  missing 
 ```
 """

@@ -143,47 +143,78 @@ macro unnest_wider(df, exprs...)
   return df_expr
 end
 
-function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols; indices_include::Union{Nothing, Bool}=nothing, keep_empty::Bool=false)
+function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols;
+                       indices_include::Union{Nothing, Bool}=nothing,
+                       keep_empty::Bool=false)
+
     is_grouped = df isa GroupedDataFrame
     grouping_columns = is_grouped ? groupcols(df) : Symbol[]
     df_copy = copy(is_grouped ? parent(df) : df)
-  
-    cols_expr = cols isa Expr ? (cols,) : cols 
+
+    cols_expr = cols isa Expr ? (cols,) : cols
     column_symbols = names(df_copy, Cols(cols_expr...))
-  
-    # Preprocess columns
+
+    # --- Step 1: normalize all cells to vectors ---
     for col in column_symbols
-        df_copy[!, col] = [ismissing(x) ? (keep_empty ? [missing] : missing) :
-                           isa(x, DataFrame) ? (nrow(x) > 0 ? Tables.rowtable(x) : (keep_empty ? [missing] : [])) :
-                           isempty(x) ? (keep_empty ? [missing] : x) : 
-                           x for x in df_copy[!, col]]
+        df_copy[!, col] = [
+            if ismissing(x)
+                keep_empty ? [missing] : []
+            elseif isa(x, AbstractVector) || isa(x, Tuple)
+                collect(x)
+            elseif isa(x, DataFrame)
+                nrow(x) > 0 ? Tables.rowtable(x) : (keep_empty ? [missing] : [])
+            else
+                [x]  # scalar
+            end
+            for x in df_copy[!, col]
+        ]
     end
-  
-    # Pad rows if columns have different lengths.
-    for i in 1:nrow(df_copy)
-        # Collect lengths of each non-missing iterable in this row
-        current_lengths = [length(df_copy[i, col]) for col in column_symbols if !ismissing(df_copy[i, col])]
-        if !isempty(current_lengths)
-            maxlen = maximum(current_lengths)
-            for col in column_symbols
-                if !ismissing(df_copy[i, col])
-                    arr = df_copy[i, col]
-                    if length(arr) < maxlen
-                        df_copy[i, col] = vcat(arr, fill(missing, maxlen - length(arr)))
-                    end
+
+    # --- Step 2: recycle each row so all vectors are same length ---
+    for col in column_symbols
+        new_col = []
+        for i in 1:nrow(df_copy)
+            # Calculate max length for this row across all columns
+            lengths = [length(df_copy[i, c]) for c in column_symbols]
+            maxlen = isempty(lengths) ? 1 : maximum(lengths)
+            
+            v = df_copy[i, col]
+            if length(v) < maxlen
+                # Recycle the vector to match maxlen
+                T = Union{eltype(v), Missing}
+                if length(v) == 0
+                    # Empty vector: fill with missing
+                    recycled_v = Vector{T}(fill(missing, maxlen))
+                else
+                    # Recycle by repeating elements
+                    recycled_v = Vector{T}([v[mod1(j, length(v))] for j in 1:maxlen])
+                end
+                push!(new_col, recycled_v)
+            else
+                # ensure the vector type allows missing
+                T = Union{eltype(v), Missing}
+                push!(new_col, Vector{T}(v))
+            end
+        end
+        # Replace the entire column
+        df_copy[!, col] = new_col
+    end
+
+    # --- Step 3: ensure empty rows are preserved if keep_empty ---
+    if keep_empty
+        for col in column_symbols
+            for i in 1:nrow(df_copy)
+                if isempty(df_copy[i, col])
+                    df_copy[i, col] = [missing]
                 end
             end
         end
     end
-  
-    # Apply filter if keep_empty is false
-    if !keep_empty
-      df_copy = filter(row -> !any(ismissing, [row[col] for col in column_symbols]), df_copy)
-    end
-  
-    # Flatten the dataframe
+
+    # --- Step 4: flatten ---
     flattened_df = flatten(df_copy, column_symbols)
-  
+
+    # --- Step 5: optional indices ---
     if indices_include === true
         for col in column_symbols
             col_indices = Symbol(string(col), "_id")
@@ -191,15 +222,14 @@ function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols; indices_inc
             flattened_df[!, col_indices] = indices
         end
     end
-  
+
     if is_grouped
         flattened_df = groupby(flattened_df, grouping_columns)
     end
-    if log[]
-        @info  generate_log(df, flattened_df, "@unnest_longer", [:rowchange])
-    end
+
     return flattened_df
 end
+
 
   
 """
