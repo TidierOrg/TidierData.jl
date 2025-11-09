@@ -3274,7 +3274,7 @@ julia> @unnest_wider(df2, b:c, names_sep = "")
 
 julia> a1=Dict("a"=>1, "b"=>Dict("c"=>1, "d"=>2)); a2=Dict("a"=>1, "b"=>Dict("c"=>1)); a=[a1;a2]; df=DataFrame(a);
 
-julia> @unnest_wider(df, b)
+julia> @chain df @unnest_wider(b) @relocate(a, b_c, b_d)
 2×3 DataFrame
  Row │ a      b_c    b_d     
      │ Int64  Int64  Int64?  
@@ -3284,7 +3284,7 @@ julia> @unnest_wider(df, b)
 
 julia> a0=Dict("a"=>0, "b"=>0);  a1=Dict("a"=>1, "b"=>Dict("c"=>1, "d"=>2)); a2=Dict("a"=>2, "b"=>Dict("c"=>2)); a3=Dict("a"=>3, "b"=>Dict("c"=>3)); a=[a0;a1;a2;a3]; df3=DataFrame(a);
 
-julia> @unnest_wider(df3, b)
+julia> @chain df3 @unnest_wider(b) @relocate(a, b_c, b_d)
 4×3 DataFrame
  Row │ a      b_c      b_d     
      │ Int64  Int64?   Int64?  
@@ -3488,24 +3488,24 @@ julia> @chain df begin
          @unnest_wider(-a)    # then wider, names sep defualting to "_"
        end
 15×4 DataFrame
- Row │ a     data_b  data_c_1  data_c_2 
+ Row │ a     data_b  data_c_2  data_c_1 
      │ Char  Int64   Int64     Int64    
 ─────┼──────────────────────────────────
-   1 │ a          1        16        31
-   2 │ a          2        17        32
-   3 │ a          3        18        33
-   4 │ b          4        19        34
-   5 │ b          5        20        35
-   6 │ b          6        21        36
-   7 │ c          7        22        37
-   8 │ c          8        23        38
-   9 │ c          9        24        39
-  10 │ d         10        25        40
-  11 │ d         11        26        41
-  12 │ d         12        27        42
-  13 │ e         13        28        43
-  14 │ e         14        29        44
-  15 │ e         15        30        45
+   1 │ a          1        31        16
+   2 │ a          2        32        17
+   3 │ a          3        33        18
+   4 │ b          4        34        19
+   5 │ b          5        35        20
+   6 │ b          6        36        21
+   7 │ c          7        37        22
+   8 │ c          8        38        23
+   9 │ c          9        39        24
+  10 │ d         10        40        25
+  11 │ d         11        41        26
+  12 │ d         12        42        27
+  13 │ e         13        43        28
+  14 │ e         14        44        29
+  15 │ e         15        45        30
 
 julia> @chain df @group_by(a) @nest(data = b:c_2) @ungroup()
 5×2 DataFrame

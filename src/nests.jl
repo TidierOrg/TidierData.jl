@@ -29,20 +29,13 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
             end
 
         elseif col_type <: NamedTuple || col_type <: Union{NamedTuple, Missing}
-            # FIX: Use vector to preserve encounter order for NamedTuples
-            keys_vec = Symbol[]
-            keys_seen = Set{Symbol}()
+            keys_set = Set{Symbol}()
             for item in df_copy[!, col]
                 if item !== missing
-                    for key in keys(item)
-                        if !(key in keys_seen)
-                            push!(keys_vec, Symbol(key))
-                            push!(keys_seen, key)
-                        end
-                    end
+                    union!(keys_set, Symbol.(keys(item)))
                 end
             end
-            for key in keys_vec  # Use the ordered vector instead of set
+            for key in keys_set
                 new_col_name = names_sep === nothing ? key : Symbol(string(col, names_sep, key))
                 df_copy[!, new_col_name] =
                     [item !== missing ? get(item, key, missing) : missing for item in df_copy[!, col]]
@@ -62,22 +55,13 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
                     flattened[i] = missing
                 end
             end
-            
-            # FIX: Use vector to preserve encounter order instead of Set
-            keys_vec = String[]
-            keys_seen = Set{String}()
+            keys_set = Set{String}()
             for d in flattened
                 if d !== missing
-                    for key in keys(d)
-                        if !(key in keys_seen)
-                            push!(keys_vec, key)
-                            push!(keys_seen, key)
-                        end
-                    end
+                    union!(keys_set, keys(d))
                 end
             end
-            
-            for key in keys_vec  # Use the ordered vector instead of set
+            for key in keys_set
                 new_col_name = names_sep === nothing ? Symbol(key) : Symbol(string(col, names_sep, key))
                 df_copy[!, new_col_name] = [d === missing ? missing : get(d, key, missing) for d in flattened]
             end
@@ -106,18 +90,13 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
             end
 
         elseif any(x -> x isa Pair, df_copy[!, col])
-            # FIX: Use vector to preserve encounter order for Pairs
-            keys_vec = Any[]
-            keys_seen = Set{Any}()
+            keys_set = Set{Any}()
             for item in df_copy[!, col]
                 if item isa Pair
-                    if !(item.first in keys_seen)
-                        push!(keys_vec, item.first)
-                        push!(keys_seen, item.first)
-                    end
+                    push!(keys_set, item.first)
                 end
             end
-            for key in keys_vec  # Use the ordered vector instead of set
+            for key in keys_set
                 new_col_name = names_sep === nothing ? Symbol(string(key)) : Symbol(string(col, names_sep, key))
                 df_copy[!, new_col_name] =
                     [item isa Pair && item.first == key ? item.second : missing for item in df_copy[!, col]]
@@ -142,6 +121,8 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
 end
 
 
+
+
 """
 $docstring_unnest_wider
 """
@@ -163,6 +144,7 @@ macro unnest_wider(df, exprs...)
 
   return df_expr
 end
+
 
 function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols;
                        indices_include::Union{Nothing, Bool}=nothing,
