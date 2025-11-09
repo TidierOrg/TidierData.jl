@@ -139,6 +139,7 @@ function parse_function(lhs::Union{Symbol, Expr}, rhs::Expr; autovec::Bool=true,
   lhs = QuoteNode(lhs)
 
   src = Symbol[]
+  bound = Symbol[]
   MacroTools.postwalk(rhs) do x
     if @capture(x, (fn_(args__)) | (fn_.(args__))) && fn != :esc
       args = args[isa.(args, Symbol)]
@@ -149,11 +150,19 @@ function parse_function(lhs::Union{Symbol, Expr}, rhs::Expr; autovec::Bool=true,
           push!(src, value)
         end
       end
-    end
+    elseif x isa Expr && (x.head == :generator || x.head == :comprehension)
+      for it in x.args[2:end]                    # iterator clauses
+          if it isa Expr && ((it.head == :in) || (it.head == :(=)))
+              var, coll = it.args
+              var  isa Symbol && push!(bound, var)   # loop variable
+              coll isa Symbol && push!(src,  coll)   # collection column
+          end
+       end
+      end
     return x
   end
 
-  src = unique(src)
+  src = unique(filter(s -> s ∉ bound, src)) 
   func_left = :($(src...),)
 
   if autovec
