@@ -121,6 +121,8 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
 end
 
 
+
+
 """
 $docstring_unnest_wider
 """
@@ -142,6 +144,7 @@ macro unnest_wider(df, exprs...)
 
   return df_expr
 end
+
 
 function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols;
                        indices_include::Union{Nothing, Bool}=nothing,

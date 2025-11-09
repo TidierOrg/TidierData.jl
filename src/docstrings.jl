@@ -3274,7 +3274,7 @@ julia> @unnest_wider(df2, b:c, names_sep = "")
 
 julia> a1=Dict("a"=>1, "b"=>Dict("c"=>1, "d"=>2)); a2=Dict("a"=>1, "b"=>Dict("c"=>1)); a=[a1;a2]; df=DataFrame(a);
 
-julia> @unnest_wider(df, b)
+julia> @chain df @unnest_wider(b) @relocate(a, b_c, b_d)
 2×3 DataFrame
  Row │ a      b_c    b_d     
      │ Int64  Int64  Int64?  
@@ -3284,7 +3284,7 @@ julia> @unnest_wider(df, b)
 
 julia> a0=Dict("a"=>0, "b"=>0);  a1=Dict("a"=>1, "b"=>Dict("c"=>1, "d"=>2)); a2=Dict("a"=>2, "b"=>Dict("c"=>2)); a3=Dict("a"=>3, "b"=>Dict("c"=>3)); a=[a0;a1;a2;a3]; df3=DataFrame(a);
 
-julia> @unnest_wider(df3, b)
+julia> @chain df3 @unnest_wider(b) @relocate(a, b_c, b_d)
 4×3 DataFrame
  Row │ a      b_c      b_d     
      │ Int64  Int64?   Int64?  
