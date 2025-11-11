@@ -230,6 +230,10 @@ function unnest_longer(df::Union{DataFrame, GroupedDataFrame}, cols;
         flattened_df = groupby(flattened_df, grouping_columns)
     end
 
+    if log[]
+        @info  generate_log(df, flattened_df, "@unnest_longer", [:rowchange])
+    end
+    
     return flattened_df
 end
 
