@@ -4,7 +4,7 @@ using TidierData, DataFrames, RDatasets
 DocTestMeta = quote
     using TidierData, DataFrames, Chain, Statistics
 end
-DocMeta.setdocmeta!(TidierData,
+Documenter.DocMeta.setdocmeta!(TidierData,
     :DocTestSetup,
     DocTestMeta;
     recursive=true)
