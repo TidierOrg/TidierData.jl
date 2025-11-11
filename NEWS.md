@@ -1,5 +1,12 @@
 # TidierData.jl updates
 
+## v.0.17.1 - 2025-11-12
+- 3x speed up for `@summarize`
+- add support for multiple arg functions in `across`
+- add support to `@pivot_wider` multiple columns with `values_from`
+- improved support for comprehensions in `@mutate`
+- various fixes to `@unnest_wider()`
+
 ## v.0.17.0 - 2025-03-24
 - Bugfix: `@count()` can now be called multiple times. If column `n` already exists, then the new column containing the count will be `nn` (and so on).
 - Bugfix: `@unnest_wider()` now works on data where keys are missing
