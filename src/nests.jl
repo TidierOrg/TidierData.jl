@@ -66,16 +66,18 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
                 df_copy[!, new_col_name] = [d === missing ? missing : get(d, key, missing) for d in flattened]
             end
 
-        elseif col_type <: Array
-            n = length(first(df_copy[!, col]))
+        elseif col_type <: Array || any(x -> x isa Array && x !== missing, df_copy[!, col])
+            arrays = [x isa Array ? x : (x === missing ? missing : [x]) for x in df_copy[!, col]]
+            n = maximum(length(arr) for arr in arrays if arr !== missing; init=0)
             for i in 1:n
                 new_col_name = names_sep === nothing ? Symbol(string(col, i)) : Symbol(string(col, names_sep, i))
-                try 
-                    df_copy[!, new_col_name] = getindex.(df_copy[!, col], i)
-                catch
-                    throw("Try using `@unnest_longer($col)` before `@unnest_wider($col)`") # COV_EXCL_LINE
-                end
+                df_copy[!, new_col_name] = [
+                    arr === missing ? missing :
+                    (length(arr) >= i ? arr[i] : missing)
+                    for arr in arrays
+                ]
             end
+
 
         elseif col_type <: Tuple || (col_type <: Union{Tuple, Missing})
             nonmissing = filter(x -> x !== missing, df_copy[!, col])
