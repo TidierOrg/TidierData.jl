@@ -1164,14 +1164,14 @@
 
 <span class="nd">@benchmark</span><span class="w"> </span><span class="n">filter</span><span class="p">(</span><span class="n">row</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">row</span><span class="o">.</span><span class="n">Year</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1939</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">row</span><span class="o">.</span><span class="n">Votes</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="n">movies</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>BenchmarkTools.Trial: 256 samples with 1 evaluation per sample.
- Range (min … max):  18.449 ms … 41.731 ms  ┊ GC (min … max): 0.00% … 49.21%
- Time  (median):     18.758 ms              ┊ GC (median):    0.00%
- Time  (mean ± σ):   19.534 ms ±  2.047 ms  ┊ GC (mean ± σ):  2.38% ±  5.52%
+<div class="highlight"><pre><span></span><code>BenchmarkTools.Trial: 255 samples with 1 evaluation per sample.
+ Range (min … max):  18.344 ms … 41.960 ms  ┊ GC (min … max): 0.00% … 55.18%
+ Time  (median):     18.815 ms              ┊ GC (median):    0.00%
+ Time  (mean ± σ):   19.660 ms ±  2.100 ms  ┊ GC (mean ± σ):  2.64% ±  5.98%
 
-  ▅█▇          ▁▃▁▂  ▁                                         
-  ███▅▄▁▁▁▁▁▄▄▅█████▁█▆▅▆█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄ ▅
-  18.4 ms      Histogram: log(frequency) by time      26.7 ms &lt;
+    █▇▃                                                        
+  ▅▆███▄▃▁▁▁▂▁▁▁▁▂▃▃▇▄▄▂▁▁▄▅▄▃▃▃▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂ ▃
+  18.3 ms         Histogram: frequency by time        25.3 ms &lt;
 
  Memory estimate: 7.76 MiB, allocs estimate: 287695.
 </code></pre></div>
@@ -1189,14 +1189,14 @@
 
 <span class="nd">@benchmark</span><span class="w"> </span><span class="n">combine</span><span class="p">(</span><span class="n">groupby</span><span class="p">(</span><span class="n">movies</span><span class="p">,</span><span class="w"> </span><span class="ss">:MPAA</span><span class="p">),</span><span class="w"> </span><span class="n">nrow</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">:n</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>BenchmarkTools.Trial: 1990 samples with 1 evaluation per sample.
- Range (min … max):  2.425 ms …  10.999 ms  ┊ GC (min … max): 0.00% … 75.22%
- Time  (median):     2.473 ms               ┊ GC (median):    0.00%
- Time  (mean ± σ):   2.510 ms ± 257.540 μs  ┊ GC (mean ± σ):  0.57% ±  3.42%
+<div class="highlight"><pre><span></span><code>BenchmarkTools.Trial: 1982 samples with 1 evaluation per sample.
+ Range (min … max):  2.425 ms …  11.427 ms  ┊ GC (min … max): 0.00% … 75.94%
+ Time  (median):     2.476 ms               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   2.519 ms ± 281.395 μs  ┊ GC (mean ± σ):  0.56% ±  3.34%
 
-   ▁▄▁▂▅▆▆█▅▅▇▇                                                
-  ▆█████████████▄▃▂▂▁▁▂▂▂▂▁▂▁▁▁▁▁▁▁▂▃▂▂▃▄▄▄▄▄▄▄▅▃▂▂▂▂▁▂▂▁▂▂▂▂ ▄
-  2.42 ms         Histogram: frequency by time        2.75 ms &lt;
+   ▁▃▃▂▅█▇▆▅█▃                                                 
+  ▅███████████▅▄▃▃▂▂▂▂▂▂▂▁▂▂▂▁▁▁▂▂▃▂▃▄▅▅▃▃▅▅▃▃▁▂▂▂▂▁▁▁▂▂▁▂▂▂▂ ▃
+  2.43 ms         Histogram: frequency by time        2.79 ms &lt;
 
  Memory estimate: 472.25 KiB, allocs estimate: 290.
 </code></pre></div>
@@ -1213,14 +1213,14 @@
 
 <span class="nd">@benchmark</span><span class="w"> </span><span class="n">transform</span><span class="p">(</span><span class="n">movies</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="ss">:Votes</span><span class="p">,</span><span class="w"> </span><span class="ss">:R1</span><span class="p">]</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">((</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">r</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">:new_col</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>BenchmarkTools.Trial: 2591 samples with 1 evaluation per sample.
- Range (min … max):  1.630 ms …   9.690 ms  ┊ GC (min … max): 0.00% … 80.98%
- Time  (median):     1.709 ms               ┊ GC (median):    0.00%
- Time  (mean ± σ):   1.926 ms ± 590.291 μs  ┊ GC (mean ± σ):  8.98% ± 14.03%
+<div class="highlight"><pre><span></span><code>BenchmarkTools.Trial: 2390 samples with 1 evaluation per sample.
+ Range (min … max):  1.703 ms …   9.577 ms  ┊ GC (min … max):  0.00% … 78.57%
+ Time  (median):     1.819 ms               ┊ GC (median):     0.00%
+ Time  (mean ± σ):   2.088 ms ± 711.137 μs  ┊ GC (mean ± σ):  10.46% ± 15.72%
 
-  ▇█▆                  ▄▄▂                                    ▁
-  ████▁▁▁▃▁▁▃▁▁▁▃▁▃▅▆▆█████▇▅▅▄▁▄▁▁▁▁▁▁▁▁▃▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▅▇ █
-  1.63 ms      Histogram: log(frequency) by time      4.92 ms &lt;
+  ▃█▇▃                        ▂▃▂                              
+  █████▆▄▃▁▃▁▁▁▁▃▁▁▁▁▃▃▄▆▅▇▇▇█████▄▅▃▁▅▄▁▁▁▃▃▃▁▃▁▃▃▁▃▁▁▁▁▁▄▅▆ █
+  1.7 ms       Histogram: log(frequency) by time      5.17 ms &lt;
 
  Memory estimate: 8.42 MiB, allocs estimate: 252.
 </code></pre></div>
@@ -1243,14 +1243,14 @@
 
 <span class="nd">@benchmark</span><span class="w"> </span><span class="n">transform</span><span class="p">(</span><span class="n">movies</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="ss">:Votes</span><span class="p">,</span><span class="w"> </span><span class="ss">:R1</span><span class="p">]</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">((</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">r</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">:Votes_R1_Product</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="ss">:Rating</span><span class="p">,</span><span class="w"> </span><span class="ss">:Year</span><span class="p">]</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">((</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">:Rating_Year_Ratio</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="ss">:R1</span><span class="p">,</span><span class="w"> </span><span class="ss">:R2</span><span class="p">,</span><span class="w"> </span><span class="ss">:R3</span><span class="p">,</span><span class="w"> </span><span class="ss">:R4</span><span class="p">,</span><span class="w"> </span><span class="ss">:R5</span><span class="p">]</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">:R1_to_R5_Sum</span><span class="p">,</span><span class="w"> </span><span class="ss">:Budget</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">ifelse</span><span class="o">.</span><span class="p">(</span><span class="n">ismissing</span><span class="o">.</span><span class="p">(</span><span class="n">b</span><span class="p">),</span><span class="w"> </span><span class="nb">missing</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">.&gt;</span><span class="w"> </span><span class="mi">50000</span><span class="p">))</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">:High_Budget_Flag</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="ss">:R6</span><span class="p">,</span><span class="w"> </span><span class="ss">:R7</span><span class="p">,</span><span class="w"> </span><span class="ss">:R8</span><span class="p">]</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">((</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">:R6_to_R8_Avg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="ss">:Year</span><span class="p">,</span><span class="w"> </span><span class="ss">:Length</span><span class="p">]</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">((</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">l</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">l</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">:Year_Minus_Length</span><span class="w"> </span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>BenchmarkTools.Trial: 1427 samples with 1 evaluation per sample.
- Range (min … max):  3.076 ms …  15.149 ms  ┊ GC (min … max): 0.00% … 77.89%
- Time  (median):     3.157 ms               ┊ GC (median):    0.00%
- Time  (mean ± σ):   3.500 ms ± 807.516 μs  ┊ GC (mean ± σ):  7.32% ± 11.29%
+<div class="highlight"><pre><span></span><code>BenchmarkTools.Trial: 1358 samples with 1 evaluation per sample.
+ Range (min … max):  3.173 ms …  12.644 ms  ┊ GC (min … max): 0.00% … 73.46%
+ Time  (median):     3.295 ms               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   3.676 ms ± 865.091 μs  ┊ GC (mean ± σ):  8.33% ± 12.81%
 
-  █▇▄               ▃▄▂                                        
-  ███▆█▄▄▆▄▄▄▁▁▁▁▅▆▇████▆▆▁▄▁▄▁▁▁▁▁▄▁▁▁▄▄▁▁▁▁▁▄▁▁▁▁▄▁▁▁▁▄▁▁▆▇ █
-  3.08 ms      Histogram: log(frequency) by time      7.12 ms &lt;
+  ▄█▅▁                   ▁▃▃▂                                  
+  ████▅▃▁▄▁▁▁▁▁▁▁▁▁▁▁▁▄▅▇████▇▄▅▁▁▁▁▃▁▁▁▃▁▁▁▃▁▃▁▁▁▁▁▁▁▁▃▁▃▁▆▇ █
+  3.17 ms      Histogram: log(frequency) by time      7.22 ms &lt;
 
  Memory estimate: 10.56 MiB, allocs estimate: 616.
 </code></pre></div>
@@ -1269,14 +1269,14 @@
 
 <span class="nd">@benchmark</span><span class="w"> </span><span class="n">transform</span><span class="p">(</span><span class="w"> </span><span class="n">transform</span><span class="p">(</span><span class="w"> </span><span class="n">groupby</span><span class="p">(</span><span class="n">movies</span><span class="p">,</span><span class="w"> </span><span class="ss">:MPAA</span><span class="p">),</span><span class="w"> </span><span class="ss">:R1</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">x</span><span class="o">/</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">:ace</span><span class="p">,</span><span class="w"> </span><span class="n">ungroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">),</span><span class="w"> </span><span class="p">[</span><span class="ss">:Votes</span><span class="p">,</span><span class="w"> </span><span class="ss">:R1</span><span class="p">]</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">.^</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">:Bace</span><span class="p">,</span><span class="w"> </span><span class="n">ungroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>BenchmarkTools.Trial: 232 samples with 1 evaluation per sample.
- Range (min … max):  20.409 ms …  31.771 ms  ┊ GC (min … max): 0.00% … 6.41%
- Time  (median):     21.389 ms               ┊ GC (median):    4.73%
- Time  (mean ± σ):   21.547 ms ± 968.157 μs  ┊ GC (mean ± σ):  4.07% ± 2.46%
+<div class="highlight"><pre><span></span><code>BenchmarkTools.Trial: 223 samples with 1 evaluation per sample.
+ Range (min … max):  20.604 ms … 33.407 ms  ┊ GC (min … max): 0.00% … 7.15%
+ Time  (median):     22.779 ms              ┊ GC (median):    6.53%
+ Time  (mean ± σ):   22.494 ms ±  1.645 ms  ┊ GC (mean ± σ):  4.12% ± 4.17%
 
-        ▃▄▃▅█▆▄▂▃ ▁                                             
-  ▄▆███▇█████████▆█▁▇▇▄▆▄▄▆▁▁▆▄▆▆▁▁▁▁▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄▁▁▁▁▁▁▁▁▄ ▆
-  20.4 ms       Histogram: log(frequency) by time      25.9 ms &lt;
+    █▄ ▁       ▄▆▂                                             
+  ▂▇████▆▁▁▁▂▄▆████▆▄▂▁▁▁▁▁▁▁▁▁▁▁▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂▁▁▁▁▁▂ ▃
+  20.6 ms         Histogram: frequency by time        31.3 ms &lt;
 
  Memory estimate: 25.64 MiB, allocs estimate: 2561.
 </code></pre></div>
@@ -1294,13 +1294,13 @@
 <span class="nd">@benchmark</span><span class="w"> </span><span class="n">select</span><span class="p">(</span><span class="n">movies</span><span class="p">,</span><span class="w"> </span><span class="ss">:R1</span><span class="p">,</span><span class="w"> </span><span class="ss">:R2</span><span class="p">,</span><span class="w"> </span><span class="ss">:R3</span><span class="p">,</span><span class="w"> </span><span class="ss">:R4</span><span class="p">,</span><span class="w"> </span><span class="ss">:R5</span><span class="p">)</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>BenchmarkTools.Trial: 10000 samples with 1 evaluation per sample.
- Range (min … max):  134.053 μs …  10.371 ms  ┊ GC (min … max):  0.00% … 97.84%
- Time  (median):     161.179 μs               ┊ GC (median):     0.00%
- Time  (mean ± σ):   219.127 μs ± 232.382 μs  ┊ GC (mean ± σ):  19.86% ± 17.56%
+ Range (min … max):  155.671 μs …   8.673 ms  ┊ GC (min … max):  0.00% … 96.94%
+ Time  (median):     189.194 μs               ┊ GC (median):     0.00%
+ Time  (mean ± σ):   247.298 μs ± 255.940 μs  ┊ GC (mean ± σ):  19.30% ± 17.23%
 
-  █▇▆▆▇▄                                                  ▁▂▂▂▁ ▂
-  ███████▃▄▄▁▁▃▁▃▁▁▁▁▁▁▁▁▁▁▃▃▁▁▁▁▁▁▁▁▁▁▁▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▃▅█████ █
-  134 μs        Histogram: log(frequency) by time        1.1 ms &lt;
+  ▆█▇▆▃                                                 ▁▁▁▁    ▂
+  ██████▆▆▅▄▄▅▃▄▃▃▁▁▁▁▁▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▆▇▇▇████████ █
+  156 μs        Histogram: log(frequency) by time       1.25 ms &lt;
 
  Memory estimate: 2.25 MiB, allocs estimate: 197.
 </code></pre></div>
