@@ -468,7 +468,8 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
       if fn in not_escaped[]
         return x
       elseif fn isa Symbol && hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
-        return x
+        # Explicitly prefix with Base module for Base functions
+        return :(Base.$fn($(args...)))
       elseif fn isa Symbol && hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Function
         return x
       elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
@@ -484,7 +485,8 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
       if fn in not_escaped[]
         return x
       elseif fn isa Symbol && hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
-        return x
+        # Explicitly prefix with Base module for Base functions (broadcasted)
+        return :(Base.$fn.($(args...)))
       elseif fn isa Symbol && hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Function
         return x
       elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
