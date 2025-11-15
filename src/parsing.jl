@@ -205,25 +205,30 @@ function parse_across(vars::Union{Expr,Symbol}, funcs::Union{Expr,Symbol})
   end
 
   func_array = Union{Expr,Symbol}[] # expression containing functions
+  func_names = Union{String,Nothing}[] # track function names
   needs_w = Bool[]              # <— tracks whether each func wants (x,w)
   with_sym = nothing  # mark that this function should be called as f(x, w)
 
   if funcs isa Symbol
-    push!(func_array, esc(funcs)) # fixes bug where single function is used inside across
+    push!(func_array, esc(funcs))
+    push!(func_names, string(funcs))
     push!(needs_w, false)
   elseif @capture(funcs, (args__,))
     for arg in args
       if arg isa Symbol
         push!(func_array, esc(arg))
+        push!(func_names, string(arg))
         push!(needs_w, false)
       else
         twoarg, with = detect_twoarg(arg)
         if twoarg === nothing
           push!(func_array, esc(parse_tidy(arg; from_across=true)))
+          push!(func_names, is_anonymous(arg) ? nothing : get_func_name(arg))
           push!(needs_w, false)
         else
           with_sym === nothing && (with_sym = with)
           push!(func_array, esc(twoarg))
+          push!(func_names, is_anonymous(twoarg) ? nothing : get_func_name(twoarg))
           push!(needs_w, true)
         end
       end
@@ -232,10 +237,12 @@ function parse_across(vars::Union{Expr,Symbol}, funcs::Union{Expr,Symbol})
     twoarg, with = detect_twoarg(funcs)
     if twoarg === nothing
       push!(func_array, esc(funcs))
+      push!(func_names, is_anonymous(funcs) ? nothing : get_func_name(funcs))
       push!(needs_w, false)
     else
       with_sym = with
       push!(func_array, esc(twoarg))
+      push!(func_names, is_anonymous(twoarg) ? nothing : get_func_name(twoarg))
       push!(needs_w, true)
     end
   end
@@ -243,7 +250,35 @@ function parse_across(vars::Union{Expr,Symbol}, funcs::Union{Expr,Symbol})
   num_funcs = length(func_array)
 
   if with_sym === nothing
-    return :(Cols($(src...)) .=> reshape([$(func_array...)], 1, $num_funcs))
+    if num_funcs == 1
+      # Single function - use its name if available
+      if func_names[1] !== nothing
+        return :(Cols($(src...)) .=> $(func_array[1]) .=> (c -> Symbol(string(c), "_", $(func_names[1]))))
+      else
+        return :(Cols($(src...)) .=> $(func_array[1]))
+      end
+    else
+      # Multiple functions - check if all are anonymous
+      all_anonymous = all(isnothing, func_names)
+      
+      pairs = []
+      for (i, func) in enumerate(func_array)
+        if func_names[i] !== nothing
+          # Named function - use its name
+          suffix = func_names[i]
+          push!(pairs, :(Cols($(src...)) .=> $func .=> (c -> Symbol(string(c), "_", $suffix))))
+        elseif all_anonymous
+          # All are anonymous - use numeric suffixes
+          suffix = string(i)
+          push!(pairs, :(Cols($(src...)) .=> $func .=> (c -> Symbol(string(c), "_", $suffix))))
+        else
+          # Mixed: this one is anonymous but others aren't - use "function" + number
+          suffix = "function" * string(i)
+          push!(pairs, :(Cols($(src...)) .=> $func .=> (c -> Symbol(string(c), "_", $suffix))))
+        end
+      end
+      return Expr(:..., Expr(:vect, pairs...))
+    end
   end
 
   return :(AsTable(Cols($(src...), $(QuoteNode(with_sym)))) => (tbl -> begin
@@ -255,7 +290,13 @@ function parse_across(vars::Union{Expr,Symbol}, funcs::Union{Expr,Symbol})
       eltype(x) <: Number || continue
       $(let pushes = Expr[]
           for (i, f) in enumerate(func_array)
-            sfx = "_" * string(i)
+            if func_names[i] !== nothing
+              sfx = "_" * func_names[i]
+            elseif all(isnothing, func_names)
+              sfx = "_" * string(i)
+            else
+              sfx = "_function" * string(i)
+            end
             call_ex = needs_w[i] ? :($(f)(x, w)) : :($(f)(x))
             push!(pushes, :(push!(acc, Symbol(string(nm), $sfx) => $call_ex)))
           end
@@ -266,7 +307,25 @@ function parse_across(vars::Union{Expr,Symbol}, funcs::Union{Expr,Symbol})
   end) => AsTable)
 end
 
+# Helper function to check if expression is anonymous
+function is_anonymous(expr)
+  if expr isa Symbol
+    return false  # Named function
+  elseif expr isa Expr && (expr.head == :-> || (expr.head == :function && expr.args[1] isa Expr))
+    return true   # Anonymous function
+  else
+    return false  # Assume named for other cases
+  end
+end
 
+# Helper to get function name
+function get_func_name(expr)
+  if expr isa Symbol
+    return string(expr)
+  else
+    return nothing  # anonymous
+  end
+end
 
 # Not exported
 function parse_desc(tidy_expr::Union{Expr,Symbol})
