@@ -82,6 +82,19 @@ julia> @chain df begin
    3 │ c         3     13          1         11          5         15
    4 │ d         4     14          1         11          5         15
    5 │ e         5     15          1         11          5         15
+
+julia> macro demo(x) :(2 .* \$(esc(x))) end; demo_fx(x) = 2x;
+
+julia> @mutate(df, across((b:c), (demo_fx, x -> @demo(x))))
+5×7 DataFrame
+ Row │ a     b      c      b_demo_fx  c_demo_fx  b_function2  c_function2 
+     │ Char  Int64  Int64  Int64      Int64      Int64        Int64       
+─────┼────────────────────────────────────────────────────────────────────
+   1 │ a         1     11          2         22            2           22
+   2 │ b         2     12          4         24            4           24
+   3 │ c         3     13          6         26            6           26
+   4 │ d         4     14          8         28            8           28
+   5 │ e         5     15         10         30           10           30
 ```
 """
 
