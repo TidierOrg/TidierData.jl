@@ -1,5 +1,9 @@
 # TidierData.jl updates
 
+## v.0.17.2 - 2025-11-
+- `@unnest_wider` now has fall back for broader types
+- add `fitquad` and `fitquadratic` to do not vectorize list
+
 ## v.0.17.1 - 2025-11-14
 - 3x speed up for `@summarize`
 - add support for multiple arg functions in `across`

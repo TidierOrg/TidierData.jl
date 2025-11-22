@@ -103,7 +103,18 @@ function unnest_wider(df::Union{DataFrame, GroupedDataFrame}, cols; names_sep::U
                 df_copy[!, new_col_name] =
                     [item isa Pair && item.first == key ? item.second : missing for item in df_copy[!, col]]
             end
+        elseif isstructtype(col_type)
+            fld_names = fieldnames(col_type)
+            for fld in fld_names
+                new_col_name = names_sep === nothing ?
+                    fld :
+                    Symbol(string(col, names_sep, fld))
 
+                df_copy[!, new_col_name] = [
+                    x === missing ? missing : getfield(x, fld)
+                    for x in df_copy[!, col]
+                ]
+            end
         else
             error("Column $col contains neither dictionaries nor arrays nor DataFrames") # COV_EXCL_LINE
         end
