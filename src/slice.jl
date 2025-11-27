@@ -3,48 +3,82 @@ $docstring_slice
 """
 macro slice(df, exprs...)
     exprs = parse_blocks(exprs...)
-  
-    interpolated_exprs = parse_interpolation.(exprs; from_slice = true)
-  
-  
-    tidy_exprs = [i[1] for i in interpolated_exprs]
+
+    # 1. FIX: Use collect() and parse_interpolation like in @mutate
+    interpolated_exprs_full = collect(parse_interpolation.(exprs; from_slice = true)) # <-- FIX HERE 🔥
+
+    # 2. Use the new function to separate standard expressions from the _by expression
+    slice_exprs_parsed, group_expr = parse_expressions_for_by(interpolated_exprs_full)
+    
+    # 3. Update the unpacking logic to use the filtered array
+    tidy_exprs = [i[1] for i in slice_exprs_parsed]
+    
     tidy_exprs = parse_tidy.(tidy_exprs; from_slice = true)
   
     negated = [i[2] for i in tidy_exprs]
     tidy_exprs = [i[1] for i in tidy_exprs]
   
     df_expr = quote
-      local df_copy = $(esc(df)) # not a copy
-  
+      local orig_df = $(esc(df))
+      local was_grouped_by_pipe = orig_df isa GroupedDataFrame # Track initial state
+      local df_copy = orig_df
+
+      # NEW: Inject Grouping Logic if _by was provided
+      $(if !isnothing(group_expr)
+          # group_expr is already interpolated.
+          parsed_group = parse_group_by(group_expr)
+
+          quote
+              # If _by is used, it overrides/sets the grouping
+              df_copy = groupby(orig_df, $(esc(parsed_group)); sort = false)
+          end
+      else
+          nothing
+      end)
+      # END NEW GROUPING
+
       if df_copy isa GroupedDataFrame
+        local should_ungroup = df_copy isa GroupedDataFrame && !was_grouped_by_pipe
+        
         if all(.!$negated)
-          combine(df_copy; ungroup = false) do sdf
+          local df_output = combine(df_copy; ungroup = should_ungroup) do sdf
             sdf[Iterators.flatten([$(tidy_exprs...)]) |> collect,:]
           end
         elseif all($negated)
-          combine(df_copy; ungroup = false) do sdf
+          local df_output = combine(df_copy; ungroup = should_ungroup) do sdf
               sdf[Iterators.flatten([$(tidy_exprs...)]) |> collect |> Not,:]
             end
         else
           throw("@slice() indices must either be all positive or all negative.") # COV_EXCL_LINE
         end
+        
+        if log[]
+            @info generate_log(orig_df, df_output, "@slice", [:rowchange])
+          #  log_changed_columns(orig_df, df_output; base_msg)
+        end
+        df_output
+        
       else
         if all(.!$negated)
-          df_copy = $(esc(df))[Iterators.flatten([$(tidy_exprs...)]) |> collect,:]
+          local df_output = df_copy[Iterators.flatten([$(tidy_exprs...)]) |> collect,:]
         elseif all($negated)
-          df_copy = $(esc(df))[Iterators.flatten([$(tidy_exprs...)]) |> collect |> Not,:]
+          local df_output = df_copy[Iterators.flatten([$(tidy_exprs...)]) |> collect |> Not,:]
         else
           throw("@slice() indices must either be all positive or all negative.") # COV_EXCL_LINE
         end
-        log[] && @info generate_log($(esc(df)), df_copy, "@slice", [:rowchange]) 
-        df_copy
+        
+        # 🛑 FIX 1: Use df_output for logging, comparing against orig_df
+        log[] && @info generate_log(orig_df, df_output, "@slice", [:rowchange]) 
+        
+        # 🛑 FIX 2: Return df_output
+        df_output
       end
     end
     if code[]
       @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
     end
     return df_expr
-  end
+end
 
 
 """
