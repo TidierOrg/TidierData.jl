@@ -260,22 +260,12 @@ $docstring_mutate
 macro mutate(df, exprs...)
     exprs = parse_blocks(exprs...)
     
-    # 1. Call parse_interpolation (now returns 4 values)
-    interpolated_exprs_full = parse_interpolation.(exprs)
+    # 1. FIX: Use collect() to turn the broadcasted result (a Tuple) into a Vector.
+    interpolated_exprs_full = collect(parse_interpolation.(exprs)) # <-- FIX HERE 🔥
 
-    # 2. Filter expressions based on the 4th return value (is_group_by_arg)
-    mutate_exprs_parsed = []
-    group_expr = nothing
-    
-    for (expr, n_flag, row_flag, by_flag) in interpolated_exprs_full
-        if by_flag
-            group_expr = expr # RHS of _by, already interpolated
-        else
-            push!(mutate_exprs_parsed, (expr, n_flag, row_flag))
-        end
-    end
-    
-    # 3. Update the unpacking logic
+    # 2. Now the input type matches the function signature parse_expressions_for_by(::Vector)
+    mutate_exprs_parsed, group_expr = parse_expressions_for_by(interpolated_exprs_full)
+    # 3. Update the unpacking logic to use the filtered array
     tidy_exprs = [i[1] for i in mutate_exprs_parsed]
     any_found_n = any([i[2] for i in mutate_exprs_parsed])
     any_found_row_number = any([i[3] for i in mutate_exprs_parsed])
@@ -378,23 +368,11 @@ $docstring_summarize
 macro summarize(df, exprs...)
     exprs = parse_blocks(exprs...)
     
-    # 1. NEW: Call parse_interpolation, which now returns 4 values per expression
-    interpolated_exprs_full = parse_interpolation.(exprs; from_summarize=true)
+    # 1. FIX: Use collect() to convert the result from a Tuple to a Vector.
+    interpolated_exprs_full = collect(parse_interpolation.(exprs; from_summarize=true)) # <-- Must use collect()
 
-    # 2. NEW: Filter expressions based on the 4th return value (is_group_by_arg)
-    summary_exprs_parsed = []
-    group_expr = nothing
-    
-    for (expr, n_flag, row_flag, by_flag) in interpolated_exprs_full
-        if by_flag
-            # expr is the RHS of _by, already interpolated
-            group_expr = expr 
-        else
-            # Collect the summary expressions and their flags
-            push!(summary_exprs_parsed, (expr, n_flag, row_flag))
-        end
-    end
-    
+    # 2. This call will now match the required signature: parse_expressions_for_by(::Vector)
+    summary_exprs_parsed, group_expr = parse_expressions_for_by(interpolated_exprs_full) 
     # 3. Update the unpacking logic to use the filtered array
     tidy_exprs = [i[1] for i in summary_exprs_parsed]
     any_found_n = any([i[2] for i in summary_exprs_parsed])

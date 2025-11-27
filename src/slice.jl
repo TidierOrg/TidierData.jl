@@ -4,53 +4,25 @@ $docstring_slice
 macro slice(df, exprs...)
     exprs = parse_blocks(exprs...)
   
-    # 1. Call parse_interpolation (now returns 4 values)
-    interpolated_exprs_full = parse_interpolation.(exprs; from_slice = true)
+    interpolated_exprs = parse_interpolation.(exprs; from_slice = true)
   
-    # 2. Filter expressions based on the 4th return value (is_group_by_arg)
-    slice_exprs_parsed = []
-    group_expr = nothing
   
-    for (expr, n_flag, row_flag, by_flag) in interpolated_exprs_full
-        if by_flag
-            group_expr = expr # RHS of _by, already interpolated
-        else
-            push!(slice_exprs_parsed, (expr, n_flag, row_flag))
-        end
-    end
-    
-    # 3. Update the unpacking logic to use the filtered array
-    tidy_exprs = [i[1] for i in slice_exprs_parsed]
-    
-    # When slicing, the second return value of parse_tidy is a boolean indicating negation
-    tidy_exprs_parsed = parse_tidy.(tidy_exprs; from_slice = true)
+    tidy_exprs = [i[1] for i in interpolated_exprs]
+    tidy_exprs = parse_tidy.(tidy_exprs; from_slice = true)
   
-    negated = [i[2] for i in tidy_exprs_parsed]
-    tidy_exprs = [i[1] for i in tidy_exprs_parsed]
+    negated = [i[2] for i in tidy_exprs]
+    tidy_exprs = [i[1] for i in tidy_exprs]
   
     df_expr = quote
-      local orig_df = $(esc(df))
+      local df_copy = $(esc(df)) # not a copy
   
-      # NEW: Inject Grouping Logic if _by was provided
-      $(if !isnothing(group_expr)
-          parsed_group = parse_group_by(group_expr)
-  
-          quote
-              orig_df = groupby(orig_df, $(esc(parsed_group)); sort = false)
-          end
-      else
-          nothing
-      end)
-      
-      local df_output = orig_df # Start with orig_df (which may be a GroupedDataFrame)
-  
-      if df_output isa GroupedDataFrame
+      if df_copy isa GroupedDataFrame
         if all(.!$negated)
-          df_output = combine(df_output; ungroup = false) do sdf
+          combine(df_copy; ungroup = false) do sdf
             sdf[Iterators.flatten([$(tidy_exprs...)]) |> collect,:]
           end
         elseif all($negated)
-          df_output = combine(df_output; ungroup = false) do sdf
+          combine(df_copy; ungroup = false) do sdf
               sdf[Iterators.flatten([$(tidy_exprs...)]) |> collect |> Not,:]
             end
         else
@@ -58,21 +30,21 @@ macro slice(df, exprs...)
         end
       else
         if all(.!$negated)
-          df_output = orig_df[Iterators.flatten([$(tidy_exprs...)]) |> collect,:]
+          df_copy = $(esc(df))[Iterators.flatten([$(tidy_exprs...)]) |> collect,:]
         elseif all($negated)
-          df_output = orig_df[Iterators.flatten([$(tidy_exprs...)]) |> collect |> Not,:]
+          df_copy = $(esc(df))[Iterators.flatten([$(tidy_exprs...)]) |> collect |> Not,:]
         else
           throw("@slice() indices must either be all positive or all negative.") # COV_EXCL_LINE
         end
-        log[] && @info generate_log(orig_df, df_output, "@slice", [:rowchange]) 
+        log[] && @info generate_log($(esc(df)), df_copy, "@slice", [:rowchange]) 
+        df_copy
       end
-      df_output
     end
     if code[]
       @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
     end
     return df_expr
-end
+  end
 
 
 """

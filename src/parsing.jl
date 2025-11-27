@@ -652,6 +652,26 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String};
   return var_expr, found_n, found_row_number, is_group_by_arg 
 end
 
+
+function parse_expressions_for_by(interpolated_exprs_full::Vector)
+  # The first three elements of the tuple (expr, n_flag, row_flag) go into here.
+  standard_exprs_parsed = []
+  # The fourth element (is_group_by_arg) determines if 'expr' is the grouping expression.
+  group_expr = nothing
+  
+  for (expr, n_flag, row_flag, by_flag) in interpolated_exprs_full
+      if by_flag
+          # The 'expr' is the RHS of _by (the grouping columns), already interpolated.
+          group_expr = expr
+      else
+          # Standard expressions for mutate/summarize/etc.
+          push!(standard_exprs_parsed, (expr, n_flag, row_flag))
+      end
+  end
+
+  # Returns the filtered list of standard expressions and the potential grouping expression
+  return standard_exprs_parsed, group_expr
+end
 # Not export
 # parse DataFrame and Expr
 function parse_bind_args(tidy_expr::Union{Expr,Symbol})
