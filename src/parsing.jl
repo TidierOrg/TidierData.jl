@@ -577,6 +577,16 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String};
   from_summarize::Bool = false, from_slice::Bool = false)
   found_n = false
   found_row_number = false
+  is_group_by_arg = false # <-- NEW FLAG: Tracks if the expression was `_by = rhs`
+
+  # NEW: Check for the special _by = expression structure
+  if var_expr isa Expr && var_expr.head == :(=) && var_expr.args[1] == :_by
+      is_group_by_arg = true # Set the flag
+      # Unwrap the expression to get only the RHS (the grouping column(s))
+      # This RHS is what gets postwalked below for interpolation (e.g., !!col_name)
+      var_expr = var_expr.args[2]
+  end
+  # END NEW
 
   var_expr = MacroTools.postwalk(var_expr) do x
     if @capture(x, !!variable_Symbol)
@@ -638,7 +648,8 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String};
     end
     return x
   end
-  return var_expr, found_n, found_row_number
+  # The function now returns 4 values
+  return var_expr, found_n, found_row_number, is_group_by_arg 
 end
 
 # Not export

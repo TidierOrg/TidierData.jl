@@ -259,25 +259,69 @@ $docstring_mutate
 """
 macro mutate(df, exprs...)
     exprs = parse_blocks(exprs...)
-    interpolated_exprs = parse_interpolation.(exprs)
+    
+    # 1. Call parse_interpolation (now returns 4 values)
+    interpolated_exprs_full = parse_interpolation.(exprs)
 
-    tidy_exprs = [i[1] for i in interpolated_exprs]
-    any_found_n = any([i[2] for i in interpolated_exprs])
-    any_found_row_number = any([i[3] for i in interpolated_exprs])
+    # 2. Filter expressions based on the 4th return value (is_group_by_arg)
+    mutate_exprs_parsed = []
+    group_expr = nothing
+    
+    for (expr, n_flag, row_flag, by_flag) in interpolated_exprs_full
+        if by_flag
+            group_expr = expr # RHS of _by, already interpolated
+        else
+            push!(mutate_exprs_parsed, (expr, n_flag, row_flag))
+        end
+    end
+    
+    # 3. Update the unpacking logic
+    tidy_exprs = [i[1] for i in mutate_exprs_parsed]
+    any_found_n = any([i[2] for i in mutate_exprs_parsed])
+    any_found_row_number = any([i[3] for i in mutate_exprs_parsed])
 
     tidy_exprs = parse_tidy.(tidy_exprs)
+    
     df_expr = quote
-        if $any_found_n || $any_found_row_number
-            if $(esc(df)) isa GroupedDataFrame
-                local df_copy = transform($(esc(df)); ungroup=false)
-            else
-                local df_copy = copy($(esc(df)))
+
+        local orig_df = $(esc(df))
+        local was_grouped_by_pipe = orig_df isa GroupedDataFrame # NEW: Track initial state
+
+        # NEW: Inject Grouping Logic if _by was provided
+        $(if !isnothing(group_expr)
+            # group_expr is already interpolated.
+            parsed_group = parse_group_by(group_expr)
+
+            quote
+                # If _by is used, it overrides/sets the grouping
+                orig_df = groupby(orig_df, $(esc(parsed_group)); sort = false)
             end
         else
-            local df_copy = $(esc(df)) # not a copy
-        end
+            nothing
+        end)
 
-        if $(esc(df)) isa GroupedDataFrame
+        # Declare variables local to the quote block upfront to avoid UndefVarError due to scoping
+        local is_grouped = orig_df isa GroupedDataFrame
+        local needs_temp = $any_found_n || $any_found_row_number
+        local should_ungroup = is_grouped && !was_grouped_by_pipe
+        local df_copy
+
+        # Handle the copy/transform based on the need for temp columns (n/row_number) and grouping status
+        if needs_temp
+            if is_grouped
+                # If grouped and needs temp, transform (which copies while preserving grouping)
+                df_copy = transform(orig_df; ungroup=false)
+            else
+                # If ungrouped and needs temp, copy
+                df_copy = copy(orig_df)
+            end
+        else
+            # If no temp columns are needed, use the original (potentially grouped) object
+            df_copy = orig_df
+        end
+        
+        if is_grouped
+            # Grouped path
             if $any_found_n
                 transform!(df_copy, nrow => :TidierData_n; ungroup=false)
             end
@@ -285,19 +329,22 @@ macro mutate(df, exprs...)
                 transform!(df_copy, eachindex => :TidierData_row_number; ungroup=false)
             end
 
-            local df_output = transform(df_copy, $(tidy_exprs...); ungroup=false)
+            # Use should_ungroup flag to conditionally ungroup the final result
+            local df_output = transform(df_copy, $(tidy_exprs...); ungroup=should_ungroup)
 
             if $any_found_n || $any_found_row_number
-                select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup=false)
+                # Use should_ungroup flag here as well
+                select!(df_output, Cols(Not(r"^(TidierData_n|TidierData_row_number)$")); ungroup=should_ungroup)
             end
 
             if log[]
-                local base_msg = generate_log(df_copy, df_output, "@mutate", [:colchange])
-                log_changed_columns(df_copy, df_output)
+                local base_msg = generate_log(orig_df, df_output, "@mutate", [:colchange])
+                log_changed_columns(orig_df, df_output; base_msg)
             end
 
             df_output
         else
+            # Ungrouped path
             if $any_found_n
                 transform!(df_copy, nrow => :TidierData_n)
             end
@@ -312,8 +359,8 @@ macro mutate(df, exprs...)
             end
 
             if log[]
-                @info generate_log(df_copy, df_output, "@mutate", [:colchange])
-                # log_changed_columns(df_copy, df_output; base_msg)
+                local base_msg = generate_log(orig_df, df_output, "@mutate", [:colchange])
+               # log_changed_columns(orig_df, df_output; base_msg)
             end
 
             df_output
@@ -330,16 +377,50 @@ $docstring_summarize
 """
 macro summarize(df, exprs...)
     exprs = parse_blocks(exprs...)
-    interpolated_exprs = parse_interpolation.(exprs; from_summarize=true)
+    
+    # 1. NEW: Call parse_interpolation, which now returns 4 values per expression
+    interpolated_exprs_full = parse_interpolation.(exprs; from_summarize=true)
 
-    tidy_exprs = [i[1] for i in interpolated_exprs]
-    any_found_n = any([i[2] for i in interpolated_exprs])
-    any_found_row_number = any([i[3] for i in interpolated_exprs])
+    # 2. NEW: Filter expressions based on the 4th return value (is_group_by_arg)
+    summary_exprs_parsed = []
+    group_expr = nothing
+    
+    for (expr, n_flag, row_flag, by_flag) in interpolated_exprs_full
+        if by_flag
+            # expr is the RHS of _by, already interpolated
+            group_expr = expr 
+        else
+            # Collect the summary expressions and their flags
+            push!(summary_exprs_parsed, (expr, n_flag, row_flag))
+        end
+    end
+    
+    # 3. Update the unpacking logic to use the filtered array
+    tidy_exprs = [i[1] for i in summary_exprs_parsed]
+    any_found_n = any([i[2] for i in summary_exprs_parsed])
+    any_found_row_number = any([i[3] for i in summary_exprs_parsed])
 
     tidy_exprs = parse_tidy.(tidy_exprs; autovec=true) # use auto-vectorization inside `@summarize()`
+    
     df_expr = quote
 
         local orig_df = $(esc(df))
+
+        # 4. Inject Grouping Logic if _by was provided (use group_expr)
+        $(if !isnothing(group_expr)
+            # group_expr is already interpolated.
+            # We now only need to call parse_group_by to format it for groupby()
+            parsed_group = parse_group_by(group_expr)
+
+            quote
+                # Temporarily group the DataFrame for the combine step
+                orig_df = groupby(orig_df, $(esc(parsed_group)); sort = false)
+            end
+        else
+            nothing
+        end)
+
+        # 5. Continue with original logic, which now correctly uses the (potentially) grouped orig_df
         local is_grouped = orig_df isa GroupedDataFrame
         local needs_temp = $any_found_n || $any_found_row_number
 
