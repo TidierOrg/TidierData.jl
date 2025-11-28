@@ -54,7 +54,6 @@ macro slice(df, exprs...)
         
         if log[]
             @info generate_log(orig_df, df_output, "@slice", [:rowchange])
-          #  log_changed_columns(orig_df, df_output; base_msg)
         end
         df_output
         
@@ -66,11 +65,7 @@ macro slice(df, exprs...)
         else
           throw("@slice() indices must either be all positive or all negative.") # COV_EXCL_LINE
         end
-        
-        # 🛑 FIX 1: Use df_output for logging, comparing against orig_df
         log[] && @info generate_log(orig_df, df_output, "@slice", [:rowchange]) 
-        
-        # 🛑 FIX 2: Return df_output
         df_output
       end
     end
@@ -136,7 +131,8 @@ macro slice_max(df, exprs...)
     missing_rm = true
     with_ties = true
     arranged = false
-    n = 1  # default value for n
+    n = 1
+    group_expr = nothing # 1. Capture _by argument
 
     for expr in exprs
         if @capture(expr, lhs_ = rhs_)
@@ -146,7 +142,9 @@ macro slice_max(df, exprs...)
             elseif lhs == :prop
                 arranged = true
             elseif lhs == :n
-                n = rhs  # Capture n if provided
+                n = rhs
+            elseif lhs == :_by # 1. Capture _by argument
+                group_expr = rhs
             end
         else
             column = expr
@@ -161,19 +159,37 @@ macro slice_max(df, exprs...)
         throw(ArgumentError("No column provided")) # COV_EXCL_LINE
     end
 
-    return quote
-        grouping_cols = Symbol[]
-        if $(esc(df)) isa DataFrames.GroupedDataFrame
-            grouping_cols = DataFrames.groupcols($(esc(df)))
-        end
+    df_expr = quote
+        local orig_df = $(esc(df))
+        local was_grouped_by_pipe = orig_df isa DataFrames.GroupedDataFrame 
+
+        # 2. Inject Grouping Logic if _by was provided
+        $(if !isnothing(group_expr)
+            # Assume parse_interpolation and parse_group_by exist and are required
+            interpolated_group_expr, _, _, _ = parse_interpolation(group_expr)
+            parsed_group = parse_group_by(interpolated_group_expr) 
+            
+            quote
+                orig_df = DataFrames.groupby(orig_df, $(esc(parsed_group)); sort = false)
+            end
+        else
+            nothing
+        end)
+        
+        local is_grouped = orig_df isa DataFrames.GroupedDataFrame
+        local temp_df = orig_df
+        
+        # 3. Refactor Grouping Checks (using is_grouped)
+        grouping_cols = is_grouped ? DataFrames.groupcols(temp_df) : Symbol[]
+
         temp_df = if $missing_rm
             filter(row -> !ismissing(row isa DataFrameRow ? row[$(QuoteNode(column))] : 
-            row[!, $(QuoteNode(column))]), $(esc(df))) 
+            row[!, $(QuoteNode(column))]), temp_df) 
         else 
-            $(esc(df))
+            temp_df
         end
 
-        if temp_df isa DataFrames.GroupedDataFrame
+        if is_grouped
         result_dfs = []
         for sdf in temp_df
             max_val = maximum(skipmissing(sdf[!, $(QuoteNode(column))]))
@@ -207,7 +223,16 @@ macro slice_max(df, exprs...)
             push!(result_dfs, selected_df)
         end
         temp_df = vcat(result_dfs...)
-        temp_df = DataFrames.groupby(temp_df, grouping_cols)
+        
+        # 4. Conditional Ungrouping
+        local should_ungroup = is_grouped && !was_grouped_by_pipe
+        
+        if should_ungroup
+            temp_df
+        else
+            DataFrames.groupby(temp_df, grouping_cols)
+        end
+        
     else
         max_val_temp = maximum(skipmissing(temp_df[!, $(QuoteNode(column))]))   
         max_value_rows = nrow(filter(row -> row[$(QuoteNode(column))] == max_val_temp, temp_df))
@@ -236,8 +261,9 @@ macro slice_max(df, exprs...)
                 first(@arrange(temp_df, desc($column)), $n)
             end
         end
+        temp_df
     end
-        log[] && @info generate_log($(esc(df)), temp_df, "@slice_max", [:rowchange])
+        log[] && @info generate_log(orig_df, temp_df, "@slice_max", [:rowchange])
         temp_df
     end
 
@@ -255,7 +281,8 @@ macro slice_min(df, exprs...)
     missing_rm = true
     with_ties = true
     arranged = false
-    n = 1  # default value for n
+    n = 1
+    group_expr = nothing # 1. Capture _by argument
 
     for expr in exprs
         if @capture(expr, lhs_ = rhs_)
@@ -265,7 +292,9 @@ macro slice_min(df, exprs...)
             elseif lhs == :prop
                 arranged = true
             elseif lhs == :n
-                n = rhs  # Capture n if provided
+                n = rhs
+            elseif lhs == :_by # 1. Capture _by argument
+                group_expr = rhs
             end
         else
             column = expr
@@ -280,19 +309,37 @@ macro slice_min(df, exprs...)
         throw(ArgumentError("No column provided")) # COV_EXCL_LINE
     end
 
-    return quote
-        grouping_cols = Symbol[]
-        if $(esc(df)) isa DataFrames.GroupedDataFrame
-            grouping_cols = DataFrames.groupcols($(esc(df)))
-        end
+    df_expr = quote
+        local orig_df = $(esc(df))
+        local was_grouped_by_pipe = orig_df isa DataFrames.GroupedDataFrame 
+
+        # 2. Inject Grouping Logic if _by was provided
+        $(if !isnothing(group_expr)
+            interpolated_group_expr, _, _, _ = parse_interpolation(group_expr)
+            parsed_group = parse_group_by(interpolated_group_expr) 
+            
+            quote
+                orig_df = DataFrames.groupby(orig_df, $(esc(parsed_group)); sort = false)
+            end
+        else
+            nothing
+        end)
+        
+        local is_grouped = orig_df isa DataFrames.GroupedDataFrame
+        
+        local temp_df = orig_df
+        
+        # 3. Refactor Grouping Checks (using is_grouped)
+        grouping_cols = is_grouped ? DataFrames.groupcols(temp_df) : Symbol[]
+
         temp_df = if $missing_rm
             filter(row -> !ismissing(row isa DataFrameRow ? row[$(QuoteNode(column))] : 
-            row[!, $(QuoteNode(column))]), $(esc(df))) 
+            row[!, $(QuoteNode(column))]), temp_df) 
         else 
-            $(esc(df))
+            temp_df
         end
 
-       if temp_df isa DataFrames.GroupedDataFrame
+       if is_grouped
         result_dfs = []
         for sdf in temp_df
             max_val = minimum(skipmissing(sdf[!, $(QuoteNode(column))]))
@@ -316,7 +363,7 @@ macro slice_min(df, exprs...)
                 elseif $with_ties && $n < max_value_rows && $n != 1
                     first(@arrange(sdf, ($column)), max_value_rows)
                 elseif $with_ties && $n < max_value_rows && $n == 1
-                    first(@arrange(sdf, ($column)), max_value_rows)
+                    first(@arrange(@arrange(sdf, ($column))), max_value_rows)
                 elseif !$with_ties && $n < max_value_rows 
                     first(@arrange(sdf, ($column)), $n)
                 else
@@ -326,7 +373,16 @@ macro slice_min(df, exprs...)
             push!(result_dfs, selected_df)
         end
         temp_df = vcat(result_dfs...)
-        temp_df = DataFrames.groupby(temp_df, grouping_cols)
+        
+        # 4. Conditional Ungrouping
+        local should_ungroup = is_grouped && !was_grouped_by_pipe
+        
+        if should_ungroup
+            temp_df
+        else
+            DataFrames.groupby(temp_df, grouping_cols)
+        end
+        
     else
         max_val_temp = minimum(skipmissing(temp_df[!, $(QuoteNode(column))]))   
         max_value_rows = nrow(filter(row -> row[$(QuoteNode(column))] == max_val_temp, temp_df))
@@ -354,8 +410,9 @@ macro slice_min(df, exprs...)
                 first(@arrange(temp_df, ($column)), $n)
             end
         end
+        temp_df
     end
-        log[] && @info generate_log($(esc(df)), temp_df, "@slice_min", [:rowchange]) 
+        log[] && @info generate_log(orig_df, temp_df, "@slice_min", [:rowchange]) 
         temp_df
     end
 
@@ -368,26 +425,48 @@ macro slice_head(df, exprs...)
   exprs = parse_blocks(exprs...)
 
   expr_dict = :(Dict())
+  group_expr = nothing
 
   for expr in exprs
       if @capture(expr, lhs_ = rhs_)
+          if lhs == :_by
+              group_expr = rhs
+              continue
+          end
           push!(expr_dict.args, :($(QuoteNode(lhs)) => $(esc(rhs))))
       end
   end
-  return quote
-      expr_dict = $expr_dict
-      temp_df = $(esc(df))
-      grouping_cols = Symbol[]
 
-      if temp_df isa DataFrames.GroupedDataFrame
-          grouping_cols = DataFrames.groupcols(temp_df)
-      end
+  df_expr = quote
+      local orig_df = $(esc(df))
+      local was_grouped_by_pipe = orig_df isa DataFrames.GroupedDataFrame 
+
+      $(if !isnothing(group_expr)
+          # Assume parse_interpolation and parse_group_by exist and are required
+          interpolated_group_expr, _, _, _ = parse_interpolation(group_expr)
+          parsed_group = parse_group_by(interpolated_group_expr) 
+          
+          quote
+              orig_df = DataFrames.groupby(orig_df, $(esc(parsed_group)); sort = false)
+          end
+      else
+          nothing
+      end)
+      
+      local temp_df = orig_df
+      local is_grouped = temp_df isa DataFrames.GroupedDataFrame
+
+      expr_dict = $expr_dict
+      
+      grouping_cols = is_grouped ? DataFrames.groupcols(temp_df) : Symbol[]
+
       local n = get(expr_dict, :n, 1)
       local prop_val = get(expr_dict, :prop, 1.0) 
       if prop_val < 0.0 || prop_val > 1.0
           throw(ArgumentError("Prop value should be between 0 and 1")) # COV_EXCL_LINE
       end
-      if temp_df isa DataFrames.GroupedDataFrame
+      
+      if is_grouped
           result_dfs = []
           for sdf in temp_df
               local group_n = n
@@ -397,18 +476,27 @@ macro slice_head(df, exprs...)
               push!(result_dfs, first(sdf, group_n))
           end
           temp_df = vcat(result_dfs...)
+          
+          local should_ungroup = is_grouped && !was_grouped_by_pipe
+          
+          if should_ungroup
+              temp_df
+          else
+              DataFrames.groupby(temp_df, grouping_cols)
+          end
+          
       else
           if prop_val != 1.0
               n = floor(Int, nrow(temp_df) * prop_val)
           end
           temp_df = first(temp_df, n)
+          temp_df
       end
-
-      if !isempty(grouping_cols)
-          temp_df = DataFrames.groupby(temp_df, grouping_cols)
-      end
-      temp_df
   end
+  if code[]
+      @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
+  end
+  return df_expr
 end
 
 """
@@ -418,24 +506,48 @@ macro slice_tail(df, exprs...)
   exprs = parse_blocks(exprs...)
   
   expr_dict = :(Dict())
+  group_expr = nothing
+  
   for expr in exprs
       if @capture(expr, lhs_ = rhs_)
+          if lhs == :_by
+              group_expr = rhs
+              continue
+          end
           push!(expr_dict.args, :($(QuoteNode(lhs)) => $(esc(rhs))))
       end
   end
-  return quote
+  
+  df_expr = quote
+      local orig_df = $(esc(df))
+      local was_grouped_by_pipe = orig_df isa DataFrames.GroupedDataFrame 
+
+      $(if !isnothing(group_expr)
+          # We manually run the _by expression through the assumed parsing pipeline
+          interpolated_group_expr, _, _, _ = parse_interpolation(group_expr)
+          parsed_group = parse_group_by(interpolated_group_expr) 
+          
+          quote
+              orig_df = DataFrames.groupby(orig_df, $(esc(parsed_group)); sort = false)
+          end
+      else
+          nothing
+      end)
+      
+      local temp_df = orig_df
+      local is_grouped = temp_df isa DataFrames.GroupedDataFrame
+      
       expr_dict = $expr_dict
-      temp_df = $(esc(df))
-      grouping_cols = Symbol[]
-      if temp_df isa DataFrames.GroupedDataFrame
-          grouping_cols = DataFrames.groupcols(temp_df)
-      end
+      
+      grouping_cols = is_grouped ? DataFrames.groupcols(temp_df) : Symbol[]
+      
       local n = get(expr_dict, :n, 1) 
       local prop_val = get(expr_dict, :prop, 1.0) 
       if prop_val < 0.0 || prop_val > 1.0
           throw(ArgumentError("Prop value should be between 0 and 1")) # COV_EXCL_LINE
       end
-      if temp_df isa DataFrames.GroupedDataFrame
+      
+      if is_grouped
           result_dfs = []
           for sdf in temp_df
               local group_n = n
@@ -445,16 +557,25 @@ macro slice_tail(df, exprs...)
               push!(result_dfs, last(sdf, group_n))
           end
           temp_df = vcat(result_dfs...)
+          
+          local should_ungroup = is_grouped && !was_grouped_by_pipe
+          
+          if should_ungroup
+              temp_df
+          else
+              DataFrames.groupby(temp_df, grouping_cols)
+          end
+          
       else
           if prop_val != 1.0
               n = floor(Int, nrow(temp_df) * prop_val)
           end
           temp_df = last(temp_df, n)
+          temp_df
       end
-
-      if !isempty(grouping_cols)
-          temp_df = DataFrames.groupby(temp_df, grouping_cols)
-      end
-      temp_df
   end
+  if code[]
+      @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
+  end
+  return df_expr
 end

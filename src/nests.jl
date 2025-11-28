@@ -352,6 +352,17 @@ function nest_pairs(gdf::GroupedDataFrame; kwargs...)
     return groupby(combined_df, group_cols)
 end
 
+function nest_pairs(df::DataFrame, key_cols::Union{Symbol, AbstractVector{Symbol}}; kwargs...)
+    # 1. Group the DataFrame by the key columns specified by the user (_by = a)
+    gdf = DataFrames.groupby(df, key_cols)
+
+    # 2. Call the existing GroupedDataFrame method on this newly grouped object
+    nested_gdf = nest_pairs(gdf; kwargs...)
+
+    # 3. FIX: Convert the GroupedDataFrame result back to a standard DataFrame (ungrouping it).
+    # This is done by using the DataFrame constructor on the GroupedDataFrame.
+    return DataFrame(nested_gdf)
+end
 
 """
 $docstring_nest
@@ -360,10 +371,16 @@ macro nest(df, args...)
   args = parse_blocks(args...)
 
   kwargs_exprs = []
+  group_expr = nothing
 
   for arg in args
       if isa(arg, Expr) && arg.head == :(=)
-          key = esc(arg.args[1])  # Extract and escape the key
+          if arg.args[1] == :_by
+              group_expr = arg.args[2]
+              continue
+          end
+          
+          key = esc(arg.args[1])
           # this extra processing was unavoidable for some reason to enable tidy selection
           # Check if the argument is a range expression
           if isa(arg.args[2], Expr) && arg.args[2].head == :(:) && length(arg.args[2].args) == 2
@@ -391,9 +408,21 @@ macro nest(df, args...)
       end
   end
 
-  # Construct the function call to nest24 with keyword arguments
+  # --- New logic for positional arguments ---
+  key_args = []
+  if !isnothing(group_expr)
+    interpolated_group_expr, _, _, _ = parse_interpolation(group_expr)
+    parsed_group = parse_group_by(interpolated_group_expr)
+    
+    # 🎯 FIX: Pass the parsed group expression directly, escaped.
+    # This assumes parsed_group is a Symbol, a Vector of Symbols, or an expression 
+    # that resolves to the grouping columns needed by nest_pairs.
+    push!(key_args, esc(parsed_group))
+  end
+
+  # Construct the function call to nest_pairs with KEY_ARGS followed by KW_ARGS
   return quote
-    nest_pairs($(esc(df)), $(kwargs_exprs...))
+    nest_pairs($(esc(df)), $(key_args...), $(kwargs_exprs...))
   end
 end
 
