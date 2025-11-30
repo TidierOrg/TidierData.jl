@@ -49,3 +49,21 @@ end
     @arrange(desc(Year))
     @slice(1:10)
 end
+
+# ## `_by``
+# Macros also support temporary grouping using the `_by` argument
+# For example we can write the example above as follows 
+
+@chain movies begin
+    @filter(Rating == minimum(Rating), _by = Year)
+    @select(Year, Rating)
+    @arrange(desc(Year))
+    @slice(1:10)
+end
+
+# The following macros support the use of `_by`
+# - `@mutate` and `@transmute` 
+# - `@summarize` and `@summarise`
+# - `@filter`
+# - `@nest`
+# - all `@slice` macros
