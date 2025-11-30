@@ -392,6 +392,7 @@ Create a new DataFrame with only computed columns.
 - `df`: A DataFrame.
 - `exprs...`: add new columns or replace values of existed columns using
          `new_variable = values` syntax.
+- `_by`: (optional) Temporarily group data by one or more columns for the operations done in `@transmute`.
 
 # Examples
 ```jldoctest 
@@ -422,7 +423,6 @@ to rename and select columns.
 # Arguments
 - `df`: A DataFrame.
 - `exprs...`: Use `new_name = old_name` syntax to rename selected columns.
-
 # Examples
 ```jldoctest 
 julia> df = DataFrame(a = 'a':'e', b = 1:5, c = 11:15);
@@ -453,6 +453,7 @@ rows as `df`.
 - `df`: A DataFrame.
 - `exprs...`: add new columns or replace values of existed columns using
          `new_variable = values` syntax.
+- `_by`: (optional) Temporarily group data by one or more columns for the operations done in `@mutate`.
 
 # Examples
 ```jldoctest 
@@ -515,24 +516,6 @@ julia> @chain df begin
    5 │ e         5     15      3.0     13.0
 
 julia> @chain df begin
-         @summarize(across(contains("b"), mean))
-       end
-1×1 DataFrame
- Row │ b_mean  
-     │ Float64 
-─────┼─────────
-   1 │     3.0
-
-julia> @chain df begin
-         @summarize(across(-contains("a"), mean))
-       end
-1×2 DataFrame
- Row │ b_mean   c_mean  
-     │ Float64  Float64 
-─────┼──────────────────
-   1 │     3.0     13.0
-
-julia> @chain df begin
          @mutate(across(where(is_number), minimum))
        end
 5×5 DataFrame
@@ -544,6 +527,21 @@ julia> @chain df begin
    3 │ c         3     13          1         11
    4 │ d         4     14          1         11
    5 │ e         5     15          1         11
+
+julia> @chain df begin
+            @mutate(groups = if_else(c / 2 > 6, "a", "b"))
+            @mutate(d = b + c,
+           b_minus_mean_b = b - mean(b), _by = groups)
+       end
+5×6 DataFrame
+ Row │ a     b      c      groups  d      b_minus_mean_b 
+     │ Char  Int64  Int64  String  Int64  Float64        
+─────┼───────────────────────────────────────────────────
+   1 │ a         1     11  b          12            -0.5
+   2 │ b         2     12  b          14             0.5
+   3 │ c         3     13  a          16            -1.0
+   4 │ d         4     14  a          18             0.0
+   5 │ e         5     15  a          20             1.0
 ```
 """
 
@@ -557,7 +555,7 @@ Create a new DataFrame with one row that aggregating all observations from the i
 # Arguments
 - `df`: A DataFrame.
 - `exprs...`: a `new_variable = function(old_variable)` pair. `function()` should be an aggregate function that returns a single value. 
-
+- `_by`: (optional) Temporarily group data by one or more columns for the operations done in `@summarize`.
 # Examples
 ```jldoctest 
 julia> df = DataFrame(a = 'a':'e', b = 1:5, c = 11:15);
@@ -610,6 +608,35 @@ julia> @chain df begin
      │ Int64      Int64     
 ─────┼──────────────────────
    1 │         1         11
+
+julia> @chain df begin
+         @summarize(across(contains("b"), mean))
+       end
+1×1 DataFrame
+ Row │ b_mean  
+     │ Float64 
+─────┼─────────
+   1 │     3.0
+
+julia> @chain df begin
+         @summarize(across(-contains("a"), mean))
+       end
+1×2 DataFrame
+ Row │ b_mean   c_mean  
+     │ Float64  Float64 
+─────┼──────────────────
+   1 │     3.0     13.0
+
+julia> @summarize(df, across(contains("b"), mean), _by = a)
+5×2 DataFrame
+ Row │ a     b_mean  
+     │ Char  Float64 
+─────┼───────────────
+   1 │ a         1.0
+   2 │ b         2.0
+   3 │ c         3.0
+   4 │ d         4.0
+   5 │ e         5.0
 ```
 """
 
@@ -622,41 +649,51 @@ Subset a DataFrame and return a copy of DataFrame where specified conditions are
 # Arguments
 - `df`: A DataFrame.
 - `exprs...`: transformation(s) that produce vectors containing `true` or `false`.
+- `_by`: (optional) Temporarily group data by one or more columns for the operations done in `@filter`.
 
 # Examples
 ```jldoctest 
-julia> df = DataFrame(a = 'a':'e', b = 1:5, c = 11:15);
+julia> df = DataFrame(a = ["a", "b", "a", "b", "c"], b = 1:5, c = 11:15);
 
 julia> @chain df begin
-         @filter(b >= mean(b))
+         @filter(b > mean(b))
        end
-3×3 DataFrame
- Row │ a     b      c     
-     │ Char  Int64  Int64 
-─────┼────────────────────
-   1 │ c         3     13
-   2 │ d         4     14
-   3 │ e         5     15
+2×3 DataFrame
+ Row │ a       b      c     
+     │ String  Int64  Int64 
+─────┼──────────────────────
+   1 │ b           4     14
+   2 │ c           5     15
+
+julia> @chain df begin
+         @filter(b > mean(b), _by = a)
+       end
+2×3 DataFrame
+ Row │ a       b      c     
+     │ String  Int64  Int64 
+─────┼──────────────────────
+   1 │ a           3     13
+   2 │ b           4     14
 
 julia> @chain df begin
          @filter(b >= 3 && c >= 14)
        end
 2×3 DataFrame
- Row │ a     b      c     
-     │ Char  Int64  Int64 
-─────┼────────────────────
-   1 │ d         4     14
-   2 │ e         5     15
+ Row │ a       b      c     
+     │ String  Int64  Int64 
+─────┼──────────────────────
+   1 │ b           4     14
+   2 │ c           5     15
 
 julia> @chain df begin
          @filter(b in (1, 3))
        end
 2×3 DataFrame
- Row │ a     b      c     
-     │ Char  Int64  Int64 
-─────┼────────────────────
-   1 │ a         1     11
-   2 │ c         3     13
+ Row │ a       b      c     
+     │ String  Int64  Int64 
+─────┼──────────────────────
+   1 │ a           1     11
+   2 │ a           3     13
 ```
 """
 
@@ -789,6 +826,7 @@ Select, remove or duplicate rows by indexing their integer positions.
 # Arguments
 - `df`: A DataFrame.
 - `exprs...`: integer row values. Use positive values to keep the rows, or negative values to drop. Values provided must be either all positive or all negative, and they must be within the range of DataFrames' row numbers.
+- `_by`: (optional) Temporarily group data while slicing
 
 # Examples
 ```jldoctest 
@@ -831,6 +869,15 @@ julia> @chain df begin
    2 │ b         4     14
    3 │ c         7     17
 
+julia> @slice(df, 1, _by = a)
+3×3 DataFrame
+ Row │ a     b      c     
+     │ Char  Int64  Int64 
+─────┼────────────────────
+   1 │ a         1     11
+   2 │ b         4     14
+   3 │ c         7     17
+
 julia> @chain df begin
          @group_by(a)
          @slice(n())
@@ -849,6 +896,18 @@ julia> @chain df begin
          @slice(-n())
          @ungroup
        end
+6×3 DataFrame
+ Row │ a     b      c     
+     │ Char  Int64  Int64 
+─────┼────────────────────
+   1 │ a         1     11
+   2 │ a         2     12
+   3 │ b         4     14
+   4 │ b         5     15
+   5 │ c         7     17
+   6 │ c         8     18
+
+julia> @slice(df, -n(), _by = a)
 6×3 DataFrame
  Row │ a     b      c     
      │ Char  Int64  Int64 
@@ -2667,6 +2726,7 @@ Randomly sample rows from a DataFrame `df` or from each group in a GroupedDataFr
 - `n`: The number of rows to sample. Defaults to `1`.
 - `prop`: The proportion of rows to sample.
 - `replace`: Whether to sample with replacement. Defaults to `false`.
+- `_by`: (optional) Temporarily group data while slicing
 
 # Examples
 ```julia
@@ -2885,6 +2945,7 @@ Retrieve rows with the maximum value(s) from the specified column of a DataFrame
 - `prop`: The proportion of rows to slice.
 - `n`: An optional integer argument to specify the number of maximum rows to retrieve. If with_ties = true, and the ties > n, n will be overridden. 
 - `missing_rm`: Defaults to true, skips the missing values when determining the proportion of the dataframe to slice.
+- `_by`: (optional) Temporarily group data while slicing
 
 # Examples
 ```jldoctest
@@ -2949,6 +3010,7 @@ Retrieve rows with the minimum value(s) from the specified column of a DataFrame
 - `prop`: The proportion of rows to slice.
 - `n`: An optional integer argument to specify the number of minimum rows to retrieve. If with_ties = true, and the ties > n, n will be overridden. 
 - `missing_rm`: Defaults to true, skips the missing values when determining the proportion of the dataframe to slice.
+- `_by`: (optional) Temporarily group data while slicing
 
 # Examples
 ```jldoctest
@@ -3010,6 +3072,7 @@ Retrieve rows from the beginning of a DataFrame or GroupedDataFrame.
 - `df`: The source data frame or grouped data frame from which to slice rows.
 - `prop`: The proportion of rows to slice.
 - `n`: An optional integer argument to specify the number of rows at the beginning of the dataframe to retrieve. Defaults to 1.
+- `_by`: (optional) Temporarily group data while slicing
 
 # Examples
 ```jldoctest
@@ -3054,6 +3117,7 @@ Retrieve rows from the end of a DataFrame or GroupedDataFrame.
 - `df`: The source data frame or grouped data frame from which to slice rows.
 - `prop`: The proportion of rows to slice.
 - `n`: An optional integer argument to specify the number of rows at the beginning of the dataframe to retrieve. Defaults to 1.
+- `_by`: (optional) Temporarily group data while slicing
 
 # Examples
 ```jldoctest
@@ -3403,6 +3467,8 @@ Multiple columns are nested into one or more new columns in a DataFrame.
 - `df`: A DataFrame 
 - `new_column`: New column name 
 - `nesting_columns`: Columns to be nested into the new_column  
+- `_by`: column or columns by which to group the nesting.
+
 # Examples
 ```jldoctest
 julia> df = DataFrame(a = repeat('a':'e', inner = 3),
