@@ -84,7 +84,7 @@ TidierData.jl currently supports the following top-level macros:
 
 ```@raw html
 !!! example "Top-level macros:"
-    - `@glimpse()`
+    - `@glimpse()` and `@head()`
     - `@select()` and `@distinct()`
     - `@rename()` and `@rename_with()`
     - `@mutate()` and `@transmute()` 
@@ -126,7 +126,7 @@ See the [Reference](https://tidierorg.github.io/TidierData.jl/latest/reference/)
 
 ## Example
 
-Let's select the first five movies in our dataset whose budget exceeds the mean budget. Unlike in R, where we pass an `na.rm = TRUE` argument to remove missing values, in Julia we wrap the variable with a `skipmissing()` to remove the missing values before the `mean()` is calculated.
+Let's select the first five movies in our dataset whose budget exceeds the mean budget. Unlike in R, where we pass an `na.rm = TRUE` argument to remove missing values, in Julia we wrap the variable with `skipmissing()` to remove the missing values before the `mean()` is calculated.
 
 ```julia
 using TidierData

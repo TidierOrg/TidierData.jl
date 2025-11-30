@@ -139,15 +139,30 @@ function parse_function(lhs::Union{Symbol, Expr}, rhs::Expr; autovec::Bool=true,
   lhs = QuoteNode(lhs)
 
   src = Symbol[]
+  bound = Symbol[]
   MacroTools.postwalk(rhs) do x
     if @capture(x, (fn_(args__)) | (fn_.(args__))) && fn != :esc
       args = args[isa.(args, Symbol)]
       push!(src, args...)
-    end
+    elseif hasproperty(x, :head) && x.head == :comparison
+      for (index, value) in enumerate(x.args)
+        if index % 2 == 1 && value isa Symbol
+          push!(src, value)
+        end
+      end
+    elseif x isa Expr && (x.head == :generator || x.head == :comprehension)
+      for it in x.args[2:end]                    # iterator clauses
+          if it isa Expr && ((it.head == :in) || (it.head == :(=)))
+              var, coll = it.args
+              var  isa Symbol && push!(bound, var)   # loop variable
+              coll isa Symbol && push!(src,  coll)   # collection column
+          end
+       end
+      end
     return x
   end
 
-  src = unique(src)
+  src = unique(filter(s -> s ∉ bound, src)) 
   func_left = :($(src...),)
 
   if autovec
@@ -161,6 +176,18 @@ function parse_function(lhs::Union{Symbol, Expr}, rhs::Expr; autovec::Bool=true,
   else
     return :($src => ($func_left -> $rhs) => $lhs)
   end
+end
+
+# helper: detect x -> fn(x, wt, ...) and synthesize (x, w) -> fn(x, w, ...)
+function detect_twoarg(ex)
+  if ex isa Expr && @capture(ex, x_->body_)
+    if body isa Expr && @capture(body, fn_(x_, with_Symbol, rest__))
+      return :( (x, w) -> $(fn)(x, w, $(rest...)) ), with
+    elseif body isa Expr && @capture(body, fn_(x_, with_Symbol))
+      return :( (x, w) -> $(fn)(x, w) ), with
+    end
+  end
+  return nothing, nothing
 end
 
 # Not exported
@@ -178,24 +205,126 @@ function parse_across(vars::Union{Expr,Symbol}, funcs::Union{Expr,Symbol})
   end
 
   func_array = Union{Expr,Symbol}[] # expression containing functions
+  func_names = Union{String,Nothing}[] # track function names
+  needs_w = Bool[]              # <— tracks whether each func wants (x,w)
+  with_sym = nothing  # mark that this function should be called as f(x, w)
 
   if funcs isa Symbol
-    push!(func_array, esc(funcs)) # fixes bug where single function is used inside across
+    push!(func_array, esc(funcs))
+    push!(func_names, string(funcs))
+    push!(needs_w, false)
   elseif @capture(funcs, (args__,))
     for arg in args
       if arg isa Symbol
         push!(func_array, esc(arg))
+        push!(func_names, string(arg))
+        push!(needs_w, false)
       else
-        push!(func_array, esc(parse_tidy(arg; from_across=true))) # fixes bug with compound and anonymous functions getting wrapped in Cols()
+        twoarg, with = detect_twoarg(arg)
+        if twoarg === nothing
+          push!(func_array, esc(parse_tidy(arg; from_across=true)))
+          push!(func_names, is_anonymous(arg) ? nothing : get_func_name(arg))
+          push!(needs_w, false)
+        else
+          with_sym === nothing && (with_sym = with)
+          push!(func_array, esc(twoarg))
+          push!(func_names, is_anonymous(twoarg) ? nothing : get_func_name(twoarg))
+          push!(needs_w, true)
+        end
       end
     end
-  else # for compound functions like mean or anonymous functions
-    push!(func_array, esc(funcs))
+  else
+    twoarg, with = detect_twoarg(funcs)
+    if twoarg === nothing
+      push!(func_array, esc(funcs))
+      push!(func_names, is_anonymous(funcs) ? nothing : get_func_name(funcs))
+      push!(needs_w, false)
+    else
+      with_sym = with
+      push!(func_array, esc(twoarg))
+      push!(func_names, is_anonymous(twoarg) ? nothing : get_func_name(twoarg))
+      push!(needs_w, true)
+    end
   end
 
   num_funcs = length(func_array)
 
-  return :(Cols($(src...)) .=> reshape([$(func_array...)], 1, $num_funcs))
+  if with_sym === nothing
+    if num_funcs == 1
+      # Single function - use its name if available
+      if func_names[1] !== nothing
+        return :(Cols($(src...)) .=> $(func_array[1]) .=> (c -> Symbol(string(c), "_", $(func_names[1]))))
+      else
+        return :(Cols($(src...)) .=> $(func_array[1]))
+      end
+    else
+      # Multiple functions - check if all are anonymous
+      all_anonymous = all(isnothing, func_names)
+      
+      pairs = []
+      for (i, func) in enumerate(func_array)
+        if func_names[i] !== nothing
+          # Named function - use its name
+          suffix = func_names[i]
+          push!(pairs, :(Cols($(src...)) .=> $func .=> (c -> Symbol(string(c), "_", $suffix))))
+        elseif all_anonymous
+          # All are anonymous - use numeric suffixes
+          suffix = string(i)
+          push!(pairs, :(Cols($(src...)) .=> $func .=> (c -> Symbol(string(c), "_", $suffix))))
+        else
+          # Mixed: this one is anonymous but others aren't - use "function" + number
+          suffix = "function" * string(i)
+          push!(pairs, :(Cols($(src...)) .=> $func .=> (c -> Symbol(string(c), "_", $suffix))))
+        end
+      end
+      return Expr(:..., Expr(:vect, pairs...))
+    end
+  end
+
+  return :(AsTable(Cols($(src...), $(QuoteNode(with_sym)))) => (tbl -> begin
+    w = getproperty(tbl, $(QuoteNode(with_sym)))
+    acc = Pair{Symbol,Any}[]
+    @inbounds for nm in propertynames(tbl)
+      nm === $(QuoteNode(with_sym)) && continue
+      x = getproperty(tbl, nm)
+      eltype(x) <: Number || continue
+      $(let pushes = Expr[]
+          for (i, f) in enumerate(func_array)
+            if func_names[i] !== nothing
+              sfx = "_" * func_names[i]
+            elseif all(isnothing, func_names)
+              sfx = "_" * string(i)
+            else
+              sfx = "_function" * string(i)
+            end
+            call_ex = needs_w[i] ? :($(f)(x, w)) : :($(f)(x))
+            push!(pushes, :(push!(acc, Symbol(string(nm), $sfx) => $call_ex)))
+          end
+          Expr(:block, pushes...)
+        end)
+    end
+    (; acc...)
+  end) => AsTable)
+end
+
+# Helper function to check if expression is anonymous
+function is_anonymous(expr)
+  if expr isa Symbol
+    return false  # Named function
+  elseif expr isa Expr && (expr.head == :-> || (expr.head == :function && expr.args[1] isa Expr))
+    return true   # Anonymous function
+  else
+    return false  # Assume named for other cases
+  end
+end
+
+# Helper to get function name
+function get_func_name(expr)
+  if expr isa Symbol
+    return string(expr)
+  else
+    return nothing  # anonymous
+  end
 end
 
 # Not exported
@@ -357,6 +486,15 @@ function parse_autovec(tidy_expr::Union{Expr,Symbol})
     elseif hasproperty(x, :head) && (x.head == :&& || x.head == :||)
       x.head = Symbol("." * string(x.head))
       return x
+    elseif hasproperty(x, :head) && x.head == :comparison
+      for (index, value) in enumerate(x.args)
+        if index % 2 == 0
+          if first(string(value), 1) != "."
+            x.args[index] = Symbol("." * string(value))
+          end
+        end
+      end
+      return x
     end
     return x
   end
@@ -389,46 +527,44 @@ function parse_escape_function(rhs_expr::Union{Expr,Symbol})
       if fn in not_escaped[]
         return x
       elseif fn isa Symbol && hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
-        return x
+        # Explicitly prefix with Base module for Base functions
+        return :(Base.$fn($(args...)))
       elseif fn isa Symbol && hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Function
         return x
       elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
         return x
-      elseif fn isa Symbol && hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Type
-        return x
-      elseif fn isa Symbol && hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Type
-        return x
-      elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Type
-        return x
+     # elseif fn isa Symbol && hasproperty(Main, fn) && typeof(getproperty(Main, fn)) <: Function
+     #   return :(Main.$fn($(args...)))
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn))($(args...)))
       else
         return x
       end
     elseif @capture(x, fn_.(args__))
-      # if fn in [:esc :in :∈ :∉ :Ref :Set :Cols :(:) :∘ :across :desc :mean :std :var :median :first :last :minimum :maximum :sum :length :skipmissing :quantile :passmissing :startswith :contains :endswith]
-      #  return x
       if fn in not_escaped[]
         return x
       elseif fn isa Symbol && hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Function
-        return x
+        # Explicitly prefix with Base module for Base functions (broadcasted)
+        return :(Base.$fn.($(args...)))
       elseif fn isa Symbol && hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Function
         return x
       elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Function
         return x
-      elseif fn isa Symbol && hasproperty(Base, fn) && typeof(getproperty(Base, fn)) <: Type
-        return x
-      elseif fn isa Symbol && hasproperty(Core, fn) && typeof(getproperty(Core, fn)) <: Type
-        return x
-      elseif fn isa Symbol && hasproperty(Statistics, fn) && typeof(getproperty(Statistics, fn)) <: Type
-        return x
+   #   elseif fn isa Symbol && hasproperty(Main, fn) && typeof(getproperty(Main, fn)) <: Function
+   #     return :(Main.$fn.($(args...)))
       elseif contains(string(fn), r"[^\W0-9]\w*$") # valid variable name
         return :($(esc(fn)).($(args...)))
       else
         return x
       end
     elseif @capture(x, @mac_(args__))
-      return esc(Expr(:macrocall, mac, LineNumberNode, args...))
+      if endswith(string(mac), "_str")
+        # Macros used inside of string macros are escaped, making it possible to work with Unitful units inside of `@mutate` (e.g. `u"psi"`)
+        return esc(Expr(:macrocall, mac, LineNumberNode, args...))
+      else
+        # Other macros that may reference variables referring to column names should *not* be escaped
+        return x
+      end
     end
     return x
   end
@@ -481,11 +617,20 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String};
     elseif @capture(x, variable_Symbol)
       if variable in not_escaped[]
         return variable
-      elseif hasproperty(Base, variable) && !(typeof(getproperty(Base, variable)) <: Function) && !(typeof(getproperty(Base, variable)) <: Type)
+      elseif hasproperty(Base, variable) && 
+        !(typeof(getproperty(Base, variable)) <: Function) && 
+        !(typeof(getproperty(Base, variable)) <: Type) && 
+        !(typeof(getproperty(Base, variable)) <: Module)
         return esc(variable)
-      elseif hasproperty(Core, variable) && !(typeof(getproperty(Core, variable)) <: Function) && !(typeof(getproperty(Core, variable)) <: Type)
+      elseif hasproperty(Core, variable) && 
+        !(typeof(getproperty(Core, variable)) <: Function) && 
+        !(typeof(getproperty(Core, variable)) <: Type) && 
+        !(typeof(getproperty(Core, variable)) <: Module)
         return esc(variable)
-      elseif hasproperty(Statistics, variable) && !(typeof(getproperty(Statistics, variable)) <: Function) && !(typeof(getproperty(Statistics, variable)) <: Type)
+      elseif hasproperty(Statistics, variable) && 
+        !(typeof(getproperty(Statistics, variable)) <: Function) && 
+        !(typeof(getproperty(Statistics, variable)) <: Type) &&
+        !(typeof(getproperty(Statistics, variable)) <: Module)
         return esc(variable)
       else
         return variable
@@ -518,4 +663,54 @@ function parse_blocks(exprs...)
     return (MacroTools.rmlines(exprs[1]).args...,)
   end
   return exprs
+end
+
+# Not exported 
+# The pivot_wider helper function when there are mutliple columns requires
+# a vector of symbols.  
+function _parse_values_from(values_from, df_esc)
+  if values_from isa Expr && (values_from.head == :vect || values_from.head == :tuple)
+      quoted = [a isa QuoteNode ? a : QuoteNode(a) for a in values_from.args]
+      return Expr(:vect, quoted...)
+
+  elseif values_from isa Symbol
+      return QuoteNode(values_from)
+
+  # starts_with / startswith ------------------------------------------
+  elseif values_from isa Expr && values_from.head == :starts_with
+      pat = values_from.args[1]
+      return :(names($df_esc)[startswith.(String.(names($df_esc)), $pat)])
+
+  elseif values_from isa Expr && values_from.head == :call &&
+         (values_from.args[1] == :startswith || values_from.args[1] == :starts_with)
+      pat = values_from.args[2]
+      return :(names($df_esc)[startswith.(String.(names($df_esc)), $pat)])
+
+  # ends_with / endswith ----------------------------------------------
+  elseif values_from isa Expr && values_from.head == :ends_with
+      pat = values_from.args[1]
+      return :(names($df_esc)[endswith.(String.(names($df_esc)), $pat)])
+
+  elseif values_from isa Expr && values_from.head == :call &&
+         (values_from.args[1] == :endswith || values_from.args[1] == :ends_with)
+      pat = values_from.args[2]
+      return :(names($df_esc)[endswith.(String.(names($df_esc)), $pat)])
+
+  # plain  estimate:moe  ----------------------------------------------
+  elseif values_from isa Expr && values_from.head == :call && values_from.args[1] == :(:)
+      a, b = values_from.args[2:3]
+      return :(names($df_esc[:, Between($(QuoteNode(a)), $(QuoteNode(b)))]))
+
+  # Between(:estimate,:moe) -------------------------------------------
+  elseif values_from isa Expr && values_from.head == :call && values_from.args[1] == :Between
+      a, b = values_from.args[2:3]
+      return :(names($df_esc[:, Between($a, $b)]))
+
+  # if wrapped in QuoteNode, unwrap and recurse -----------------------
+  elseif values_from isa QuoteNode && values_from.value isa Expr
+      return _parse_values_from(values_from.value, df_esc)
+
+  else
+      return values_from   # unchanged
+  end
 end

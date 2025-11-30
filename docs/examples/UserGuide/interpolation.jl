@@ -1,3 +1,74 @@
+# ## Native (and preferred) method of interpolating using `@eval` and `$`
+
+# TidierData relies on "non-standard evaluation," which has the side effect of making interpolation slightly more complicated. For example, in the expression `@mutate(df, a = b + 1)`, the `df` refers to a data frame, while `a` and `b` refer to column names within the data frame. What would happen if you created a variable `var` that contains the value `:a`. Would this interpolated expression work?
+
+# ```julia
+# using TidierData
+# df = DataFrame(a = 1:5, b = 6:10)
+# 
+# var = :a
+# @mutate(df, $var = b + 1)
+# ```
+
+# Unfortunately, this does not work because it produces `@mutate(df, :a = b + 1)`. Since TidierData uses bare variables (and not symbols) to refer to column names, this will result in an error. However, there is a slight modification we can apply to make this code work: prefixing it with an `@eval`.
+
+using TidierData
+df = DataFrame(a = 1:5, b = 6:10, c = 11:15)
+
+var = :a
+@eval @mutate(df, $var = b + 1)
+
+# ### Why does adding an `@eval` to the beginning of the expression make interpolation work?
+
+# Adding `@eval` to the beginning causes the interpolated expressions to be evaluated prior to be interpolated. So `$var`, which contains the value `:a`, is evaluated to `a`, which produces the desired expression `@mutate(df, a = b + 1)`. The need of `@eval` here then is primarily because TidierData expects an `a` rather than an `:a` to refer to the column "a" in a data frame.
+
+# ### How can I use `@eval` with a chained set of expressions?
+
+# The answer is simple: use `@eval @chain` instead of `@chain`.
+
+var = :a
+
+@eval @chain df begin
+  @select($var)
+  @mutate($var = $var + 1)
+end
+
+# If you want to select multiple variables, just use a `...` to splat the vector (or tuple) of variables.
+
+vars = [:a, :b]
+
+@eval @chain df begin
+  @select($vars...)
+end
+
+# The `@eval`-based interpolation syntax is highly flexible in that it should work anywhere you might need it across the entire package.
+
+@eval @chain df begin
+  @summarize(across($vars..., mean))
+end
+
+# ### Does `@eval` work inside of user-defined functions?
+
+# Yes. Here's an example of how you could roll up a new `select_new` function wrapping the `@select` macros.
+
+function select_new(df, columns...)
+  @eval @select(df, $columns...)
+end
+
+select_new(df, :a, :c)
+
+# Yes. Here's another example of an `add_one()` function that adds one to all numeric columns and returns the result in a new set of columns.
+
+function add_one(df)
+  @eval @mutate(df, across(where(is_number), x -> x .+ 1))
+end
+
+add_one(df)
+
+# ## Note: the below documentation is included here only for historical reasons. It will be removed in the future.
+
+# ## Superseded method of interpolating using the `!!` ("bang bang") operator
+
 # The `!!` ("bang bang") operator can be used to interpolate values of variables from the parent environment into your code. This operator is borrowed from the R `rlang` package. At some point, we may switch to using native Julia interpolation, but for a variety of reasons that introduce some complexity with native interpolation, we plan to continue to support `!!` interpolation.
 
 # To interpolate multiple variables, the `rlang` R package uses the `!!!` "triple bang" operator. However, in `TidierData.jl`, the `!!` "bang bang" operator can be used to interpolate either single or multiple values as shown in the examples below.

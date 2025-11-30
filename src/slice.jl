@@ -5,6 +5,8 @@ macro slice(df, exprs...)
   exprs = parse_blocks(exprs...)
 
   interpolated_exprs = parse_interpolation.(exprs; from_slice = true)
+
+
   tidy_exprs = [i[1] for i in interpolated_exprs]
   tidy_exprs = parse_tidy.(tidy_exprs; from_slice = true)
 
@@ -13,7 +15,7 @@ macro slice(df, exprs...)
 
   df_expr = quote
     local df_copy = $(esc(df)) # not a copy
-    
+
     if df_copy isa GroupedDataFrame
       if all(.!$negated)
         combine(df_copy; ungroup = false) do sdf
@@ -24,23 +26,26 @@ macro slice(df, exprs...)
             sdf[Iterators.flatten([$(tidy_exprs...)]) |> collect |> Not,:]
           end
       else
-        throw("@slice() indices must either be all positive or all negative.")
+        throw("@slice() indices must either be all positive or all negative.") # COV_EXCL_LINE
       end
     else
       if all(.!$negated)
-        df_copy[Iterators.flatten([$(tidy_exprs...)]) |> collect,:]
+        df_copy = $(esc(df))[Iterators.flatten([$(tidy_exprs...)]) |> collect,:]
       elseif all($negated)
-        df_copy[Iterators.flatten([$(tidy_exprs...)]) |> collect |> Not,:]
+        df_copy = $(esc(df))[Iterators.flatten([$(tidy_exprs...)]) |> collect |> Not,:]
       else
-        throw("@slice() indices must either be all positive or all negative.")
+        throw("@slice() indices must either be all positive or all negative.") # COV_EXCL_LINE
       end
+      log[] && @info generate_log($(esc(df)), df_copy, "@slice", [:rowchange]) 
+      df_copy
     end
   end
   if code[]
-    @info MacroTools.prettify(df_expr)
+    @info MacroTools.prettify(df_expr) # COV_EXCL_LINE
   end
   return df_expr
 end
+
 
 """
 $docstring_slice_sample
@@ -64,7 +69,7 @@ macro slice_sample(df, exprs...)
                 as_integer(floor(n() * $expr_dict[:prop]));
                 replace=$replace))
     else
-      throw("Please provide either an `n` or a `prop` value as a keyword argument.")
+      throw("Please provide either an `n` or a `prop` value as a keyword argument.") # COV_EXCL_LINE
     end
   end
 
@@ -75,172 +80,236 @@ end
 $docstring_slice_max
 """
 macro slice_max(df, exprs...)
-  exprs = parse_blocks(exprs...)
+    exprs = parse_blocks(exprs...)
 
-  expr_dict = Dict()
-  column = nothing
-  missing_rm = true
-  with_ties = true
-  arranged = false
-  for expr in exprs
-      if @capture(expr, lhs_ = rhs_)
-          expr_dict[lhs] = rhs
-          if lhs == :missing_rm
-              missing_rm = rhs
-          elseif lhs == :prop
-              arranged = true
-          end
-      else
-          column = expr
-      end
-  end
-  if haskey(expr_dict, :with_ties)
-      with_ties = expr_dict[:with_ties]
-  end
-  if column === nothing
-      throw(ArgumentError("No column provided"))
-  end
-  return quote
-      grouping_cols = Symbol[]
-      if $(esc(df)) isa DataFrames.GroupedDataFrame
-          grouping_cols = DataFrames.groupcols($(esc(df)))
-      end
-      temp_df = if $arranged
-          if $missing_rm
-              @chain $(esc(df)) begin 
-                  @filter(!ismissing($column))
-                  @arrange(desc($column))
-              end
-          else
-              @chain $(esc(df)) begin 
-                  @arrange(desc($column))
-              end
-          end
-      else
-          @filter($(esc(df)), $column == maximum(skipmissing($column)))
-      end
-      if temp_df isa DataFrames.GroupedDataFrame
-          result_dfs = []
-          for sdf in temp_df
-              local prop_val
-              if haskey($expr_dict, :prop)
-                  prop_val = $expr_dict[:prop]
-                  if prop_val < 0.0 || prop_val > 1.0
-                      throw(ArgumentError("Prop value should be between 0 and 1"))
-                  end
-                  num_rows = floor(Int, nrow(sdf) * prop_val)
-                  push!(result_dfs, first(sdf, num_rows))
-              elseif $with_ties
-                  push!(result_dfs, sdf)
-              else
-                  n = haskey($expr_dict, :n) ? $expr_dict[:n] : 1
-                  push!(result_dfs, first(sdf, n))
-              end
-          end
-          temp_df = vcat(result_dfs...)
-          temp_df = DataFrames.groupby(temp_df, grouping_cols)
-      else
-          local prop_val
-          if haskey($expr_dict, :prop)
-              prop_val = $expr_dict[:prop]
-              if prop_val < 0.0 || prop_val > 1.0
-                  throw(ArgumentError("Prop value should be between 0 and 1"))
-              end
-              num_rows = floor(Int, nrow(temp_df) * prop_val)
-              temp_df = first(temp_df, num_rows)
-          elseif !$with_ties
-              n = haskey($expr_dict, :n) ? $expr_dict[:n] : 1
-              temp_df = first(temp_df, n)
-          end
-          temp_df
-      end
-  end
+    expr_dict = Dict()
+    column = nothing
+    missing_rm = true
+    with_ties = true
+    arranged = false
+    n = 1  # default value for n
+
+    for expr in exprs
+        if @capture(expr, lhs_ = rhs_)
+            expr_dict[lhs] = rhs
+            if lhs == :missing_rm
+                missing_rm = rhs
+            elseif lhs == :prop
+                arranged = true
+            elseif lhs == :n
+                n = rhs  # Capture n if provided
+            end
+        else
+            column = expr
+        end
+    end
+
+    if haskey(expr_dict, :with_ties)
+        with_ties = expr_dict[:with_ties]
+    end
+
+    if column === nothing
+        throw(ArgumentError("No column provided")) # COV_EXCL_LINE
+    end
+
+    return quote
+        grouping_cols = Symbol[]
+        if $(esc(df)) isa DataFrames.GroupedDataFrame
+            grouping_cols = DataFrames.groupcols($(esc(df)))
+        end
+        temp_df = if $missing_rm
+            filter(row -> !ismissing(row isa DataFrameRow ? row[$(QuoteNode(column))] : 
+            row[!, $(QuoteNode(column))]), $(esc(df))) 
+        else 
+            $(esc(df))
+        end
+
+        if temp_df isa DataFrames.GroupedDataFrame
+        result_dfs = []
+        for sdf in temp_df
+            max_val = maximum(skipmissing(sdf[!, $(QuoteNode(column))]))
+            max_value_rows = nrow(filter(row -> row[$(QuoteNode(column))] == max_val, sdf))
+            selected_df = if haskey($expr_dict, :prop)
+                prop_val = $expr_dict[:prop]
+                if prop_val < 0.0 || prop_val > 1.0
+                    throw(ArgumentError("Prop value should be between 0 and 1")) # COV_EXCL_LINE
+                end
+                num_rows = floor(Int, nrow(sdf) * prop_val)
+                if $with_ties && num_rows > max_value_rows
+                    first(@arrange(sdf, desc($column)), num_rows)
+                elseif $with_ties && num_rows < max_value_rows
+                    first(@arrange(sdf, desc($column)), max_value_rows)
+                else
+                    first(@arrange(sdf, desc($column)), num_rows)
+                end
+            else
+                if $with_ties && $n > max_value_rows
+                    first(@arrange(sdf, desc($column)), $n)
+                elseif $with_ties && $n < max_value_rows && $n != 1
+                    first(@arrange(sdf, desc($column)), max_value_rows)
+                elseif $with_ties && $n < max_value_rows && $n == 1
+                    first(@arrange(sdf, desc($column)), max_value_rows)
+                elseif !$with_ties && $n < max_value_rows 
+                    first(@arrange(sdf, desc($column)), $n)
+                else
+                    first(@arrange(sdf, desc($column)), $n)
+                end
+            end
+            push!(result_dfs, selected_df)
+        end
+        temp_df = vcat(result_dfs...)
+        temp_df = DataFrames.groupby(temp_df, grouping_cols)
+    else
+        max_val_temp = maximum(skipmissing(temp_df[!, $(QuoteNode(column))]))   
+        max_value_rows = nrow(filter(row -> row[$(QuoteNode(column))] == max_val_temp, temp_df))
+
+        temp_df = if haskey($expr_dict, :prop)
+            prop_val = $expr_dict[:prop]
+            if prop_val < 0.0 || prop_val > 1.0
+                throw(ArgumentError("Prop value should be between 0 and 1")) # COV_EXCL_LINE
+            end
+            num_rows = floor(Int, nrow(temp_df) * prop_val)
+            if $with_ties && num_rows > max_value_rows
+                first(@arrange(temp_df, desc($column)), num_rows)
+            elseif $with_ties && num_rows < max_value_rows
+                first(@arrange(temp_df, desc($column)), max_value_rows)
+            else
+                first(@arrange(temp_df, desc($column)), num_rows)
+            end
+        else
+            if $with_ties && $n > max_value_rows
+                first(@arrange(temp_df, desc($column)), $n)
+            elseif $with_ties && $n < max_value_rows && $n != 1
+                first(@arrange(temp_df, desc($column)), max_value_rows)
+            elseif $with_ties && $n < max_value_rows && $n == 1
+                first(@arrange(temp_df, desc($column)), max_value_rows)
+            else !$with_ties && $n < max_value_rows 
+                first(@arrange(temp_df, desc($column)), $n)
+            end
+        end
+    end
+        log[] && @info generate_log($(esc(df)), temp_df, "@slice_max", [:rowchange])
+        temp_df
+    end
+
 end
+
 
 """
 $docstring_slice_min
 """
 macro slice_min(df, exprs...)
-  exprs = parse_blocks(exprs...)
+    exprs = parse_blocks(exprs...)
 
-  expr_dict = Dict()
-  column = nothing
-  missing_rm = true
-  with_ties = true
-  arranged = false
-  for expr in exprs
-      if @capture(expr, lhs_ = rhs_)
-          expr_dict[lhs] = rhs
-          if lhs == :missing_rm
-              missing_rm = rhs
-          elseif lhs == :prop
-              arranged = true
-          end
-      else
-          column = expr
-      end
-  end
-  if haskey(expr_dict, :with_ties)
-      with_ties = expr_dict[:with_ties]
-  end
-  if column === nothing
-      throw(ArgumentError("No column provided"))
-  end
-  return quote
-      grouping_cols = Symbol[]
-      if $(esc(df)) isa DataFrames.GroupedDataFrame
-          grouping_cols = DataFrames.groupcols($(esc(df)))
-      end
-      temp_df = if $arranged
-          if $missing_rm
-              @chain $(esc(df)) begin 
-                  @filter(!ismissing($column))
-                  @arrange($column)
-              end
-          else
-              @chain $(esc(df)) begin 
-                  @arrange($column)
-              end
-          end
-      else
-          @filter($(esc(df)), $column == minimum(skipmissing($column)))
-      end
-      if temp_df isa DataFrames.GroupedDataFrame
-          result_dfs = []
-          for sdf in temp_df
-              local prop_val
-              if haskey($expr_dict, :prop)
-                  prop_val = $expr_dict[:prop]
-                  if prop_val < 0.0 || prop_val > 1.0
-                      throw(ArgumentError("Prop value should be between 0 and 1"))
-                  end
-                  num_rows = floor(Int, nrow(sdf) * prop_val)
-                  push!(result_dfs, first(sdf, num_rows))
-              elseif $with_ties
-                  push!(result_dfs, sdf)
-              else
-                  n = haskey($expr_dict, :n) ? $expr_dict[:n] : 1
-                  push!(result_dfs, first(sdf, n))
-              end
-          end
-          temp_df = vcat(result_dfs...)
-          temp_df = DataFrames.groupby(temp_df, grouping_cols)
-      else
-          local prop_val
-          if haskey($expr_dict, :prop)
-              prop_val = $expr_dict[:prop]
-              if prop_val < 0.0 || prop_val > 1.0
-                  throw(ArgumentError("Prop value should be between 0 and 1"))
-              end
-              num_rows = floor(Int, nrow(temp_df) * prop_val)
-              temp_df = first(temp_df, num_rows)
-          elseif !$with_ties
-              n = haskey($expr_dict, :n) ? $expr_dict[:n] : 1
-              temp_df = first(temp_df, n)
-          end
-          temp_df
-      end
-  end
+    expr_dict = Dict()
+    column = nothing
+    missing_rm = true
+    with_ties = true
+    arranged = false
+    n = 1  # default value for n
+
+    for expr in exprs
+        if @capture(expr, lhs_ = rhs_)
+            expr_dict[lhs] = rhs
+            if lhs == :missing_rm
+                missing_rm = rhs
+            elseif lhs == :prop
+                arranged = true
+            elseif lhs == :n
+                n = rhs  # Capture n if provided
+            end
+        else
+            column = expr
+        end
+    end
+
+    if haskey(expr_dict, :with_ties)
+        with_ties = expr_dict[:with_ties]
+    end
+
+    if column === nothing
+        throw(ArgumentError("No column provided")) # COV_EXCL_LINE
+    end
+
+    return quote
+        grouping_cols = Symbol[]
+        if $(esc(df)) isa DataFrames.GroupedDataFrame
+            grouping_cols = DataFrames.groupcols($(esc(df)))
+        end
+        temp_df = if $missing_rm
+            filter(row -> !ismissing(row isa DataFrameRow ? row[$(QuoteNode(column))] : 
+            row[!, $(QuoteNode(column))]), $(esc(df))) 
+        else 
+            $(esc(df))
+        end
+
+       if temp_df isa DataFrames.GroupedDataFrame
+        result_dfs = []
+        for sdf in temp_df
+            max_val = minimum(skipmissing(sdf[!, $(QuoteNode(column))]))
+            max_value_rows = nrow(filter(row -> row[$(QuoteNode(column))] == max_val, sdf))
+            selected_df = if haskey($expr_dict, :prop)
+                prop_val = $expr_dict[:prop]
+                if prop_val < 0.0 || prop_val > 1.0
+                    throw(ArgumentError("Prop value should be between 0 and 1")) # COV_EXCL_LINE
+                end
+                num_rows = floor(Int, nrow(sdf) * prop_val)
+                if $with_ties && num_rows > max_value_rows
+                    first(@arrange(sdf, ($column)), num_rows)
+                elseif $with_ties && num_rows < max_value_rows
+                    first(@arrange(sdf, ($column)), max_value_rows)
+                else
+                    first(@arrange(sdf, ($column)), num_rows)
+                end
+            else
+                if $with_ties && $n > max_value_rows
+                    first(@arrange(sdf, ($column)), $n)
+                elseif $with_ties && $n < max_value_rows && $n != 1
+                    first(@arrange(sdf, ($column)), max_value_rows)
+                elseif $with_ties && $n < max_value_rows && $n == 1
+                    first(@arrange(sdf, ($column)), max_value_rows)
+                elseif !$with_ties && $n < max_value_rows 
+                    first(@arrange(sdf, ($column)), $n)
+                else
+                    first(@arrange(sdf, ($column)), $n)
+                end
+            end
+            push!(result_dfs, selected_df)
+        end
+        temp_df = vcat(result_dfs...)
+        temp_df = DataFrames.groupby(temp_df, grouping_cols)
+    else
+        max_val_temp = minimum(skipmissing(temp_df[!, $(QuoteNode(column))]))   
+        max_value_rows = nrow(filter(row -> row[$(QuoteNode(column))] == max_val_temp, temp_df))
+        temp_df = if haskey($expr_dict, :prop)
+            prop_val = $expr_dict[:prop]
+            if prop_val < 0.0 || prop_val > 1.0
+                throw(ArgumentError("Prop value should be between 0 and 1"))# COV_EXCL_LINE
+            end
+            num_rows = floor(Int, nrow(temp_df) * prop_val)
+            if $with_ties && num_rows > max_value_rows
+                first(@arrange(temp_df, ($column)), num_rows)
+            elseif $with_ties && num_rows < max_value_rows
+                first(@arrange(temp_df, ($column)), max_value_rows)
+            else
+                first(@arrange(temp_df, ($column)), num_rows)
+            end
+        else
+            if $with_ties && $n > max_value_rows
+                first(@arrange(temp_df, ($column)), $n)
+            elseif $with_ties && $n < max_value_rows && $n != 1
+                first(@arrange(temp_df, ($column)), max_value_rows)
+            elseif $with_ties && $n < max_value_rows && $n == 1
+                first(@arrange(temp_df, ($column)), max_value_rows)
+            else !$with_ties && $n < max_value_rows 
+                first(@arrange(temp_df, ($column)), $n)
+            end
+        end
+    end
+        log[] && @info generate_log($(esc(df)), temp_df, "@slice_min", [:rowchange]) 
+        temp_df
+    end
+
 end
 
 """
@@ -267,7 +336,7 @@ macro slice_head(df, exprs...)
       local n = get(expr_dict, :n, 1)
       local prop_val = get(expr_dict, :prop, 1.0) 
       if prop_val < 0.0 || prop_val > 1.0
-          throw(ArgumentError("Prop value should be between 0 and 1"))
+          throw(ArgumentError("Prop value should be between 0 and 1")) # COV_EXCL_LINE
       end
       if temp_df isa DataFrames.GroupedDataFrame
           result_dfs = []
@@ -315,7 +384,7 @@ macro slice_tail(df, exprs...)
       local n = get(expr_dict, :n, 1) 
       local prop_val = get(expr_dict, :prop, 1.0) 
       if prop_val < 0.0 || prop_val > 1.0
-          throw(ArgumentError("Prop value should be between 0 and 1"))
+          throw(ArgumentError("Prop value should be between 0 and 1")) # COV_EXCL_LINE
       end
       if temp_df isa DataFrames.GroupedDataFrame
           result_dfs = []

@@ -4,6 +4,7 @@
 [![Docs: Latest](https://img.shields.io/badge/Docs-Latest-blue.svg)](https://tidierorg.github.io/TidierData.jl/latest)
 [![Build Status](https://github.com/TidierOrg/TidierData.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/TidierOrg/TidierData.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Downloads](https://img.shields.io/badge/dynamic/json?url=http%3A%2F%2Fjuliapkgstats.com%2Fapi%2Fv1%2Fmonthly_downloads%2FTidierData&query=total_requests&suffix=%2Fmonth&label=Downloads)](http://juliapkgstats.com/pkg/TidierData)
+[![Coverage Status](https://coveralls.io/repos/github/TidierOrg/TidierData.jl/badge.svg?branch=main)](https://coveralls.io/github/TidierOrg/TidierData.jl?branch=main)
 
 <img src="/docs/src/assets/Tidier_jl_logo.png" align="right" style="padding-left:10px;" width="150"/>
 
@@ -67,10 +68,10 @@ To support R-style programming, TidierData.jl is implemented using macros.
 
 TidierData.jl currently supports the following top-level macros:
 
-- `@glimpse()`
+- `@glimpse()` and `@head()`
 - `@select()` and `@distinct()`
 - `@rename()` and `@rename_with()`
-- `@mutate()` and `@transmute()` 
+- `@mutate()` and `@transmute()`
 - `@summarize()` and `@summarise()`
 - `@filter()`
 - `@slice()`, `@slice_sample()`, `@slice_min()`, `@slice_max()`, `@slice_head()`, and `@slice_tail()`
@@ -106,7 +107,7 @@ See the documentation [Home](https://tidierorg.github.io/TidierData.jl/latest/) 
 
 ## Example
 
-Let's select the first five movies in our dataset whose budget exceeds the mean budget. Unlike in R, where we pass an `na.rm = TRUE` argument to remove missing values, in Julia we wrap the variable with a `skipmissing()` to remove the missing values before the `mean()` is calculated.
+Let's select the first five movies in our dataset whose budget exceeds the mean budget. Unlike in R, where we pass an `na.rm = TRUE` argument to remove missing values, in Julia we wrap the variable with `skipmissing()` to remove the missing values before the `mean()` is calculated.
 
 ```julia
 using TidierData
@@ -124,8 +125,8 @@ end
 
 ```
 5×2 DataFrame
- Row │ Title                       Budget   
-     │ String                      Float64? 
+ Row │ Title                       Budget
+     │ String                      Float64?
 ─────┼──────────────────────────────────────
    1 │ 'Til There Was You              23.0
    2 │ 10 Things I Hate About You      16.0

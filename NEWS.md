@@ -1,5 +1,43 @@
 # TidierData.jl updates
 
+## v.0.17.2 - 2025-11-
+- `@unnest_wider` now has fall back for broader types
+- add `fitquad` and `fitquadratic` to do not vectorize list
+
+## v.0.17.1 - 2025-11-14
+- 3x speed up for `@summarize`
+- add support for multiple arg functions in `across`
+- add support to `@pivot_wider` multiple columns with `values_from`
+- improved support for comprehensions in `@mutate`
+- various fixes to `@unnest_wider()` and `@unnest_longer`
+- minor parsing edgecase adjustments
+- add `argmax` and `argmin` to do not vectorize list
+
+## v.0.17.0 - 2025-03-24
+- Bugfix: `@count()` can now be called multiple times. If column `n` already exists, then the new column containing the count will be `nn` (and so on).
+- Bugfix: `@unnest_wider()` now works on data where keys are missing
+- Bugfix: Fixes `@filter()` involving multiple comparison operators (e.g., `3 <= a < 5`), which have a `:head` of `:comparison` and are parsed differently than `(3 <= a) && (a < 5)`
+- Adds logging ability to track changes to data frames with `TidierData_set("log", true)`
+- Adds docs describing logging and code printing
+
+## v0.16.5 - 2025-01-11
+- Bugfix: Corrected bug when using `Module.function()` syntax within expressions, which was previously causing errors due to the module being escaped.
+
+## v0.16.4 - 2025-01-11
+- Bugfix: Only functions in Base, Core, and Statistics are not escaped. All other functions and callables are escaped.
+- Updated minimum Julia version to 1.10
+
+## v0.16.3 - 2024-12-28
+- Bugfix: `@summary` no longer errors with non-numeric columns. Instead, it only reports non-numeric summary stats on non-numeric columns. Minor changes to summary column names to be snake_case.
+- Bugfix: Reverted a bug introduced in v0.13.4, which escaped all macros. Now, string macros remain escaped (i.e., keeping it possible to work with Unitful units, e.g. `u"psi"`), but other macros are *not* escaped to allow for those macros to refer to column names within arguments.
+- Updated documentation on new preferred method of interpolation using `@eval` and `$`
+- Added documentation on using other macros inside of TidierData macros
+
+## v0.16.2 - 2024-09-03
+- Bugfix: `@slice_min` and `@slice_max` respect the `n` argument
+- Adds `@head`
+- Adds `extra` argument for `@separate()` and `remove` argument for `@unite()`
+
 ## v0.16.1 - 2024-06-09
 - Adds support for tuples and vectors as arguments to select multiple columns. Prefixing tuples/vectors with a `-` or `!` will exclude the selected columns.
 - The `:` selector from Julia is now available and equivalent to `everything()`

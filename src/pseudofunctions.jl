@@ -1,3 +1,4 @@
+# COV_EXCL_START
 """
 $docstring_across
 """
@@ -32,3 +33,5 @@ $docstring_row_number
 function row_number()
   throw("This function should only be called inside of TidierData.jl macros.")
 end
+
+# COV_EXCL_STOP

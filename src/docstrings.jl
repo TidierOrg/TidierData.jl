@@ -82,6 +82,19 @@ julia> @chain df begin
    3 │ c         3     13          1         11          5         15
    4 │ d         4     14          1         11          5         15
    5 │ e         5     15          1         11          5         15
+
+julia> macro demo(x) :(2 .* \$(esc(x))) end; demo_fx(x) = 2x;
+
+julia> @mutate(df, across((b:c), (demo_fx, x -> @demo(x))))
+5×7 DataFrame
+ Row │ a     b      c      b_demo_fx  c_demo_fx  b_function2  c_function2 
+     │ Char  Int64  Int64  Int64      Int64      Int64        Int64       
+─────┼────────────────────────────────────────────────────────────────────
+   1 │ a         1     11          2         22            2           22
+   2 │ b         2     12          4         24            4           24
+   3 │ c         3     13          6         26            6           26
+   4 │ d         4     14          8         28            8           28
+   5 │ e         5     15         10         30           10           30
 ```
 """
 
@@ -1440,6 +1453,22 @@ julia> @pivot_wider(df_long_missing, names_from = variable, values_from = value,
 ─────┼─────────────────────
    1 │     1      1      2
    2 │     2      0      4
+
+julia> df_mult = DataFrame(
+                  paddockId = [0, 0, 1, 1, 2, 2],
+                  color = repeat([:red, :blue], 3),
+                  count = repeat([3, 4], 3),
+                  weight = [0.2, 0.3, 0.2, 0.3, 0.2, 0.2],
+              );
+
+julia> @pivot_wider(df_mult, names_from = color, values_from = count:weight)
+3×5 DataFrame
+ Row │ paddockId  red_count  blue_count  red_weight  blue_weight 
+     │ Int64      Int64?     Int64?      Float64?    Float64?    
+─────┼───────────────────────────────────────────────────────────
+   1 │         0          3           4         0.2          0.3
+   2 │         1          3           4         0.2          0.3
+   3 │         2          3           4         0.2          0.2
 ```
 """
 
@@ -2064,7 +2093,18 @@ julia> @chain df begin
    1 │ b           15
    2 │ missing      8
    3 │ c            7
-   4 │ a            6       
+   4 │ a            6
+
+julia> @chain df begin
+         @count(a)
+         @count(n)
+       end 
+2×2 DataFrame
+ Row │ n      nn    
+     │ Int64  Int64 
+─────┼──────────────
+   1 │     3      2
+   2 │     1      2      
 ```
 """
 
@@ -2273,6 +2313,9 @@ julia> as_float("1.5")
 
 julia> as_float(missing)
 missing
+
+julia> as_float("aa")
+missing
 ```
 """
 
@@ -2303,6 +2346,9 @@ julia> as_integer("2.5")
 
 julia> as_integer(missing)
 missing
+
+julia> as_integer("letters")
+missing
 ```
 """
 
@@ -2332,15 +2378,16 @@ missing
 
 const docstring_separate = 
 """
-   @separate(df, From, Into, Separator)
+   @separate(df, from, into, sep, extra = "merge")
 
 Separate a string column into mulitiple new columns based on a specified delimter 
 
 # Arguments
 - `df`: A DataFrame
-- `From`: Column that will be split
-- `Into`: New column names, supports [] or ()
-- `Separator`: the string or chacater on which to split
+- `from`: Column that will be split
+- `into`: New column names, supports [] or ()
+- `sep`: the string or character on which to split
+- `extra`: "merge", "warn" and "drop" . If not enough columns are provided, extra determines whether additional entries will be merged into the final one or dropped. "warn" generates a warning message for dropped values.
 
 # Examples
 ```jldoctest
@@ -2365,12 +2412,33 @@ julia> @chain df begin
    1 │ 1          1          missing    
    2 │ 2          2          missing    
    3 │ 3          3          3
+
+julia> @separate(df, a, (b, c), "-")
+3×2 DataFrame
+ Row │ b          c      
+     │ SubStrin…  String 
+─────┼───────────────────
+   1 │ 1          1
+   2 │ 2          2
+   3 │ 3          3-3
+
+julia> @chain df begin
+         @separate(a, (b, c), "-", extra = "drop")
+       end
+3×2 DataFrame
+ Row │ b          c         
+     │ SubStrin…  SubStrin… 
+─────┼──────────────────────
+   1 │ 1          1
+   2 │ 2          2
+   3 │ 3          3
+
 ```
 """
 
 const docstring_unite = 
 """
-      @unite(df, new_cols, from_cols, sep)
+      @unite(df, new_cols, from_cols, sep, remove = true)
 
 Separate a multiple columns into one new columns using a specific delimter
 
@@ -2378,13 +2446,23 @@ Separate a multiple columns into one new columns using a specific delimter
 - `df`: A DataFrame
 - `new_col`: New column that will recieve the combination
 - `from_cols`: Column names that it will combine, supports [] or ()
-- `sep`: the string or character that will seprate the values in the new column
+- `sep`: the string or character that will separate the values in the new column
+- `remove`: defaults to `true`, removes input columns from data frame
 
 # Examples
 ```jldoctest
 julia> df = DataFrame( b = ["1", "2", "3"], c = ["1", "2", "3"], d = [missing, missing, "3"]);
 
 julia> @unite(df, new_col, (b, c, d), "-")
+3×1 DataFrame
+ Row │ new_col 
+     │ String  
+─────┼─────────
+   1 │ 1-1
+   2 │ 2-2
+   3 │ 3-3-3
+   
+julia> @unite(df, new_col, (b, c, d), "-", remove = false)
 3×4 DataFrame
  Row │ b       c       d        new_col 
      │ String  String  String?  String  
@@ -2410,7 +2488,8 @@ For numerical columns, returns a dataframe with the Q1,Q3, min, max, mean, media
 julia> df = DataFrame(a = [1, 2, 3, 4, 5],
                       b = [missing, 7, 8, 9, 10],
                       c = [11, missing, 13, 14, missing],
-                      d = [16, 17, 18, 19, 20]);
+                      d = [16.1, 17.2, 18.3, 19.4, 20.5],
+                      e = ["a", "a", "a", "a", "a"]);
 
 julia> @summary(df);
 
@@ -2861,14 +2940,15 @@ julia> @chain df begin
    1 │      5.0       7.0       5.0
 
 julia> @chain df begin
-         @slice_max(b, with_ties = false, n = 2)
+         @slice_max(b, n = 3)
        end 
-2×3 DataFrame
+3×3 DataFrame
  Row │ a         b         c        
      │ Float64?  Float64?  Float64? 
 ─────┼──────────────────────────────
    1 │      5.0       7.0       5.0
    2 │      6.0       7.0       6.0
+   3 │      1.0       6.0       1.0
    
 julia> @chain df begin
          @slice_max(b, prop = 0.5, missing_rm = true)
@@ -2924,15 +3004,15 @@ julia> @chain df begin
    1 │  missing       0.3       0.2
 
 julia> @chain df begin
-         @slice_min(b, with_ties = true, n = 1)
-       end 
-2×3 DataFrame
- Row │ a         b         c         
-     │ Float64?  Float64?  Float64?  
-─────┼───────────────────────────────
-   1 │  missing       0.3        0.2
-   2 │  missing       0.3  missing   
-  
+         @slice_min(b, n = 3)
+       end
+3×3 DataFrame
+ Row │ a          b         c         
+     │ Float64?   Float64?  Float64?  
+─────┼────────────────────────────────
+   1 │ missing         0.3        0.2
+   2 │ missing         0.3  missing   
+   3 │       0.2       2.0        0.2  
    
 julia> @chain df begin
          @slice_min(b, prop = 0.5, missing_rm = true)
@@ -2961,30 +3041,33 @@ Retrieve rows from the beginning of a DataFrame or GroupedDataFrame.
 # Examples
 ```jldoctest
 julia> df = DataFrame(
-           a = [missing, 0.2, missing, missing, 1, missing, 5, 6],
+           a = ["a", "b", "a", "b", "a", "b", "a", "a"],
            b = [0.3, 2, missing, 0.3, 6, 5, 7, 7],
            c = [0.2, 0.2, 0.2, missing, 1, missing, 5, 6]);
 
 julia> @chain df begin
-         @slice_head(n = 3)
-       end 
-3×3 DataFrame
- Row │ a          b          c        
-     │ Float64?   Float64?   Float64? 
-─────┼────────────────────────────────
-   1 │ missing          0.3       0.2
-   2 │       0.2        2.0       0.2
-   3 │ missing    missing         0.2
-
-julia> @chain df begin
-         @slice_head(prop = .25)
+         @slice_head(prop = .3)
        end 
 2×3 DataFrame
- Row │ a          b         c        
-     │ Float64?   Float64?  Float64? 
-─────┼───────────────────────────────
-   1 │ missing         0.3       0.2
-   2 │       0.2       2.0       0.2
+ Row │ a       b         c        
+     │ String  Float64?  Float64? 
+─────┼────────────────────────────
+   1 │ a            0.3       0.2
+   2 │ b            2.0       0.2
+
+julia> @chain df begin
+         @group_by(a)
+         @slice_head(n = 2)
+         @ungroup
+       end 
+4×3 DataFrame
+ Row │ a       b          c         
+     │ String  Float64?   Float64?  
+─────┼──────────────────────────────
+   1 │ a             0.3        0.2
+   2 │ a       missing          0.2
+   3 │ b             2.0        0.2
+   4 │ b             0.3  missing   
 ```
 """
 
@@ -3018,7 +3101,7 @@ julia> @chain df begin
    3 │       6.0       7.0        6.0
 
 julia> @chain df begin
-         @slice_tail(prop = .25)
+         @slice_tail(prop = 0.25)
        end 
 2×3 DataFrame
  Row │ a         b         c        
@@ -3138,14 +3221,14 @@ julia> @rename_with(df, str -> str_remove_all(str, "_a"), !term_a)
 
 const docstring_separate_rows =
 """
-    separate_rows(df, columns..., delimiter)
+    separate_rows(df, columns..., sep)
 
 Split the contents of specified columns in a DataFrame into multiple rows based on a given delimiter.
 
 # Arguments
 - `df`: A DataFrame
 - `columns`: A column or multiple columns to be split. Can be a mix of integers and column names.
-- `delimiter`: The string or character or regular expression used to split the column values.
+- `sep`: The string or character or regular expression used to split the column values.
 
 # Examples
 ```jldoctest
@@ -3161,7 +3244,7 @@ julia> df = DataFrame(a = 1:3,
    2 │     2  aa;bb;cc  2;3;4   8;9;10
    3 │     3  dd;ee     5;6     11;12
 
-julia> @separate_rows(df, 2, 4, ";" )
+julia> @separate_rows(df, 2, 4, ";")
 6×4 DataFrame
  Row │ a      b          c       d         
      │ Int64  SubStrin…  String  SubStrin… 
@@ -3173,7 +3256,7 @@ julia> @separate_rows(df, 2, 4, ";" )
    5 │     3  dd         5;6     11
    6 │     3  ee         5;6     12
 
-julia> @separate_rows(df, b:d, ";" )
+julia> @separate_rows(df, b:d, ";")
 6×4 DataFrame
  Row │ a      b          c          d         
      │ Int64  SubStrin…  SubStrin…  SubStrin… 
@@ -3189,14 +3272,14 @@ julia> @separate_rows(df, b:d, ";" )
 
 const docstring_unnest_wider =
 """
-    @unnest_wider(df, columns, names_sep=)
+    @unnest_wider(df, columns, names_sep)
 
 Unnest specified columns of arrays or dictionaries into wider format dataframe with individual columns.
 
 # Arguments
 - `df`: A DataFrame.
 - `columns`: Columns to be unnested. These columns should contain arrays, dictionaries, dataframes, or tuples. Dictionarys headings will be converted to column names.
-- `names_sep`: An optional string to specify the separator for creating new column names. If not provided, defaults to no separator.
+- `names_sep`: An optional string to specify the separator for creating new column names. If not provided, defaults to `_`.
 
 # Examples
 ```jldoctest
@@ -3204,13 +3287,13 @@ julia> df = DataFrame(name = ["Zaki", "Farida"], attributes = [
                Dict("age" => 25, "city" => "New York"),
                Dict("age" => 30, "city" => "Los Angeles")]);
 
-julia> @unnest_wider(df, attributes)
+julia> @chain df @unnest_wider(attributes) @relocate(name, attributes_city, attributes_age)
 2×3 DataFrame
- Row │ name    city         age   
-     │ String  String       Int64 
-─────┼────────────────────────────
-   1 │ Zaki    New York        25
-   2 │ Farida  Los Angeles     30
+ Row │ name    attributes_city  attributes_age 
+     │ String  String           Int64          
+─────┼─────────────────────────────────────────
+   1 │ Zaki    New York                     25
+   2 │ Farida  Los Angeles                  30
 
 julia> df2 = DataFrame(a=[1, 2], b=[[1, 2], [3, 4]], c=[[5, 6], [7, 8]])
 2×3 DataFrame
@@ -3220,13 +3303,54 @@ julia> df2 = DataFrame(a=[1, 2], b=[[1, 2], [3, 4]], c=[[5, 6], [7, 8]])
    1 │     1  [1, 2]  [5, 6]
    2 │     2  [3, 4]  [7, 8]
 
-julia> @unnest_wider(df2, b:c, names_sep = "_")
+julia> @unnest_wider(df2, b:c, names_sep = "")
 2×5 DataFrame
- Row │ a      b_1    b_2    c_1    c_2   
+ Row │ a      b1     b2     c1     c2    
      │ Int64  Int64  Int64  Int64  Int64 
 ─────┼───────────────────────────────────
    1 │     1      1      2      5      6
    2 │     2      3      4      7      8
+
+
+julia> a1=Dict("a"=>1, "b"=>Dict("c"=>1, "d"=>2)); a2=Dict("a"=>1, "b"=>Dict("c"=>1)); a=[a1;a2]; df=DataFrame(a);
+
+julia> @chain df @unnest_wider(b) @relocate(a, b_c, b_d)
+2×3 DataFrame
+ Row │ a      b_c    b_d     
+     │ Int64  Int64  Int64?  
+─────┼───────────────────────
+   1 │     1      1        2
+   2 │     1      1  missing 
+
+julia> a0=Dict("a"=>0, "b"=>0);  a1=Dict("a"=>1, "b"=>Dict("c"=>1, "d"=>2)); a2=Dict("a"=>2, "b"=>Dict("c"=>2)); a3=Dict("a"=>3, "b"=>Dict("c"=>3)); a=[a0;a1;a2;a3]; df3=DataFrame(a);
+
+julia> @chain df3 @unnest_wider(b) @relocate(a, b_c, b_d)
+4×3 DataFrame
+ Row │ a      b_c      b_d     
+     │ Int64  Int64?   Int64?  
+─────┼─────────────────────────
+   1 │     0  missing  missing 
+   2 │     1        1        2
+   3 │     2        2  missing 
+   4 │     3        3  missing 
+
+julia> df = DataFrame(x1 = ["one", "two", "three"], x2 = [(1, "a"), (2, "b"), (3, "c")])
+3×2 DataFrame
+ Row │ x1      x2       
+     │ String  Tuple…   
+─────┼──────────────────
+   1 │ one     (1, "a")
+   2 │ two     (2, "b")
+   3 │ three   (3, "c")
+
+julia> @unnest_wider df x2
+3×3 DataFrame
+ Row │ x1      x2_1   x2_2   
+     │ String  Int64  String 
+─────┼───────────────────────
+   1 │ one         1  a
+   2 │ two         2  b
+   3 │ three       3  c
 ```
 """
 
@@ -3262,7 +3386,7 @@ julia> @unnest_longer(df, 2)
    3 │     2      3  [7, 8]
    4 │     2      4  [7, 8]
 
-julia> @unnest_longer(df, b:c, indices_include=true)
+julia> @unnest_longer(df, b:c, indices_include = true)
 4×5 DataFrame
  Row │ a      b      c      b_id   c_id  
      │ Int64  Int64  Int64  Int64  Int64 
@@ -3285,14 +3409,14 @@ julia> df2 = DataFrame(x = 1:4, y = [[], [1, 2, 3], [4, 5], Int[]])
 julia> @unnest_longer(df2, y, keep_empty = true)
 7×2 DataFrame
  Row │ x      y       
-     │ Int64  Any     
+     │ Int64  Int64?  
 ─────┼────────────────
    1 │     1  missing 
-   2 │     2  1
-   3 │     2  2
-   4 │     2  3
-   5 │     3  4
-   6 │     3  5
+   2 │     2        1
+   3 │     2        2
+   4 │     2        3
+   5 │     3        4
+   6 │     3        5
    7 │     4  missing 
 ```
 """
@@ -3361,7 +3485,7 @@ julia> @chain df begin
 
 julia> @chain df begin
          @nest(data = b:c_2)
-         @unnest_wider(data)
+         @unnest_wider(data, names_sep = nothing)
        end
 5×4 DataFrame
  Row │ a     b             c_1           c_2          
@@ -3375,7 +3499,7 @@ julia> @chain df begin
 
 julia> @chain df begin
          @nest(data = -a)
-         @unnest_wider(data) # wider first
+         @unnest_wider(data, names_sep = nothing) # wider first
          @unnest_longer(-a)  # then longer
        end
 15×4 DataFrame
@@ -3401,27 +3525,38 @@ julia> @chain df begin
 julia> @chain df begin
          @nest(data = -a)
          @unnest_longer(data) # longer first
-         @unnest_wider(-a)    # then wider
+         @unnest_wider(-a)    # then wider, names sep defualting to "_"
        end
 15×4 DataFrame
- Row │ a     b      c_2    c_1   
-     │ Char  Int64  Int64  Int64 
-─────┼───────────────────────────
-   1 │ a         1     31     16
-   2 │ a         2     32     17
-   3 │ a         3     33     18
-   4 │ b         4     34     19
-   5 │ b         5     35     20
-   6 │ b         6     36     21
-   7 │ c         7     37     22
-   8 │ c         8     38     23
-   9 │ c         9     39     24
-  10 │ d        10     40     25
-  11 │ d        11     41     26
-  12 │ d        12     42     27
-  13 │ e        13     43     28
-  14 │ e        14     44     29
-  15 │ e        15     45     30
+ Row │ a     data_b  data_c_2  data_c_1 
+     │ Char  Int64   Int64     Int64    
+─────┼──────────────────────────────────
+   1 │ a          1        31        16
+   2 │ a          2        32        17
+   3 │ a          3        33        18
+   4 │ b          4        34        19
+   5 │ b          5        35        20
+   6 │ b          6        36        21
+   7 │ c          7        37        22
+   8 │ c          8        38        23
+   9 │ c          9        39        24
+  10 │ d         10        40        25
+  11 │ d         11        41        26
+  12 │ d         12        42        27
+  13 │ e         13        43        28
+  14 │ e         14        44        29
+  15 │ e         15        45        30
+
+julia> @chain df @group_by(a) @nest(data = b:c_2) @ungroup()
+5×2 DataFrame
+ Row │ a     data          
+     │ Char  DataFrame     
+─────┼─────────────────────
+   1 │ a     3×3 DataFrame 
+   2 │ b     3×3 DataFrame 
+   3 │ c     3×3 DataFrame 
+   4 │ d     3×3 DataFrame 
+   5 │ e     3×3 DataFrame 
 ```
 """
 
@@ -3486,5 +3621,74 @@ julia> @relocate(df, B:C) # bring columns to the front
    3 │     8  C           3  A         3  C
    4 │     9  D           4  B         4  D
    5 │    10  E           5  C         5  E
+```
+"""
+
+const docstring_head =
+"""
+       @head(df, value)
+Shows the first n rows of the the data frame or of each group in a grouped data frame. 
+
+# Arguments
+- `df`: The data frame.
+- `value`: number of rows to be returned. Defaults to 6 if left blank.
+
+# Examples
+```
+julia> df = DataFrame(a = vcat(repeat(["a"], inner = 4),
+                                  repeat(["b"], inner = 4)),
+                             b = 1:8)
+8×2 DataFrame
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ a           1
+   2 │ a           2
+   3 │ a           3
+   4 │ a           4
+   5 │ b           5
+   6 │ b           6
+   7 │ b           7
+   8 │ b           8
+   
+julia> @head(df, 3)
+3×2 DataFrame
+ Row │ a        b     
+     │ String?  Int64 
+─────┼────────────────
+   1 │ a            1
+   2 │ a            2
+   3 │ a            3
+
+julia> @head(df)
+6×2 DataFrame
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ a           1
+   2 │ a           2
+   3 │ a           3
+   4 │ a           4
+   5 │ b           5
+   6 │ b           6
+
+julia> @chain df begin
+         @group_by a
+         @head 2
+       end
+GroupedDataFrame with 2 groups based on key: a
+First Group (2 rows): a = "a"
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ a           1
+   2 │ a           2
+⋮
+Last Group (2 rows): a = "b"
+ Row │ a       b     
+     │ String  Int64 
+─────┼───────────────
+   1 │ b           5
+   2 │ b           6
 ```
 """

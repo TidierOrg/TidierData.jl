@@ -11,7 +11,7 @@ nested_df = @nest(df4, n2 = starts_with("a"), n3 = y:yz)
 # To return to the original dataframe, you can unnest wider and then longer.
 
 @chain nested_df begin
-    @unnest_wider(n3:n2)
+    @unnest_wider(n3:n2, names_sep = nothing)
     @unnest_longer(y:ab)
 end
 
@@ -19,7 +19,7 @@ end
 
 @chain nested_df begin
   @unnest_longer(n3:n2)
-  @unnest_wider(n3:n2)
+  @unnest_wider(n3:n2, names_sep = nothing)
 end
 
 # ## `@unnest_longer`
@@ -67,5 +67,35 @@ df3 = DataFrame(
 
 @chain df3 begin 
     @unnest_wider(y)
-    @unnest_longer(a:c, keep_empty = true)
+    @unnest_longer(y_a:y_c, keep_empty = true)
+end
+
+# ## unnest JSON files 
+
+using JSON
+
+json_str = """
+       {
+           "name": "Chris",
+           "age": 23,
+           "address": {
+               "city": "New York",
+               "country": "America"
+           },
+           "friends": [
+               {
+                   "name": "Emily",
+                   "hobbies": [ "biking", "music", "gaming" ]
+               },
+               {
+                   "name": "John",
+                   "hobbies": [ "soccer", "gaming" ]
+               }
+           ]
+       }
+       """;
+json_df = DataFrame(JSON.parse(json_str))
+
+@chain json_df begin
+       @unnest_wider(address, friends)
 end
