@@ -383,20 +383,37 @@ function parse_join_by(tidy_expr::Union{Expr,Symbol,String})
 end
 
 # Not exported
-function parse_group_by(tidy_expr::Union{Expr,Symbol})
-  tidy_expr, found_n, found_row_number = parse_interpolation(tidy_expr)
+function parse_group_by(tidy_expr::Union{Expr,Symbol,QuoteNode})
+  # If the expression is a QuoteNode (which happens when a single bare column name 
+  # is passed via _by), extract the quoted symbol.
+  if tidy_expr isa QuoteNode
+    tidy_expr = tidy_expr.value
+  end
 
-  if @capture(tidy_expr, Cols(args__)) # from parse_interpolation
+  # Now call parse_interpolation on the potentially modified tidy_expr.
+  # Note: Since parse_interpolation has already run on the _by expression once 
+  # (in the macro), calling it again might be redundant or undesirable, 
+  # but assuming the original intent was to call it here:
+
+  # 1. Option 1: Trust the previous interpolation (cleaner for _by)
+  # Comment out the line below if you want to skip the second interpolation call.
+  # tidy_expr, found_n, found_row_number = parse_interpolation(tidy_expr)
+  
+  # 2. Option 2: Keep the original structure (what you provided)
+  tidy_expr, found_n, found_row_number, is_group_by_arg = parse_interpolation(tidy_expr)
+
+
+  if @capture(tidy_expr, Cols(args__))
     return :(Cols($(args...),))
   elseif @capture(tidy_expr, lhs_ = rhs_)
     return QuoteNode(lhs)
   elseif tidy_expr isa Expr
     return tidy_expr
   else # if it's a Symbol
+    # This path is usually taken for the column name itself (which is now Symbol due to QuoteNode extraction)
     return QuoteNode(tidy_expr)
   end
 end
-
 # Not exported
 function parse_autovec(tidy_expr::Union{Expr,Symbol})
 
@@ -575,24 +592,41 @@ end
 # String is for parse_join_by
 function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String};
   from_summarize::Bool = false, from_slice::Bool = false)
+   
   found_n = false
   found_row_number = false
+  is_group_by_arg = false
 
+  # Step 1: Check for and unwrap the _by argument
+  if var_expr isa Expr && var_expr.head == :(=) && var_expr.args[1] == :_by
+      is_group_by_arg = true
+      var_expr = var_expr.args[2] 
+  end
+
+  # Step 2: Postwalk the expression
   var_expr = MacroTools.postwalk(var_expr) do x
+    
+    # If we are inside a _by argument and see a vector like [a, b], 
+    # we must QuoteNode the symbols 'a' and 'b' so they become :a and :b
+    # instead of being evaluated as variables.
+    if is_group_by_arg && x isa Expr && x.head == :vect
+        # Map over the vector arguments; if they are bare symbols, wrap in QuoteNode
+        new_args = map(arg -> arg isa Symbol ? QuoteNode(arg) : arg, x.args)
+        return Expr(:vect, new_args...)
+    end
+    # --- FIX END ---
+
+    # 2.1: Interpolation (!!variable, !!expr) and @cmd
     if @capture(x, !!variable_Symbol)
       return esc(variable)
-    # If a variable has already been escaped and marked with a `!!` (e.g., `!!pi`),
-    # then it won't be re-escaped.
     elseif @capture(x, !!expr_)
       return expr
-    # `hello` in Julia is converted to Core.@cmd("hello")
-    # Since MacroTools is unable to match this pattern, we can directly
-    # evaluate the expression to see if it matches. If it does, the 3rd argument
-    # contains the string containing the values inside the backticks.
     elseif hasproperty(x, :head) && x.head == :macrocall &&
            hasproperty(x.args[1], :mod) && hasproperty(x.args[1], :name) &&
            x.args[1].mod == Core && x.args[1].name == Symbol("@cmd")
       return Symbol(x.args[3])
+      
+    # 2.2: Functions (n(), row_number())
     elseif @capture(x, fn_())
       if fn == :n
         if from_summarize
@@ -600,7 +634,7 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String};
         elseif from_slice
           return :end
         else
-          found_n = true # do not move this -- this leads to creation of new column
+          found_n = true
           return :(getindex(TidierData_n, 1))
         end
       elseif fn == :row_number
@@ -611,9 +645,8 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String};
       end
     elseif @capture(x, esc(variable_))
       return esc(variable)
-    # Escape any native Julia symbols that come from the Base or Core packages
-    # This includes :missing but also includes all data types (e.g., :Real, :String, etc.)
-    # To refer to a column named String, you can use `String` (in backticks)
+    
+    # Standard Symbol handling (remains mostly the same)
     elseif @capture(x, variable_Symbol)
       if variable in not_escaped[]
         return variable
@@ -638,9 +671,30 @@ function parse_interpolation(var_expr::Union{Expr,Symbol,Number,String};
     end
     return x
   end
-  return var_expr, found_n, found_row_number
+   
+  return var_expr, found_n, found_row_number, is_group_by_arg 
 end
 
+
+function parse_expressions_for_by(interpolated_exprs_full::Vector)
+  # The first three elements of the tuple (expr, n_flag, row_flag) go into here.
+  standard_exprs_parsed = []
+  # The fourth element (is_group_by_arg) determines if 'expr' is the grouping expression.
+  group_expr = nothing
+  
+  for (expr, n_flag, row_flag, by_flag) in interpolated_exprs_full
+      if by_flag
+          # The 'expr' is the RHS of _by (the grouping columns), already interpolated.
+          group_expr = expr
+      else
+          # Standard expressions for mutate/summarize/etc.
+          push!(standard_exprs_parsed, (expr, n_flag, row_flag))
+      end
+  end
+
+  # Returns the filtered list of standard expressions and the potential grouping expression
+  return standard_exprs_parsed, group_expr
+end
 # Not export
 # parse DataFrame and Expr
 function parse_bind_args(tidy_expr::Union{Expr,Symbol})

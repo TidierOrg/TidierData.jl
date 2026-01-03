@@ -1,6 +1,7 @@
 # TidierData.jl updates
 
-## v.0.17.2 - 2025-11-
+## v.0.17.2 - 2025-11-30
+- adds `_by` support for temporary grouping within `@mutate`, `@transmute`, `@summarize`, `@filter`, `@nest`, all `@slice` macros
 - `@unnest_wider` now has fall back for broader types
 - add `fitquad` and `fitquadratic` to do not vectorize list
 
