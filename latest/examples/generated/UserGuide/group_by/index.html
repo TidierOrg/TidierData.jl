@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
       
         
         <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -617,6 +617,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#_by" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        `_by``
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1179,6 +1190,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#_by" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        `_by``
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1263,6 +1285,28 @@
 <div><div style="float: left;"><span>10×2 DataFrame</span></div><div style="clear: both;"></div></div>
 <div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="columnLabelRow"><th class="stubheadLabel" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Year</th><th style="text-align: left;">Rating</th></tr><tr class="columnLabelRow"><th class="stubheadLabel" style="font-weight: bold; text-align: right;"></th><th title="Int32" style="text-align: left;">Int32</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">2005</td><td style="text-align: right;">1.8</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">6</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">7</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">8</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">9</td><td style="text-align: right;">2003</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">10</td><td style="text-align: right;">2003</td><td style="text-align: right;">1.0</td></tr></tbody></table></div>
 
+<p><a id="_by"></a></p>
+<p><a id="_by-1"></a></p>
+<h2 id="_by">`_by``<a class="headerlink" href="#_by" title="Permanent link">¤</a></h2>
+<p>Macros also support temporary grouping using the <code>_by</code> argument For example we can write the example above as follows</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@chain</span><span class="w"> </span><span class="n">movies</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@filter</span><span class="p">(</span><span class="n">Rating</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">minimum</span><span class="p">(</span><span class="n">Rating</span><span class="p">),</span><span class="w"> </span><span class="n">_by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Year</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@select</span><span class="p">(</span><span class="n">Year</span><span class="p">,</span><span class="w"> </span><span class="n">Rating</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@arrange</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="n">Year</span><span class="p">))</span>
+<span class="w">    </span><span class="nd">@slice</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">10</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<div><div style="float: left;"><span>10×2 DataFrame</span></div><div style="clear: both;"></div></div>
+<div class="data-frame" style="overflow-x: scroll;"><table class="data-frame" style="margin-bottom: 6px;"><thead><tr class="columnLabelRow"><th class="stubheadLabel" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Year</th><th style="text-align: left;">Rating</th></tr><tr class="columnLabelRow"><th class="stubheadLabel" style="font-weight: bold; text-align: right;"></th><th title="Int32" style="text-align: left;">Int32</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">2005</td><td style="text-align: right;">1.8</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">4</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">5</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">6</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">7</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">8</td><td style="text-align: right;">2004</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">9</td><td style="text-align: right;">2003</td><td style="text-align: right;">1.0</td></tr><tr class="dataRow"><td class="rowLabel" style="font-weight: bold; text-align: right;">10</td><td style="text-align: right;">2003</td><td style="text-align: right;">1.0</td></tr></tbody></table></div>
+
+<p>The following macros support the use of <code>_by</code></p>
+<ul>
+<li><code>@mutate</code> and <code>@transmute</code></li>
+<li><code>@summarize</code> and <code>@summarise</code></li>
+<li><code>@filter</code></li>
+<li><code>@nest</code></li>
+<li>all <code>@slice</code> macros</li>
+</ul>
 <hr>
 <p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></div>
 
@@ -1387,10 +1431,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["content.code.copy", "content.code.annotate", "navigation.top", "navigation.footer", "search.highlight", "search.share", "search.suggest", "toc.follow", "header.autohide"], "search": "../../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["content.code.copy", "content.code.annotate", "navigation.top", "navigation.footer", "search.highlight", "search.share", "search.suggest", "toc.follow", "header.autohide"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
         <script src="../../../../javascripts/mathjax.js"></script>
       
