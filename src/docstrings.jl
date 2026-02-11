@@ -3178,6 +3178,17 @@ julia> @chain df begin
    2 │ missing  missing 
    3 │       3  banana
    4 │ missing  cherry
+
+julia> df = DataFrame(a = [1.0, NaN]);
+
+julia> @mutate(df, a = missing_if(a, NaN))
+2×1 DataFrame
+ Row │ a         
+     │ Float64?  
+─────┼───────────
+   1 │       1.0
+   2 │ missing   
+
 ```
 """
 
