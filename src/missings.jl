@@ -150,8 +150,7 @@ end
 """
 $docstring_missing_if
 """
-missing_if(x, value) = ismissing(x) ? x : (x == value ? missing : x)
-
+missing_if(x, value) = isequal(x, value) ? missing : x
 """
 $docstring_replace_missing
 """
